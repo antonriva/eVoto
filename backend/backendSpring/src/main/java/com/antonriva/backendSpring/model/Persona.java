@@ -1,11 +1,10 @@
-package com.antonriva.backendSpring.entity;
+package com.antonriva.backendSpring.model;
 
-import org.springframework.data.annotation.Id;
 import java.time.LocalDate;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class Persona {
-	@Id
 	private Long id;
 	private String nombre;
 	private String apellidoPaterno;
@@ -13,29 +12,28 @@ public class Persona {
 	private LocalDate fechaDeInicio;
 	private LocalDate fechaDeFin;
 	
-	//Constructores
-	
 	public Persona() {
 		
 	}
 	
-	public Persona(Long id,String nombre, String apellidoPaterno, String apellidoMaterno, LocalDate fechaDeInicio) {
-		this.id = id;
-		this.nombre = nombre;
+	public Persona(Long id, String nombre, String apellidoPaterno, String apellidoMaterno, LocalDate fechaDeInicio) {
+		this.id=id;
 		this.apellidoMaterno = apellidoMaterno;
 		this.apellidoPaterno = apellidoPaterno;
+		this.nombre = nombre;
 		this.fechaDeInicio = fechaDeInicio;
 	}
 	
-	public Persona(Long id,String nombre, String apellidoPaterno, String apellidoMaterno, LocalDate fechaDeInicio, LocalDate fechaDeFin) {
-		this.id = id;
-		this.nombre = nombre;
+
+	public Persona(Long id, String nombre, String apellidoPaterno, String apellidoMaterno, LocalDate fechaDeInicio, LocalDate fechaDeFin) {
+		this.id=id;
 		this.apellidoMaterno = apellidoMaterno;
 		this.apellidoPaterno = apellidoPaterno;
+		this.nombre = nombre;
 		this.fechaDeInicio = fechaDeInicio;
-		this.fechaDeFin = fechaDeFin;
+		this.fechaDeInicio = fechaDeFin;
 	}
-
+	
 	public Long getId() {
 		return id;
 	}
@@ -83,7 +81,5 @@ public class Persona {
 	public void setFechaDeFin(LocalDate fechaDeFin) {
 		this.fechaDeFin = fechaDeFin;
 	}
-	
-	
 
 }
