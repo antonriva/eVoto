@@ -1,10 +1,10 @@
-package com.antonriva.backendSpring;
+package com.antonriva.backendspring;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BackendSpringApplicationTests {
+class BackendspringApplicationTests {
 
 	@Test
 	void contextLoads() {

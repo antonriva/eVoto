@@ -1,17 +1,13 @@
-package com.antonriva.backendSpring;
+package com.antonriva.backendspring;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-
 @SpringBootApplication
-public class BackendSpringApplication {
+public class BackendspringApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BackendSpringApplication.class, args);
-		
-	
-		
+		SpringApplication.run(BackendspringApplication.class, args);
 	}
 
 }
