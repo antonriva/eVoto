@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react"
 
 
-
 function PersonaList()  {
     //Listado de personas en un all-time render app
     const [Personas, setPersonas] = useState([])
@@ -17,12 +16,28 @@ function PersonaList()  {
     return(
         <div>
             <h2>Personas prueba HTTP</h2>
-            <ul>
-                {Personas.map(persona =>(
-                    <li key={persona.id}> Nombre:{persona.nombre}, Apellido paterno:{persona.apellidoPaterno}, Apellido materno:{persona.apellidoMaterno}, Fecha de nacimiento:{persona.fechaDeNacimiento}, Fecha de fin:{persona.fechaDeFin}</li>
-                ))}
-            </ul>
-
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellido paterno</th>
+                        <th>Apellido materno</th>
+                        <th>Fecha de nacimiento</th>
+                        <th>Fecha de fin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {Personas.map(persona =>(
+                        <tr key={persona.id}> 
+                            <td>{persona.nombre}</td>
+                            <td>{persona.apellidoPaterno}</td>
+                            <td>{persona.apellidoMaterno}</td>
+                            <td>{persona.fechaDeNacimiento}</td> 
+                            <td>{persona.fechaDeFin}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     )
 }

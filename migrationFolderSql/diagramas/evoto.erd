@@ -1,0 +1,222 @@
+erdiagram Model
+
+notation=uml
+
+
+entity Persona {
+   id : int key 
+   nombre : str
+   apellidoPaterno : str
+   apellidoMaterno : str
+   fechaDeNacimiento : date
+   fechaDeFin : date 
+   
+}
+
+//Relacion entre persona y domicilio
+entity Domicilio {
+   id : int key
+   descripcion : str
+}
+
+weak entity PersonaDomicilio {
+   idDeDomicilio partial-key
+   idDePersona partial-key
+   fechaDeInicio : date
+   fechaDeFin : date 
+   
+}
+
+weak relationship DomicilioHabitado {
+    PersonaDomicilio[0..N] -> Domicilio[1]
+
+}
+
+weak relationship TieneDomicilio {
+    PersonaDomicilio[1..N] -> Persona[1]
+
+}
+
+//Relacion entre persona y genero
+
+entity Genero{
+   id key
+   descripcion : str
+}
+
+weak entity PersonaGenero{
+   idDeGenero partial-key
+   idDePersona partial-key
+   fechaDeInicio : date
+   fechaDeFin : date 
+}
+
+weak relationship AsociadoCon {
+    PersonaGenero[0..N] -> Genero [1]
+
+}
+
+weak relationship TieneGenero {
+    PersonaGenero[1..N] -> Persona[1]
+
+}
+
+//Relacion entre persona y email
+
+entity Email{
+   id key
+   descripcion : str
+}
+
+weak entity PersonaEmail{
+   idDeEmail partial-key
+   idDePersona partial-key
+   fechaDeInicio : date
+   fechaDeFin : date 
+}
+
+weak relationship EmailEsPoseido {
+    PersonaEmail[1..N] -> Email[1]
+
+}
+
+weak relationship TieneEmail {
+    PersonaEmail[0..N] -> Persona[1]
+
+}
+
+//Relacion entre persona y elector 
+
+entity Elector{
+   id key
+   descripcion : str
+}
+
+weak relationship CandidatoEsElector {
+    Persona[1] -> Elector[1]
+
+}
+
+
+//Relacion entre persona y candidato 
+
+entity Candidato{
+   id key
+   descripcion : str
+}
+
+weak entity PersonaCandidato{
+   idDePersona partial-key
+   idDeCandidato partial-key
+}
+
+weak relationship CandidatoEsPersona {
+    PersonaCandidato[1] -> Candidato[1]
+
+}
+
+weak relationship VaPorPuesto {
+    PersonaCandidato[0..N] -> Persona[1]
+
+}
+
+//Relacion entre candidato y partido
+
+entity Partido{
+   id key
+   denominacion : str
+   //Emblema deberia ser otra tabla, y una tabla EmblemaPartido, por ahora solo colocaremos el nombre
+   emblema : str 
+
+}
+
+weak entity CandidatoPartido{
+   idDeCandidato partial-key
+   idDePartido key
+}
+
+weak relationship TieneAfiliados {
+    CandidatoPartido[1..N] -> Partido[1]
+
+}
+
+weak relationship RepresentaA {
+    CandidatoPartido[1..N] -> Candidato[1]
+
+}
+
+//Relacion entre partido y coalicion 
+
+entity Coalicion{
+    id key
+    nombre : str
+    codigoEntidad : str
+}
+
+weak entity PartidoCoalicion{
+    idDePartido partial-key
+    idDeCoalicion partial-key
+    fechaDeInicio : date
+    fechaDeFin : date
+
+}
+
+//Relacion entre cargo y candidato
+
+entity Cargo{
+   id key
+   descripcion : str
+}
+
+weak entity CandidatoCargo{
+   idDeCandidato partial-key
+   idDeCargo partial-key
+   generoMaximo : int
+}
+
+weak relationship TienePostulantes {
+    CandidatoCargo[1..N] -> Cargo[1]
+
+}
+
+weak relationship PostulaPara {
+    CandidatoCargo[1..N] -> Candidato[1]
+
+}
+
+
+//Relacion entre candidato y voto
+//Relacion entre elector y voto
+
+entity Voto{
+   id key
+   descripcion : str
+}
+
+weak entity CandidatoElectorEsVoto{
+   idDeVoto partial-key
+   idDeCandidato partial-key
+   idDeElector partial-key 
+}
+
+
+weak relationship VotoPara {
+    CandidatoElectorEsVoto[0..N] -> Elector[1]
+
+}
+
+weak relationship VotadoVeces {
+    CandidatoElectorEsVoto[0..N] -> Candidato[1]
+
+}
+
+weak relationship EsVoto {
+    CandidatoElectorEsVoto[1] -> Voto[1]
+
+}
+
+
+entity ProcesoElectoral{
+    id key
+    idDeOtro partial-key
+}

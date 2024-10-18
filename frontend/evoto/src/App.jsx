@@ -1,7 +1,13 @@
 import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom"
-import RegistroCandidatoPag from './pages/RegistroCandidatoPag'
+//Paginas main
 import AboutPag from './pages/AboutPag'
 import PersonaListPag from './pages/PersonaListPag'
+import ColegioElectoralPag from './pages/ColegioElectoralPag'
+//Colegio electoral
+import ProcesoElectoralPag from "./pages/ColegioElectoralDir/ProcesoElectoralPag"
+
+//Proceso electoral 
+import DefineProcesoElectoralPag from "./pages/ColegioElectoralDir/ProcesoElectoralDir/DefineProcesoElectoralPag"
  
 const App = () => {
   return (    
@@ -11,10 +17,10 @@ const App = () => {
         <nav>
           <ul>
             <li>
-                <Link to ="/About"> Acerca del sistema </Link>
+                <Link to ="/"> Acerca del sistema </Link>
             </li>
             <li>
-                <Link to ="/RegistroCandidato"> Registro de candidatos </Link>
+                <Link to ="/ColegioElectoral"> Colegio Electoral </Link>
             </li>
             <li>
                 <Link to = "/PersonaList"> Prueba HTTP para DML en persona </Link>
@@ -23,9 +29,16 @@ const App = () => {
         </nav>
         {/*Routes hacen funcion de render de la pagina unicamente*/}
         <Routes>
-          <Route path="/About" element={<div> <AboutPag/> </div>} />
-          <Route path="/RegistroCandidato" element={<RegistroCandidatoPag/>}> </Route>
+          {/* MAIN */}
+          <Route path="/" element={<AboutPag/>} />
           <Route path="/PersonaList" element={<PersonaListPag/>}></Route>
+
+          {/* COLEGIO ELECTORAL */}
+          <Route path="/ColegioElectoral" element={<ColegioElectoralPag/>}></Route>
+          <Route path="/ColegioElectoral/ProcesoElectoralPag/" element={<ProcesoElectoralPag/>}></Route>
+
+          {/* PROCESO ELECTORAL */}
+          <Route path="/ColegioElectoral/ProcesoElectoralPag/DefineProcesoElectoralPag" element={<DefineProcesoElectoralPag/>}></Route>
         </Routes>
       </div>
     </Router>
