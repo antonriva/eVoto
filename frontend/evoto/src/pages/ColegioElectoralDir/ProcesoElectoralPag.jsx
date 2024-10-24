@@ -9,6 +9,12 @@ const ProcesoElectoralPag = () => {
                     <li>
                         <Link to ="DefineProcesoElectoralPag"> Definir proceso electoral </Link>
                     </li>
+                    <li>
+                        Hola
+                    </li>
+                    <li>
+                        Hola
+                    </li>
                 </ul>
             </nav>
         </div>
