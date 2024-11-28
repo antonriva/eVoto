@@ -15,18 +15,18 @@ public class Persona {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int id;
+	private int id;
 	
 	@Column(name="NOMBRE")
-	String nombre;
+	private String nombre;
 	@Column(name="APELLIDOPATERNO")
-	String apellidoPaterno;
+	private String apellidoPaterno;
 	@Column(name="APELLIDOMATERNO")
-	String apellidoMaterno;
+	private String apellidoMaterno;
 	@Column(name="FECHADENACIMIENTO")
-	LocalDate fechaDeNacimiento;
+	private LocalDate fechaDeNacimiento;
 	@Column(name="FECHADEFIN")
-	LocalDate fechaDeFin;
+	private LocalDate fechaDeFin;
 	
 	public Persona() {
 		

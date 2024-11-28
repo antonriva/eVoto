@@ -16,5 +16,5 @@ public class PersonaService {
 		List<Persona> personas = personaRepository.findAll();
 		return personas;
 	}
-
+	
 }

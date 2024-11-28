@@ -11,7 +11,13 @@ const DefineProcesoElectoral = () => {
             <p>Nuevo proceso electoral</p>
             {/* Input para recibir nombre: Solo texto, no números, y todo en mayus */}
             <DatosForms
-                label="Ingrese nombre del proceso"
+                label="Ingrese el tipo de proceso"
+                type="text"
+                validation="text-only"
+                transform="uppercase"
+            />
+            <DatosForms
+                label="Ingrese el nombre del proceso"
                 type="text"
                 validation="text-only"
                 transform="uppercase"
