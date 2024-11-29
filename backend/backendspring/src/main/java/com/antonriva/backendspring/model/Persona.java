@@ -2,6 +2,7 @@ package com.antonriva.backendspring.model;
 
 
 import java.time.LocalDate;
+import java.util.List;
 
 //Antes estaba en javax.persistence pero ahora se encuentra en jakarta, otra dependencia
 
@@ -16,6 +17,9 @@ public class Persona {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
+	@OneToMany(mappedBy = "persona", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<PersonaDomicilio> personaDomicilios;
 	
 	@Column(name="NOMBRE")
 	private String nombre;
@@ -48,10 +52,13 @@ public class Persona {
 		this.fechaDeNacimiento = fechaDeNacimiento;
 		this.fechaDeFin = fechaDeFin;
 	}
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Usa IDENTITY para delegar la generación a la base de datos
 	public int getId() {
 		return id;
 	}
+    
+    @OneToMany(mappedBy = "persona", cascade = CascadeType.ALL)
+    private List<PersonaDomicilio> personaDomicilio;
 
 	public void setId(int id) {
 		this.id = id;
@@ -97,6 +104,14 @@ public class Persona {
 		this.fechaDeFin = fechaDeFin;
 	}
 	
+    public List<PersonaDomicilio> getPersonaDomicilios() {
+        return personaDomicilios;
+    }
+
+    public void setPersonaDomicilios(List<PersonaDomicilio> personaDomicilios) {
+        this.personaDomicilios = personaDomicilios;
+    }
+	
 	@Override
 	public String toString() {
 		return "Persona{" +
@@ -105,7 +120,10 @@ public class Persona {
 				", apellidoPaterno=" + apellidoPaterno + '\'' +
 				", apellidoMaterno=" + apellidoMaterno + '\'' +
 				", fechaDeNacimiento=" + fechaDeNacimiento + '\'' + 
+				", fechaDeFin=" + fechaDeFin + '\'' +
 				"}";
 	}
+	
+	
 
 }

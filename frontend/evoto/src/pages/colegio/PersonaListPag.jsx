@@ -1,5 +1,5 @@
 import React from "react"
-import PersonaList from "../components/PersonaList"
+import PersonaList from "../../components/PersonaList"
 
 //Dummie class, vamos hacer para la clase candidato cuando exista
 //Se copia personalist pag y persona list se modifica por candidatos list

@@ -1,6 +1,6 @@
 import React,{useState} from 'react'
-import DefineProcesoElectoral from '../../../components/DefineProcesoElectoral'
-import DefineCargo from '../../../components/DefineCargo';
+import DefineProcesoElectoral from '../../../../components/DefineProcesoElectoral'
+
 
 
 const DefineProcesoElectoralPag = () => {
@@ -18,12 +18,6 @@ const DefineProcesoElectoralPag = () => {
             <div>
                 <button type="button" onClick={handleSave}>Next</button>
             </div>
-            {isSaved && (
-                <div>
-                    <h2>Cargo a elegirse</h2>
-                    <DefineCargo/> {/* The next component you want to show */}
-                </div>
-            )}
         </div>
     )
 }
