@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,28 +75,31 @@ public class PersonaService {
     }
 
     // Buscar personas con filtros
-    public List<Persona> buscarConFiltros(Integer id, String nombre, String apellido, String fechaNacimiento) {
+    public List<Persona> buscarConFiltros(Integer id, String nombre, String apellidoPaterno, String apellidoMaterno, String fechaDeNacimiento) {
         Specification<Persona> specification = Specification
                 .where(PersonaSpecifications.conId(id))
                 .and(PersonaSpecifications.conNombre(nombre))
-                .and(PersonaSpecifications.conApellido(apellido))
-                .and(PersonaSpecifications.conFechaDeNacimiento(fechaNacimiento));
+                .and(PersonaSpecifications.conApellidoPaterno(apellidoPaterno))
+                .and(PersonaSpecifications.conApellidoMaterno(apellidoMaterno))
+                .and(PersonaSpecifications.conFechaDeNacimiento(fechaDeNacimiento));
 
         return personaRepository.findAll(specification);
     }
 
     // Actualizar una persona
+    //SI FUNCIONA, TODOS LOS DATOS DEBEN PASARSE PARA QUE FUNCIONE
     @Transactional
     public Persona actualizarPersona(int id, Persona nuevaPersona) {
         return personaRepository.findById(id).map(persona -> {
+            // Validate and normalize incoming data
             if (nuevaPersona.getNombre() != null) {
-                persona.setNombre(nuevaPersona.getNombre());
+                persona.setNombre(nuevaPersona.getNombre().toUpperCase().trim());
             }
             if (nuevaPersona.getApellidoPaterno() != null) {
-                persona.setApellidoPaterno(nuevaPersona.getApellidoPaterno());
+                persona.setApellidoPaterno(nuevaPersona.getApellidoPaterno().toUpperCase().trim());
             }
             if (nuevaPersona.getApellidoMaterno() != null) {
-                persona.setApellidoMaterno(nuevaPersona.getApellidoMaterno());
+                persona.setApellidoMaterno(nuevaPersona.getApellidoMaterno().toUpperCase().trim());
             }
             if (nuevaPersona.getFechaDeNacimiento() != null) {
                 persona.setFechaDeNacimiento(nuevaPersona.getFechaDeNacimiento());
@@ -103,6 +107,8 @@ public class PersonaService {
             if (nuevaPersona.getFechaDeFin() != null) {
                 persona.setFechaDeFin(nuevaPersona.getFechaDeFin());
             }
+
+            // Save changes
             return personaRepository.save(persona);
         }).orElseThrow(() -> new RuntimeException("Persona no encontrada con ID: " + id));
     }

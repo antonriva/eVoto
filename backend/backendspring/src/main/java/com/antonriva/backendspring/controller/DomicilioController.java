@@ -12,15 +12,15 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/domicilio")
-@CrossOrigin(origins="http://localhost:5173")
+@RequestMapping("/api/domicilio/")
+@CrossOrigin(origins = "http://localhost:5173")
 public class DomicilioController {
-
 
     @Autowired
     private DomicilioService domicilioService;
 
     // Obtener todos los domicilios
+    //SI SIRVE
     @GetMapping
     public ResponseEntity<List<Domicilio>> obtenerTodosLosDomicilios() {
         List<Domicilio> domicilios = domicilioService.obtenerTodosLosDomicilios();
@@ -28,25 +28,25 @@ public class DomicilioController {
     }
 
     // Obtener un domicilio por ID
+    //SI SIRVE
     @GetMapping("/{id}")
     public ResponseEntity<Domicilio> obtenerDomicilioPorId(@PathVariable int id) {
-        Optional<Domicilio> domicilio = domicilioService.obtenerDomicilioPorId(id);
-        return domicilio.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return domicilioService.obtenerDomicilioPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // Obtener domicilios asociados a una persona
+    //SI FUNCIONA
     @GetMapping("/persona/{personaId}")
     public ResponseEntity<List<Domicilio>> obtenerDomiciliosPorPersona(@PathVariable int personaId) {
-        // Crear una instancia básica de Persona con el ID proporcionado
         Persona persona = new Persona();
         persona.setId(personaId);
-
-        // Obtener los domicilios asociados a la persona
         List<Domicilio> domicilios = domicilioService.obtenerDomiciliosPorPersona(persona);
-
         return ResponseEntity.ok(domicilios);
     }
-    
+
+    // Buscar domicilios con filtros
     @GetMapping("/buscar")
     public ResponseEntity<List<Domicilio>> buscarConFiltros(
             @RequestParam(required = false) String calle,
@@ -60,6 +60,7 @@ public class DomicilioController {
     // Crear un nuevo domicilio
     @PostMapping
     public ResponseEntity<Domicilio> crearDomicilio(@RequestBody Domicilio nuevoDomicilio) {
+        validarDatosDomicilio(nuevoDomicilio);
         Domicilio domicilioGuardado = domicilioService.registrarDomicilio(nuevoDomicilio);
         return ResponseEntity.status(HttpStatus.CREATED).body(domicilioGuardado);
     }
@@ -68,10 +69,13 @@ public class DomicilioController {
     @PutMapping("/{id}")
     public ResponseEntity<Domicilio> actualizarDomicilio(@PathVariable int id, @RequestBody Domicilio nuevoDomicilio) {
         try {
+            validarDatosDomicilio(nuevoDomicilio);
             Domicilio domicilioActualizado = domicilioService.actualizarDomicilio(id, nuevoDomicilio);
             return ResponseEntity.ok(domicilioActualizado);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
@@ -84,8 +88,28 @@ public class DomicilioController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-        
-        
-        
+    }
+
+    // Método de validación
+    private void validarDatosDomicilio(Domicilio domicilio) {
+        if (domicilio.getCalle() == null || domicilio.getCalle().isBlank() || !domicilio.getCalle().matches("^[A-ZÁÉÍÓÚÑ ]+$")) {
+            throw new IllegalArgumentException("La calle debe estar en mayúsculas y no puede contener caracteres especiales o estar vacía.");
+        }
+        if (domicilio.getNumeroExterior() == null || domicilio.getNumeroExterior() <= 0) {
+            throw new IllegalArgumentException("El número exterior debe ser un entero positivo.");
+        }
+        if (domicilio.getColonia() == null) {
+            throw new IllegalArgumentException("El campo 'colonia' es obligatorio.");
+        }
+        if (domicilio.getMunicipio() == null) {
+            throw new IllegalArgumentException("El campo 'municipio' es obligatorio.");
+        }
+        if (domicilio.getEntidadFederativa() == null) {
+            throw new IllegalArgumentException("El campo 'entidadFederativa' es obligatorio.");
+        }
+        if (domicilio.getPostal() == null) {
+            throw new IllegalArgumentException("El campo 'postal' es obligatorio.");
+        }
     }
 }
+

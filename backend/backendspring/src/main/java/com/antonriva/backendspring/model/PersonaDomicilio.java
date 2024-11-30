@@ -2,6 +2,9 @@ package com.antonriva.backendspring.model;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 //Antes estaba en javax.persistence pero ahora se encuentra en jakarta, otra dependencia
 
 import jakarta.persistence.*;
@@ -15,12 +18,11 @@ public class PersonaDomicilio {
 
     @EmbeddedId
     private PersonaDomicilioId id;
-    
-    
 
     @ManyToOne
     @MapsId("idDePersona") // Vincula con el campo idDePersona del EmbeddedId
     @JoinColumn(name = "iddepersona", nullable = false)
+    @JsonIgnore // Evita serializar esta relación para evitar problemas de referencia circular
     private Persona persona;
 
     @ManyToOne

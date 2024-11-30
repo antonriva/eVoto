@@ -3,6 +3,9 @@ package com.antonriva.backendspring.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 //Antes estaba en javax.persistence pero ahora se encuentra en jakarta, otra dependencia
 
 import jakarta.persistence.*;
@@ -22,7 +25,7 @@ public class Domicilio {
     private String calle;
 
     @Column(name = "NUMEXT", nullable = false)
-    private int numeroExterior;
+    private Integer numeroExterior;
 
     @Column(name = "NUMINT")
     private Integer numeroInterior;
@@ -43,7 +46,8 @@ public class Domicilio {
     @JoinColumn(name = "iddepostal", nullable = false)
     private Postal postal;
 
-    @OneToMany(mappedBy = "domicilio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "domicilio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore // Ignorar esta relación en la serialización para evitar bucles
     private List<PersonaDomicilio> personaDomicilio;
 
     // Constructor vacío
@@ -51,14 +55,14 @@ public class Domicilio {
     }
 
     // Constructor con parámetros básicos
-    public Domicilio(String calle, int numeroExterior, Integer numeroInterior) {
+    public Domicilio(String calle, Integer numeroExterior, Integer numeroInterior) {
         this.calle = calle;
         this.numeroExterior = numeroExterior;
         this.numeroInterior = numeroInterior;
     }
 
     // Constructor completo
-    public Domicilio(String calle, int numeroExterior, Integer numeroInterior,
+    public Domicilio(String calle, Integer numeroExterior, Integer numeroInterior,
                      EntidadFederativa entidadFederativa, Municipio municipio,
                      Colonia colonia, Postal postal) {
         this.calle = calle;
@@ -87,11 +91,11 @@ public class Domicilio {
         this.calle = calle;
     }
 
-    public int getNumeroExterior() {
+    public Integer getNumeroExterior() {
         return numeroExterior;
     }
 
-    public void setNumeroExterior(int numeroExterior) {
+    public void setNumeroExterior(Integer numeroExterior) {
         this.numeroExterior = numeroExterior;
     }
 

@@ -4,6 +4,9 @@ package com.antonriva.backendspring.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 //Antes estaba en javax.persistence pero ahora se encuentra en jakarta, otra dependencia
 
 import jakarta.persistence.*;
@@ -17,20 +20,26 @@ public class Persona {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+
 	@OneToMany(mappedBy = "persona", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonIgnore // Ignorar esta relación al serializar
 	private List<PersonaDomicilio> personaDomicilios;
-	
+
 	@Column(name="NOMBRE")
 	private String nombre;
+
 	@Column(name="APELLIDOPATERNO")
 	private String apellidoPaterno;
+
 	@Column(name="APELLIDOMATERNO")
 	private String apellidoMaterno;
+
 	@Column(name="FECHADENACIMIENTO")
 	private LocalDate fechaDeNacimiento;
+
 	@Column(name="FECHADEFIN")
 	private LocalDate fechaDeFin;
+
 	
 	public Persona() {
 		
