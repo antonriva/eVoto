@@ -18,10 +18,7 @@ public class PersonaSpecifications {
             if (nombre == null || nombre.isEmpty()) return null;
 
             String pattern = nombre.toLowerCase() + "%";
-            return criteriaBuilder.or(
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("nombre")), pattern),
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("nombre")), "% " + pattern)
-            );
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("nombre")), pattern);
         };
     }
 
@@ -30,10 +27,7 @@ public class PersonaSpecifications {
             if (apellidoPaterno == null || apellidoPaterno.isEmpty()) return null;
 
             String pattern = apellidoPaterno.toLowerCase() + "%";
-            return criteriaBuilder.or(
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("apellidoPaterno")), pattern),
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("apellidoPaterno")), "% " + pattern)
-            );
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("apellidoPaterno")), pattern);
         };
     }
 
@@ -42,10 +36,7 @@ public class PersonaSpecifications {
             if (apellidoMaterno == null || apellidoMaterno.isEmpty()) return null;
 
             String pattern = apellidoMaterno.toLowerCase() + "%";
-            return criteriaBuilder.or(
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("apellidoMaterno")), pattern),
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("apellidoMaterno")), "% " + pattern)
-            );
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("apellidoMaterno")), pattern);
         };
     }
 
@@ -54,31 +45,24 @@ public class PersonaSpecifications {
             if (fechaDeNacimiento == null || fechaDeNacimiento.isEmpty()) return null;
 
             try {
-                if (fechaDeNacimiento.matches("^\\d{4}$")) {
-                    // Si el formato es solo año (YYYY)
-                    int anio = Integer.parseInt(fechaDeNacimiento);
-                    LocalDate inicioAnio = LocalDate.of(anio, 1, 1);
-                    LocalDate finAnio = inicioAnio.withMonth(12).withDayOfMonth(31);
-                    return criteriaBuilder.between(root.get("fechaDeNacimiento"), inicioAnio, finAnio);
-                } else if (fechaDeNacimiento.matches("^\\d{4}-\\d{2}$")) {
-                    // Si el formato es año y mes (YYYY-MM)
-                    LocalDate inicioMes = LocalDate.parse(fechaDeNacimiento + "-01");
-                    LocalDate finMes = inicioMes.withDayOfMonth(inicioMes.lengthOfMonth());
-                    return criteriaBuilder.between(root.get("fechaDeNacimiento"), inicioMes, finMes);
-                } else if (fechaDeNacimiento.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
-                    // Si el formato es año, mes y día (YYYY-MM-DD)
-                    LocalDate fechaExacta = LocalDate.parse(fechaDeNacimiento);
-                    return criteriaBuilder.equal(root.get("fechaDeNacimiento"), fechaExacta);
-                } else {
-                    throw new IllegalArgumentException("El formato de fecha debe ser YYYY, YYYY-MM o YYYY-MM-DD");
-                }
+                LocalDate fecha = LocalDate.parse(fechaDeNacimiento);
+                return criteriaBuilder.equal(root.get("fechaDeNacimiento"), fecha);
             } catch (DateTimeParseException e) {
-                throw new IllegalArgumentException("La fecha de nacimiento debe estar en formato válido (YYYY, YYYY-MM o YYYY-MM-DD)");
+                throw new IllegalArgumentException("La fecha de nacimiento debe estar en formato válido (YYYY-MM-DD)");
             }
         };
     }
 
-   
+    public static Specification<Persona> conFechaDeFin(String fechaDeFin) {
+        return (root, query, criteriaBuilder) -> {
+            if (fechaDeFin == null || fechaDeFin.isEmpty()) return null;
 
+            try {
+                LocalDate fecha = LocalDate.parse(fechaDeFin);
+                return criteriaBuilder.equal(root.get("fechaDeFin"), fecha);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("La fecha de fin debe estar en formato válido (YYYY-MM-DD)");
+            }
+        };
+    }
 }
-

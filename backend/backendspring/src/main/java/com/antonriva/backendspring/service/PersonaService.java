@@ -1,5 +1,6 @@
 package com.antonriva.backendspring.service;
 
+import com.antonriva.backendspring.dto.PersonaResumenDTO;
 import com.antonriva.backendspring.model.Domicilio;
 import com.antonriva.backendspring.model.Persona;
 import com.antonriva.backendspring.model.PersonaDomicilio;
@@ -16,18 +17,78 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class PersonaService {
-
+	
     @Autowired
     private PersonaRepository personaRepository;
 
     @Autowired
     private PersonaDomicilioRepository personaDomicilioRepository;
 
+    public List<PersonaResumenDTO> obtenerResumenDePersonas() {
+        List<Persona> personas = personaRepository.findAll();
+        List<PersonaResumenDTO> listaResumen = new ArrayList<>();
+
+        for (Persona persona : personas) {
+            PersonaResumenDTO dto = new PersonaResumenDTO();
+            dto.setId(persona.getId());
+            dto.setNombre(persona.getNombre());
+            dto.setApellidoPaterno(persona.getApellidoPaterno());
+            dto.setApellidoMaterno(persona.getApellidoMaterno());
+            dto.setFechaDeNacimiento(persona.getFechaDeNacimiento());
+            dto.setFechaDeFin(persona.getFechaDeFin());
+            dto.setCantidadDomicilios(persona.getPersonaDomicilios() != null ? persona.getPersonaDomicilios().size() : 0);
+
+            listaResumen.add(dto);
+        }
+
+        return listaResumen;
+    }
+    
+    public List<PersonaResumenDTO> buscarConFiltros(
+            Integer id, String nombre, String apellidoPaterno, String apellidoMaterno,
+            String fechaDeNacimiento, String fechaDeFin, Integer cantidadDomicilios) {
+
+        Specification<Persona> specification = Specification
+                .where(PersonaSpecifications.conId(id))
+                .and(PersonaSpecifications.conNombre(nombre))
+                .and(PersonaSpecifications.conApellidoPaterno(apellidoPaterno))
+                .and(PersonaSpecifications.conApellidoMaterno(apellidoMaterno))
+                .and(PersonaSpecifications.conFechaDeNacimiento(fechaDeNacimiento))
+                .and(PersonaSpecifications.conFechaDeFin(fechaDeFin));
+
+        List<Persona> personas = personaRepository.findAll(specification);
+        List<PersonaResumenDTO> listaResumen = new ArrayList<>();
+
+        for (Persona persona : personas) {
+            // Calcular cantidad de domicilios
+            int cantidadDomiciliosActual = persona.getPersonaDomicilios() != null ? persona.getPersonaDomicilios().size() : 0;
+
+            // Si cantidadDomicilios es nulo, no se filtra por este campo
+            if (cantidadDomicilios != null && cantidadDomicilios != cantidadDomiciliosActual) {
+                continue;
+            }
+
+            PersonaResumenDTO dto = new PersonaResumenDTO();
+            dto.setId(persona.getId());
+            dto.setNombre(persona.getNombre());
+            dto.setApellidoPaterno(persona.getApellidoPaterno());
+            dto.setApellidoMaterno(persona.getApellidoMaterno());
+            dto.setFechaDeNacimiento(persona.getFechaDeNacimiento());
+            dto.setFechaDeFin(persona.getFechaDeFin());
+            dto.setCantidadDomicilios(cantidadDomiciliosActual);
+
+            listaResumen.add(dto);
+        }
+
+        return listaResumen;
+    }
+    
     @Autowired
     private DomicilioRepository domicilioRepository;
 
@@ -75,16 +136,7 @@ public class PersonaService {
     }
 
     // Buscar personas con filtros
-    public List<Persona> buscarConFiltros(Integer id, String nombre, String apellidoPaterno, String apellidoMaterno, String fechaDeNacimiento) {
-        Specification<Persona> specification = Specification
-                .where(PersonaSpecifications.conId(id))
-                .and(PersonaSpecifications.conNombre(nombre))
-                .and(PersonaSpecifications.conApellidoPaterno(apellidoPaterno))
-                .and(PersonaSpecifications.conApellidoMaterno(apellidoMaterno))
-                .and(PersonaSpecifications.conFechaDeNacimiento(fechaDeNacimiento));
 
-        return personaRepository.findAll(specification);
-    }
 
     // Actualizar una persona
     //SI FUNCIONA, TODOS LOS DATOS DEBEN PASARSE PARA QUE FUNCIONE

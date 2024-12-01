@@ -1,7 +1,10 @@
 package com.antonriva.backendspring.controller;
 
+import com.antonriva.backendspring.dto.DetalleDomicilioDTO;
+import com.antonriva.backendspring.dto.PersonaResumenDTO;
 import com.antonriva.backendspring.model.Persona;
 import com.antonriva.backendspring.model.PersonaDomicilio;
+import com.antonriva.backendspring.service.PersonaDomicilioService;
 import com.antonriva.backendspring.service.PersonaService;
 
 import java.time.LocalDate;
@@ -25,21 +28,31 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@RequestMapping("/api/persona/")
+@RequestMapping("/api/persona")
 @RestController
 @CrossOrigin(origins="http://localhost:5173")
 public class PersonaController {
 
     @Autowired
     private PersonaService personaService;
+    
+    @Autowired
+    private PersonaDomicilioService personaDomicilioService;
 
     // Obtener todas las personas
     // SI FUNCIONA PRUEBA HTTPi
     //NOS DA TAMBIEN PERSONADOMICILIO
     @GetMapping
-    public ResponseEntity<List<Persona>> obtenerTodasLasPersonas() {
-        List<Persona> personas = personaService.obtenerTodasLasPersonas();
-        return ResponseEntity.ok(personas);
+    public ResponseEntity<List<PersonaResumenDTO>> obtenerResumenDePersonas() {
+        List<PersonaResumenDTO> resumenPersonas = personaService.obtenerResumenDePersonas();
+        return ResponseEntity.ok(resumenPersonas);
+    }
+    
+    // Endpoint para obtener los domicilios detallados de una persona
+    @GetMapping("/{idPersona}/detalles-domicilios")
+    public ResponseEntity<List<DetalleDomicilioDTO>> obtenerDomiciliosDetalle(@PathVariable int idPersona) {
+        List<DetalleDomicilioDTO> detalles = personaDomicilioService.obtenerDomiciliosPorPersona(idPersona);
+        return ResponseEntity.ok(detalles);
     }
 
     // Obtener una persona por ID
@@ -53,15 +66,21 @@ public class PersonaController {
 
     //SI FUNCIONA
     @GetMapping("/buscar")
-    public ResponseEntity<List<Persona>> buscarConFiltros(
+    public ResponseEntity<List<PersonaResumenDTO>> buscarConFiltros(
             @RequestParam(required = false) Integer id,
             @RequestParam(required = false) String nombre,
             @RequestParam(required = false) String apellidoPaterno,
             @RequestParam(required = false) String apellidoMaterno,
-            @RequestParam(required = false) String fechaDeNacimiento) {
-        List<Persona> personas = personaService.buscarConFiltros(id, nombre, apellidoPaterno, apellidoMaterno, fechaDeNacimiento);
+            @RequestParam(required = false) String fechaDeNacimiento,
+            @RequestParam(required = false) String fechaDeFin,
+            @RequestParam(required = false) Integer cantidadDomicilios) {
+
+        List<PersonaResumenDTO> personas = personaService.buscarConFiltros(
+            id, nombre, apellidoPaterno, apellidoMaterno, fechaDeNacimiento, fechaDeFin, cantidadDomicilios);
+
         return ResponseEntity.ok(personas);
     }
+
 
     
     //si funciona

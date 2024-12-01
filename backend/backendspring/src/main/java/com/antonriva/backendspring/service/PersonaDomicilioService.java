@@ -1,9 +1,11 @@
 package com.antonriva.backendspring.service;
 
 import com.antonriva.backendspring.model.Persona;
+import com.antonriva.backendspring.dto.DetalleDomicilioDTO;
 import com.antonriva.backendspring.model.Domicilio;
 import com.antonriva.backendspring.model.PersonaDomicilio;
 import com.antonriva.backendspring.repository.PersonaDomicilioRepository;
+import com.antonriva.backendspring.repository.PersonaRepository;
 import com.antonriva.backendspring.specification.PersonaDomicilioSpecifications;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +14,42 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class PersonaDomicilioService {
+	
+    @Autowired
+    private PersonaRepository personaRepository;
+
+    public List<DetalleDomicilioDTO> obtenerDomiciliosPorPersona(int idPersona) {
+        Persona persona = personaRepository.findById(idPersona)
+                .orElseThrow(() -> new RuntimeException("Persona no encontrada"));
+
+        List<DetalleDomicilioDTO> detalles = new ArrayList<>();
+
+        for (PersonaDomicilio relacion : persona.getPersonaDomicilios()) {
+            DetalleDomicilioDTO detalle = new DetalleDomicilioDTO();
+            Domicilio domicilio = relacion.getDomicilio();
+
+            detalle.setCalle(domicilio.getCalle());
+            detalle.setNumeroExterior(domicilio.getNumeroExterior());
+            detalle.setMunicipio(domicilio.getMunicipio().getDescripcion());
+            detalle.setColonia(domicilio.getColonia().getDescripcion());
+            detalle.setEntidadFederativa(domicilio.getEntidadFederativa().getDescripcion());
+            detalle.setCodigoPostal(String.valueOf(domicilio.getPostal().getDescripcion())); // Conversión
+            detalle.setFechaDeInicio(relacion.getFechaDeInicio());
+            detalle.setFechaDeFin(relacion.getFechaDeFin());
+
+            detalles.add(detalle);
+        }
+
+        return detalles;
+    }
+    
+
 
     @Autowired
     private PersonaDomicilioRepository personaDomicilioRepository;

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import AboutPag from './AboutPag';
-import PersonaListPag from './PersonaListPag';
 import ColegioElectoralPag from './ColegioElectoralPag';
 import ResultadosPag from './ResultadosPag';
 import ProcesoElectoralPag from './ProcesoElectoralPag';
@@ -32,13 +31,13 @@ const AppColegio = () => {
     };
   
   return (
-    <div>
+      <div style={{ backgroundColor: "#add8e6", minHeight: "100vh", padding: "20px" }}>
+      <h1>Colegio Electoral</h1>
       {/* Solo mostrar el menú si no estamos en una de las páginas de proceso electoral */}
       {menuVisible && !hideMenuPages.includes(location.pathname) && (
         <nav>
           <ul>
             <li><Link to="about" onClick={() => setMenuVisible(true)}>Acerca del Colegio Electoral</Link></li>
-            <li><Link to="personas" onClick={() => setMenuVisible(true)}>Prueba HTTP para DML en persona</Link></li>
             <li><Link to="proceso" onClick={() => handleMenuToggle("proceso")}>Proceso Electoral</Link></li>
             <li><Link to="resultados" onClick={() => setMenuVisible(true)}>Resultados</Link></li>
           </ul>
@@ -48,7 +47,6 @@ const AppColegio = () => {
       {/* Rutas para mostrar el contenido de cada página */}
       <Routes>
         <Route path="about" element={<AboutPag />} />
-        <Route path="personas" element={<PersonaListPag />} />
         <Route path="proceso" element={<ColegioElectoralPag />} />
         <Route path="resultados" element={<ResultadosPag />} />
         <Route path="proceso/definir" element={<ProcesoElectoralPag />} />

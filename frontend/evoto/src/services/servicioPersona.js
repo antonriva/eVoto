@@ -1,78 +1,95 @@
 import axios from "axios";
 
-// URL base para la API del backend
-const URL_API = "http://localhost:8080/api/personas";
+// Base URL for the backend
+const BASE_URL = "http://localhost:8080/api/persona";
 
-/**
- * Registra una nueva persona en el backend.
- * @param {Object} datosPersona - Datos de la persona a registrar.
- * @returns {Promise<Object>} - Respuesta del servidor con la persona registrada.
- */
-export const registrarPersona = async (datosPersona) => {
-  try {
-    const respuesta = await axios.post(URL_API, datosPersona);
-    return respuesta.data;
-  } catch (error) {
-    console.error("Error al registrar persona:", error);
-    throw error;
-  }
-};
+// Axios instance with default configurations
+const axiosInstance = axios.create({
+  baseURL: BASE_URL,
+  timeout: 5000, // Set a timeout of 5 seconds
+});
 
-/**
- * Obtiene todas las personas registradas.
- * @returns {Promise<Array>} - Lista de personas registradas.
- */
+// Function to fetch all personas
 export const obtenerTodasLasPersonas = async () => {
   try {
-    const respuesta = await axios.get(URL_API);
-    return respuesta.data;
+    const response = await axiosInstance.get("/");
+    return response.data;
   } catch (error) {
-    console.error("Error al obtener las personas:", error);
-    throw error;
+    console.error("Error al obtener todas las personas:", error.message);
+    handleError(error);
   }
 };
 
-/**
- * Obtiene una persona específica por su ID.
- * @param {number} id - ID de la persona.
- * @returns {Promise<Object>} - Datos de la persona encontrada.
- */
-export const obtenerPersonaPorId = async (id) => {
+// Function to fetch personas with filters
+export const buscarPersonasConFiltros = async (filtros) => {
   try {
-    const respuesta = await axios.get(`${URL_API}/${id}`);
-    return respuesta.data;
+    const query = new URLSearchParams(filtros).toString(); // Convert filters object to query string
+    const response = await axiosInstance.get(`/buscar?${query}`);
+    return response.data;
   } catch (error) {
-    console.error(`Error al obtener la persona con ID ${id}:`, error);
-    throw error;
+    console.error("Error al buscar personas con filtros:", error.message);
+    handleError(error);
   }
 };
 
-/**
- * Actualiza los datos de una persona específica.
- * @param {number} id - ID de la persona a actualizar.
- * @param {Object} datosPersona - Datos actualizados de la persona.
- * @returns {Promise<Object>} - Respuesta del servidor con los datos actualizados.
- */
-export const actualizarPersona = async (id, datosPersona) => {
+// Function to register a new persona
+export const registrarPersona = async (nuevaPersona) => {
   try {
-    const respuesta = await axios.put(`${URL_API}/${id}`, datosPersona);
-    return respuesta.data;
+    const response = await axiosInstance.post("/", nuevaPersona);
+    return response.data;
   } catch (error) {
-    console.error(`Error al actualizar la persona con ID ${id}:`, error);
-    throw error;
+    console.error("Error al registrar persona:", error.message);
+    handleError(error);
   }
 };
 
-/**
- * Elimina una persona del registro.
- * @param {number} id - ID de la persona a eliminar.
- * @returns {Promise<void>} - Respuesta del servidor indicando éxito o error.
- */
+// Function to update a persona
+export const actualizarPersona = async (id, personaActualizada) => {
+  try {
+    const response = await axiosInstance.put(`/${id}`, personaActualizada);
+    return response.data;
+  } catch (error) {
+    console.error("Error al actualizar persona:", error.message);
+    handleError(error);
+  }
+};
+
+// Function to delete a persona
 export const eliminarPersona = async (id) => {
   try {
-    await axios.delete(`${URL_API}/${id}`);
+    await axiosInstance.delete(`/${id}`);
   } catch (error) {
-    console.error(`Error al eliminar la persona con ID ${id}:`, error);
-    throw error;
+    console.error("Error al eliminar persona:", error.message);
+    handleError(error);
   }
+};
+
+// Function to assign a domicilio to a persona
+export const asignarDomicilioAPersona = async (personaId, domicilioId, fechaDeInicio) => {
+  try {
+    const response = await axiosInstance.post(
+      `/${personaId}/domicilio/${domicilioId}`,
+      null, // No body is needed
+      { params: { fechaDeInicio } } // Send fechaDeInicio as query param
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al asignar domicilio a persona:", error.message);
+    handleError(error);
+  }
+};
+
+// Error handler function
+const handleError = (error) => {
+  if (error.response) {
+    // Backend responded with a status code outside 2xx range
+    console.error("Backend Error:", error.response.status, error.response.data);
+  } else if (error.request) {
+    // Request made but no response received
+    console.error("No response received from backend:", error.request);
+  } else {
+    // Something else happened during the request
+    console.error("Error in setup or configuration:", error.message);
+  }
+  throw error; // Re-throw error to be handled by caller
 };

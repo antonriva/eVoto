@@ -1,6 +1,8 @@
 package com.antonriva.backendspring.controller;
 
 import com.antonriva.backendspring.model.Persona;
+import com.antonriva.backendspring.dto.DetalleDomicilioDTO;
+
 import com.antonriva.backendspring.model.Domicilio;
 import com.antonriva.backendspring.model.PersonaDomicilio;
 import com.antonriva.backendspring.service.PersonaDomicilioService;
@@ -36,13 +38,10 @@ public class PersonaDomicilioController {
         PersonaDomicilio relacion = personaDomicilioService.crearRelacion(persona, domicilio, fechaInicio);
         return ResponseEntity.status(HttpStatus.CREATED).body(relacion);
     }
+    
+    
 
-    // Obtener todas las relaciones
-    @GetMapping
-    public ResponseEntity<List<PersonaDomicilio>> obtenerTodasLasRelaciones() {
-        List<PersonaDomicilio> relaciones = personaDomicilioService.obtenerTodasLasRelaciones();
-        return ResponseEntity.ok(relaciones);
-    }
+
 
     // Obtener relaciones de una persona
     @GetMapping("/persona/{idPersona}")

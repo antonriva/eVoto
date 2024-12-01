@@ -1,9 +1,9 @@
 import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import AboutCiv from "./AboutCiv";
-import PaginaRegistrar from "./PaginaRegistrar";
 import PaginaBuscar from "./PaginaBuscar";
-import PaginaActualizarEliminar from "./PaginaActualizarEliminar";
+import PaginaRegistrar from "./PaginaRegistrar"
+import PaginaRegistroDomicilio from "./PaginaRegistroDomicilio"
 
 const AppCivil = () => {
   return (
@@ -13,17 +13,17 @@ const AppCivil = () => {
         <ul>
           <li><Link to="/">Regresar al Menu principal</Link></li>
           <li><Link to="about">Inicio</Link></li>
-          <li><Link to="registrar">Registrar Persona</Link></li>
           <li><Link to="buscar">Buscar Personas</Link></li>
-          <li><Link to="actualizar-eliminar">Actualizar o Eliminar Persona</Link></li>
+          <li><Link to="registrar">Registrar Persona</Link></li>
+          <li><Link to="registroDomicilio">Registro Domicilio</Link></li>
         </ul>
       </nav>
 
       <Routes>
         <Route path="about" element={<AboutCiv />} />
-        <Route path="registrar" element={<PaginaRegistrar />} />
         <Route path="buscar" element={<PaginaBuscar />} />
-        <Route path="actualizar-eliminar" element={<PaginaActualizarEliminar />} />
+        <Route path="registrar" element={<PaginaRegistrar />} />
+        <Route path="registroDomicilio" element={<PaginaRegistroDomicilio />} />
       </Routes>
     </div>
   );
