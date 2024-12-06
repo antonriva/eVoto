@@ -1,0 +1,218 @@
+﻿IDDEENTIDAD,ID,DESCRIPCION
+21,210010001,Acajete
+21,210020001,Acateno
+21,210030001,Acatlán
+21,210040001,Acatzingo
+21,210050001,Acteopan
+21,210060001,Ahuacatlán
+21,210070001,Ahuatlán
+21,210080001,Ahuazotepec
+21,210090001,Ahuehuetitla
+21,210100001,Ajalpan
+21,210110001,Albino Zertuche
+21,210120001,Aljojuca
+21,210130001,Altepexi
+21,210140001,Amixtlán
+21,210150001,Amozoc
+21,210160001,Aquixtla
+21,210170001,Atempan
+21,210180001,Atexcal
+21,210190001,Atlixco
+21,210200001,Atoyatempan
+21,210210001,Atzala
+21,210220001,Atzitzihuacán
+21,210230001,Atzitzintla
+21,210240001,Axutla
+21,210250001,Ayotoxco de Guerrero
+21,210260001,Calpan
+21,210270001,Caltepec
+21,210280001,Camocuautla
+21,210290001,Caxhuacan
+21,210300001,Coatepec
+21,210310001,Coatzingo
+21,210320001,Cohetzala
+21,210330001,Cohuecan
+21,210340001,Coronango
+21,210350001,Coxcatlán
+21,210360001,Coyomeapan
+21,210370001,Coyotepec
+21,210380001,Cuapiaxtla de Madero
+21,210390001,Cuautempan
+21,210400001,Cuautinchán
+21,210410001,Cuautlancingo
+21,210420001,Cuayuca de Andrade
+21,210430001,Cuetzalan del Progreso
+21,210440001,Cuyoaco
+21,210450001,Chalchicomula de Sesma
+21,210460001,Chapulco
+21,210470001,Chiautla
+21,210480001,Chiautzingo
+21,210490001,Chiconcuautla
+21,210500001,Chichiquila
+21,210510001,Chietla
+21,210520001,Chigmecatitlán
+21,210530001,Chignahuapan
+21,210540001,Chignautla
+21,210550001,Chila
+21,210560001,Chila de la Sal
+21,210570001,Honey
+21,210580001,Chilchotla
+21,210590001,Chinantla
+21,210600001,Domingo Arenas
+21,210610001,Eloxochitlán
+21,210620001,Epatlán
+21,210630001,Esperanza
+21,210640001,Francisco Z. Mena
+21,210650001,General Felipe Ángeles
+21,210660001,Guadalupe
+21,210670001,Guadalupe Victoria
+21,210680001,Hermenegildo Galeana
+21,210690001,Huaquechula
+21,210700001,Huatlatlauca
+21,210710001,Huauchinango
+21,210720001,Huehuetla
+21,210730001,Huehuetlán el Chico
+21,210740001,Huejotzingo
+21,210750001,Hueyapan
+21,210760001,Hueytamalco
+21,210770001,Hueytlalpan
+21,210780001,Huitzilan de Serdán
+21,210790001,Huitziltepec
+21,210800001,Atlequizayan
+21,210810001,Ixcamilpa de Guerrero
+21,210820001,Ixcaquixtla
+21,210830001,Ixtacamaxtitlán
+21,210840001,Ixtepec
+21,210850001,Izúcar de Matamoros
+21,210860001,Jalpan
+21,210870001,Jolalpan
+21,210880001,Jonotla
+21,210890001,Jopala
+21,210900001,Juan C. Bonilla
+21,210910001,Juan Galindo
+21,210920001,Juan N. Méndez
+21,210930001,Lafragua
+21,210940001,Libres
+21,210950001,La Magdalena Tlatlauquitepec
+21,210960001,Mazapiltepec de Juárez
+21,210970001,Mixtla
+21,210980001,Molcaxac
+21,210990001,Cañada Morelos
+21,211000001,Naupan
+21,211010001,Nauzontla
+21,211020001,Nealtican
+21,211030001,Nicolás Bravo
+21,211040001,Nopalucan
+21,211050001,Ocotepec
+21,211060001,Ocoyucan
+21,211070001,Olintla
+21,211080001,Oriental
+21,211090001,Pahuatlán
+21,211100001,Palmar de Bravo
+21,211110001,Pantepec
+21,211120001,Petlalcingo
+21,211130001,Piaxtla
+21,211140001,Puebla
+21,211150001,Quecholac
+21,211160001,Quimixtlán
+21,211170001,Rafael Lara Grajales
+21,211180001,Los Reyes de Juárez
+21,211190001,San Andrés Cholula
+21,211200001,San Antonio Cañada
+21,211210001,San Diego la Mesa Tochimiltzingo
+21,211220001,San Felipe Teotlalcingo
+21,211230001,San Felipe Tepatlán
+21,211240001,San Gabriel Chilac
+21,211250001,San Gregorio Atzompa
+21,211260001,San Jerónimo Tecuanipan
+21,211270001,San Jerónimo Xayacatlán
+21,211280001,San José Chiapa
+21,211290001,San José Miahuatlán
+21,211300001,San Juan Atenco
+21,211310001,San Juan Atzompa
+21,211320001,San Martín Texmelucan
+21,211330001,San Martín Totoltepec
+21,211340001,San Matías Tlalancaleca
+21,211350001,San Miguel Ixitlán
+21,211360001,San Miguel Xoxtla
+21,211370001,San Nicolás Buenos Aires
+21,211380001,San Nicolás de los Ranchos
+21,211390001,San Pablo Anicano
+21,211400001,San Pedro Cholula
+21,211410001,San Pedro Yeloixtlahuaca
+21,211420001,San Salvador el Seco
+21,211430001,San Salvador el Verde
+21,211440001,San Salvador Huixcolotla
+21,211450001,San Sebastián Tlacotepec
+21,211460001,Santa Catarina Tlaltempan
+21,211470001,Santa Inés Ahuatempan
+21,211480001,Santa Isabel Cholula
+21,211490001,Santiago Miahuatlán
+21,211500001,Huehuetlán el Grande
+21,211510001,Santo Tomás Hueyotlipan
+21,211520001,Soltepec
+21,211530001,Tecali de Herrera
+21,211540001,Tecamachalco
+21,211550001,Tecomatlán
+21,211560001,Tehuacán
+21,211570001,Tehuitzingo
+21,211580001,Tenampulco
+21,211590001,Teopantlán
+21,211600001,Teotlalco
+21,211610001,Tepanco de López
+21,211620001,Tepango de Rodríguez
+21,211630001,Tepatlaxco de Hidalgo
+21,211640001,Tepeaca
+21,211650001,Tepemaxalco
+21,211660001,Tepeojuma
+21,211670001,Tepetzintla
+21,211680001,Tepexco
+21,211690001,Tepexi de Rodríguez
+21,211700001,Tepeyahualco
+21,211710001,Tepeyahualco de Cuauhtémoc
+21,211720001,Tetela de Ocampo
+21,211730001,Teteles de Ávila Castillo
+21,211740001,Teziutlán
+21,211750001,Tianguismanalco
+21,211760001,Tilapa
+21,211770001,Tlacotepec de Benito Juárez
+21,211780001,Tlacuilotepec
+21,211790001,Tlachichuca
+21,211800001,Tlahuapan
+21,211810001,Tlaltenango
+21,211820001,Tlanepantla
+21,211830001,Tlaola
+21,211840001,Tlapacoya
+21,211850001,Tlapanalá
+21,211860001,Tlatlauquitepec
+21,211870001,Tlaxco
+21,211880001,Tochimilco
+21,211890001,Tochtepec
+21,211900001,Totoltepec de Guerrero
+21,211910001,Tulcingo
+21,211920001,Tuzamapan de Galeana
+21,211930001,Tzicatlacoyan
+21,211940001,Venustiano Carranza
+21,211950001,Vicente Guerrero
+21,211960001,Xayacatlán de Bravo
+21,211970001,Xicotepec
+21,211980001,Xicotlán
+21,211990001,Xiutetelco
+21,212000001,Xochiapulco
+21,212010001,Xochiltepec
+21,212020001,Xochitlán de Vicente Suárez
+21,212030001,Xochitlán Todos Santos
+21,212040001,Yaonáhuac
+21,212050001,Yehualtepec
+21,212060001,Zacapala
+21,212070001,Zacapoaxtla
+21,212080001,Zacatlán
+21,212090001,Zapotitlán
+21,212100001,Zapotitlán de Méndez
+21,212110001,Zaragoza
+21,212120001,Zautla
+21,212130001,Zihuateutla
+21,212140001,Zinacatepec
+21,212150001,Zongozotla
+21,212160001,Zoquiapan
+21,212170001,Zoquitlán
