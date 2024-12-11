@@ -1,4 +1,4 @@
-
+---- RECORDAR COLONIA Y CODIGO POSTAL AGREGAR
 ---DATOS DEFAULT DEL SISTEMA
 
 INSERT INTO Nivel (ID, DESCRIPCION) 
@@ -40,6 +40,8 @@ VALUES (2, 'Residencia');
 
 INSERT INTO TipoDeDomicilio (ID, DESCRIPCION)
 VALUES (3, 'Secundario');
+
+COMMIT;
 
 --------
 
