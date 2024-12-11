@@ -1,35 +1,138 @@
 package com.antonriva.backendspring.service;
 
-import com.antonriva.backendspring.dto.PersonaResumenDTO;
-import com.antonriva.backendspring.model.Domicilio;
+import com.antonriva.backendspring.dto.PersonaBuscarCompletoDTO;
+import com.antonriva.backendspring.dto.PersonaIdPadresDTO;
 import com.antonriva.backendspring.model.Persona;
-import com.antonriva.backendspring.model.PersonaDomicilio;
-import com.antonriva.backendspring.repository.DomicilioRepository;
+import com.antonriva.backendspring.model.RelacionFamiliar;
 import com.antonriva.backendspring.repository.PersonaDomicilioRepository;
 import com.antonriva.backendspring.repository.PersonaRepository;
+import com.antonriva.backendspring.repository.RelacionFamiliarRepository;
 import com.antonriva.backendspring.specification.PersonaSpecifications;
-
-import jakarta.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
-
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class PersonaService {
 	
-    @Autowired
-    private PersonaRepository personaRepository;
+    private final PersonaRepository personaRepository;
+    private final RelacionFamiliarRepository relacionFamiliarRepository;
+    private final PersonaDomicilioRepository personaDomicilioRepository;
+    
 
-    @Autowired
-    private PersonaDomicilioRepository personaDomicilioRepository;
+    public PersonaService(PersonaRepository personaRepository, RelacionFamiliarRepository relacionFamiliarRepository, PersonaDomicilioRepository personaDomicilioRepository) {
+        this.personaRepository = personaRepository;
+        this.relacionFamiliarRepository = relacionFamiliarRepository;
+        this.personaDomicilioRepository = personaDomicilioRepository;
+    }
+    
+    public List<PersonaBuscarCompletoDTO> buscarPersonasConDetalles(
+            String nombre,
+            String apellidoPaterno,
+            String apellidoMaterno,
+            LocalDate fechaDeNacimiento,
+            LocalDate fechaDeFin,
+            Integer cantidadHijos,
+            Integer cantidadDomicilios,
+            Long idPadre,
+            Long idMadre) {
+    	
+        Logger log = LoggerFactory.getLogger(PersonaService.class);
+    	
+    	try {
 
+        // Construir la Specification dinámica
+        Specification<Persona> spec = Specification.where(
+                PersonaSpecifications.conNombre(nombre)
+                        .and(PersonaSpecifications.conApellidoPaterno(apellidoPaterno))
+                        .and(PersonaSpecifications.conApellidoMaterno(apellidoMaterno))
+          
+                        .and(PersonaSpecifications.conFechaDeNacimiento(fechaDeNacimiento))
+                        .and(PersonaSpecifications.conFechaDeFin(fechaDeFin))
+                        
+                        .and(cantidadHijos != null ? PersonaSpecifications.conCantidadHijos(cantidadHijos) : null)
+                        .and(cantidadDomicilios != null ? PersonaSpecifications.conCantidadDomicilios(cantidadDomicilios) : null)
+        );
+
+        // Consultar personas que coincidan
+        List<Persona> personas = personaRepository.findAll(spec);
+
+        // Transformar cada persona en un DTO con información adicional
+        return personas.stream().map(persona -> {
+            // Contar domicilios
+            int totalDomicilios = personaDomicilioRepository.countDomiciliosByPersonaId(persona.getId());
+
+            // Contar hijos
+            int totalHijos = relacionFamiliarRepository.countHijosByPersonaId(persona.getId());
+
+            // Obtener detalles de los padres
+            Optional<RelacionFamiliar> relacionFamiliar = relacionFamiliarRepository.findRelacionFamiliarByPersonaId(persona.getId());
+            PersonaIdPadresDTO padresDto = new PersonaIdPadresDTO(
+                    relacionFamiliar.map(rf -> rf.getPadre() != null ? rf.getPadre().getId() : null).orElse(null),
+                    relacionFamiliar.map(rf -> rf.getMadre() != null ? rf.getMadre().getId() : null).orElse(null)
+            );
+
+            // Construir el DTO principal
+            return new PersonaBuscarCompletoDTO(
+                    persona.getId(),
+                    persona.getNombre(),
+                    persona.getApellidoPaterno(),
+                    persona.getApellidoMaterno(),
+                    persona.getFechaDeNacimiento(),
+                    persona.getFechaDeFin(),
+                    totalDomicilios,
+                    totalHijos,
+                    padresDto // Usar el DTO separado para los padres
+            );
+        }).toList();
+    	} catch (Exception e) {
+            // Manejo de excepciones
+            log.error("Error al buscar personas con detalles", e);
+            throw new RuntimeException("Ocurrió un error al buscar personas con detalles. Por favor intente nuevamente.");
+        }
+    	
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+/*
     public List<PersonaResumenDTO> obtenerResumenDePersonas() {
         List<Persona> personas = personaRepository.findAll();
         List<PersonaResumenDTO> listaResumen = new ArrayList<>();
@@ -173,4 +276,5 @@ public class PersonaService {
         personaDomicilioRepository.deleteByPersona(persona);
         personaRepository.delete(persona);
     }
+    */
 }

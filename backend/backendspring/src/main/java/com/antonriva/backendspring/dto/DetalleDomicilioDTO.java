@@ -11,6 +11,7 @@ public class DetalleDomicilioDTO {
     private String codigoPostal;
     private LocalDate fechaDeInicio;
     private LocalDate fechaDeFin;
+    
 	public String getCalle() {
 		return calle;
 	}

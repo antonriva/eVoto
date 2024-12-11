@@ -15,6 +15,7 @@ import java.util.Optional;
 @RequestMapping("/api/domicilio")
 @CrossOrigin(origins = "http://localhost:5173")
 public class DomicilioController {
+	/*
 
     @Autowired
     private DomicilioService domicilioService;
@@ -107,9 +108,7 @@ public class DomicilioController {
         if (domicilio.getEntidadFederativa() == null) {
             throw new IllegalArgumentException("El campo 'entidadFederativa' es obligatorio.");
         }
-        if (domicilio.getPostal() == null) {
-            throw new IllegalArgumentException("El campo 'postal' es obligatorio.");
-        }
     }
+    */
 }
 

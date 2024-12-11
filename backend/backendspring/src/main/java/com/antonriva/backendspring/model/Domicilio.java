@@ -1,155 +1,136 @@
 package com.antonriva.backendspring.model;
 
-import java.time.LocalDate;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*; //Antes estaba en javax.persistence pero ahora se encuentra en jakarta, otra dependencia
 
-//Antes estaba en javax.persistence pero ahora se encuentra en jakarta, otra dependencia
-
-import jakarta.persistence.*;
-
-import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "Domicilio")
+@Table(name = "domicilio")
 public class Domicilio {
-
+	
+	//Id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @Column(name = "CALLE", nullable = false)
-    private String calle;
-
-    @Column(name = "NUMEXT", nullable = false)
-    private Integer numeroExterior;
-
-    @Column(name = "NUMINT")
-    private Integer numeroInterior;
-
-    @ManyToOne
-    @JoinColumn(name = "iddeentidad", nullable = false)
-    private EntidadFederativa entidadFederativa;
-
-    @ManyToOne
-    @JoinColumn(name = "iddemunicipio", nullable = false)
-    private Municipio municipio;
-
-    @ManyToOne
-    @JoinColumn(name = "iddecolonia", nullable = false)
-    private Colonia colonia;
-
-    @ManyToOne
-    @JoinColumn(name = "iddepostal", nullable = false)
-    private Postal postal;
-
+    private Long id;
+    
+    //OneToMany
     @OneToMany(mappedBy = "domicilio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore // Ignorar esta relación en la serialización para evitar bucles
     private List<PersonaDomicilio> personaDomicilio;
+    
+    //ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "iddeentidad", nullable = false)
+    private EntidadFederativa entidadFederativa;
 
-    // Constructor vacío
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "iddemunicipio", nullable = false)
+    private Municipio municipio;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "iddelocalidad", nullable = true)
+    private Localidad localidad;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "iddecolonia", nullable = true)
+    private Colonia colonia;
+        
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "iddepostal", nullable = true)
+    private Postal postal;
+
+    
+    @Column(name = "calle", nullable = true)
+    private String calle;
+
+    @Column(name = "numext", nullable = true)
+    private Integer numeroExterior;
+    
+    @Column(name = "numint", nullable = true)
+    private Integer numeroInterior;
+
+
+
     public Domicilio() {
+    
     }
 
-    // Constructor con parámetros básicos
-    public Domicilio(String calle, Integer numeroExterior, Integer numeroInterior) {
-        this.calle = calle;
-        this.numeroExterior = numeroExterior;
-        this.numeroInterior = numeroInterior;
+    public Domicilio(EntidadFederativa entidadFederativa, Municipio municipio) {
+    	this.entidadFederativa = entidadFederativa;
+    	this.municipio = municipio;
     }
 
-    // Constructor completo
-    public Domicilio(String calle, Integer numeroExterior, Integer numeroInterior,
-                     EntidadFederativa entidadFederativa, Municipio municipio,
-                     Colonia colonia, Postal postal) {
-        this.calle = calle;
-        this.numeroExterior = numeroExterior;
-        this.numeroInterior = numeroInterior;
-        this.entidadFederativa = entidadFederativa;
-        this.municipio = municipio;
-        this.colonia = colonia;
-        this.postal = postal;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    // Getters y Setters
-    public int getId() {
-        return id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public List<PersonaDomicilio> getPersonaDomicilio() {
+		return personaDomicilio;
+	}
 
-    public String getCalle() {
-        return calle;
-    }
+	public void setPersonaDomicilio(List<PersonaDomicilio> personaDomicilio) {
+		this.personaDomicilio = personaDomicilio;
+	}
 
-    public void setCalle(String calle) {
-        this.calle = calle;
-    }
+	public EntidadFederativa getEntidadFederativa() {
+		return entidadFederativa;
+	}
 
-    public Integer getNumeroExterior() {
-        return numeroExterior;
-    }
+	public void setEntidadFederativa(EntidadFederativa entidadFederativa) {
+		this.entidadFederativa = entidadFederativa;
+	}
 
-    public void setNumeroExterior(Integer numeroExterior) {
-        this.numeroExterior = numeroExterior;
-    }
+	public Municipio getMunicipio() {
+		return municipio;
+	}
 
-    public Integer getNumeroInterior() {
-        return numeroInterior;
-    }
+	public void setMunicipio(Municipio municipio) {
+		this.municipio = municipio;
+	}
 
-    public void setNumeroInterior(Integer numeroInterior) {
-        this.numeroInterior = numeroInterior;
-    }
+	public Localidad getLocalidad() {
+		return localidad;
+	}
 
-    public EntidadFederativa getEntidadFederativa() {
-        return entidadFederativa;
-    }
+	public void setLocalidad(Localidad localidad) {
+		this.localidad = localidad;
+	}
 
-    public void setEntidadFederativa(EntidadFederativa entidadFederativa) {
-        this.entidadFederativa = entidadFederativa;
-    }
+	public String getCalle() {
+		return calle;
+	}
 
-    public Municipio getMunicipio() {
-        return municipio;
-    }
+	public void setCalle(String calle) {
+		this.calle = calle;
+	}
 
-    public void setMunicipio(Municipio municipio) {
-        this.municipio = municipio;
-    }
+	public Integer getNumeroExterior() {
+		return numeroExterior;
+	}
 
-    public Colonia getColonia() {
-        return colonia;
-    }
+	public void setNumeroExterior(Integer numeroExterior) {
+		this.numeroExterior = numeroExterior;
+	}
 
-    public void setColonia(Colonia colonia) {
-        this.colonia = colonia;
-    }
+	public Integer getNumeroInterior() {
+		return numeroInterior;
+	}
 
-    public Postal getPostal() {
-        return postal;
-    }
+	public void setNumeroInterior(Integer numeroInterior) {
+		this.numeroInterior = numeroInterior;
+	}
 
-    public void setPostal(Postal postal) {
-        this.postal = postal;
-    }
+	@Override
+	public String toString() {
+		return "Domicilio [id=" + id + ", calle=" + calle + ", numeroExterior=" + numeroExterior + ", numeroInterior="
+				+ numeroInterior + "]";
+	}
+    
+    
 
-    public List<PersonaDomicilio> getPersonaDomicilio() {
-        return personaDomicilio;
-    }
-
-    public void setPersonaDomicilio(List<PersonaDomicilio> personaDomicilio) {
-        this.personaDomicilio = personaDomicilio;
-    }
-
-    @Override
-    public String toString() {
-        return "Domicilio [id=" + id + ", calle=" + calle + ", numeroExterior=" + numeroExterior +
-               ", numeroInterior=" + numeroInterior + "]";
-    }
 }

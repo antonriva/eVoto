@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Service
 public class ColoniaService {
+	/*
 
     @Autowired
     private ColoniaRepository coloniaRepository;
@@ -62,4 +63,5 @@ public class ColoniaService {
         }
         coloniaRepository.deleteById(id);
     }
+    */
 }

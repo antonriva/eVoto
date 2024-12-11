@@ -8,32 +8,29 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name= "EntidadFederativa")
+@Table(name= "entidadfederativa")
 public class EntidadFederativa {
 	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     
-	@Column(name="DESCRIPCION")
+	@Column(name="descripcion", nullable = false)
     private String descripcion;
 	
 	public EntidadFederativa() {
 		
 	}
     
-	public EntidadFederativa(int id, String descripcion) {
-		super();
-		this.id = id;
+	public EntidadFederativa(String descripcion) {
 		this.descripcion = descripcion;
 	}
 
-
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -49,6 +46,7 @@ public class EntidadFederativa {
 	public String toString() {
 		return "EntidadFederativa [id=" + id + ", descripcion=" + descripcion + "]";
 	}
+	
 	
 	
 

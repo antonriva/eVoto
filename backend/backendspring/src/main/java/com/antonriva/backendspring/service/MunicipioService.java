@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 public class MunicipioService {
-
+	/*
     @Autowired
     private MunicipioRepository municipioRepository;
 
@@ -62,4 +62,5 @@ public class MunicipioService {
         }
         municipioRepository.deleteById(id);
     }
+    */
 }

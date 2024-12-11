@@ -1,104 +1,109 @@
 package com.antonriva.backendspring.model;
 
 import java.time.LocalDate;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.antonriva.backendspring.id.PersonaDomicilioId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-//Antes estaba en javax.persistence pero ahora se encuentra en jakarta, otra dependencia
-
-import jakarta.persistence.*;
-
-import jakarta.persistence.*;
-import java.time.LocalDate;
+import jakarta.persistence.*; //Antes estaba en javax.persistence pero ahora se encuentra en jakarta, otra dependencia
 
 @Entity
-@Table(name = "PersonaDomicilio")
+@Table(name = "personadomicilio")
 public class PersonaDomicilio {
-
+	
+	//Id compuesto
     @EmbeddedId
     private PersonaDomicilioId id;
-
-    @ManyToOne
+    
+    //ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idDePersona") // Vincula con el campo idDePersona del EmbeddedId
     @JoinColumn(name = "iddepersona", nullable = false)
-    @JsonIgnore // Evita serializar esta relación para evitar problemas de referencia circular
+    @JsonIgnore
     private Persona persona;
 
-    @ManyToOne
-    @MapsId("idDeDomicilio") // Vincula con el campo idDeDomicilio del EmbeddedId
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("idDeDomicilio") 
     @JoinColumn(name = "iddedomicilio", nullable = false)
+    @JsonIgnore
     private Domicilio domicilio;
-
-    @Column(name = "FECHADEINICIO", nullable = false)
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "iddetipodedomicilio", nullable = true)
+    private TipoDeDomicilio tipoDeDomicilio;
+    
+    //Columna normal
+    @Column(name = "fechadeinicio", nullable = false)
     private LocalDate fechaDeInicio;
 
-    @Column(name = "FECHADEFIN")
+    @Column(name = "fechadefin", nullable = true)
     private LocalDate fechaDeFin;
 
-    // Constructor vacío
+
     public PersonaDomicilio() {
     }
 
     // Constructor con fechas
-    public PersonaDomicilio(Persona persona, Domicilio domicilio, LocalDate fechaDeInicio, LocalDate fechaDeFin) {
+    public PersonaDomicilio(Persona persona, Domicilio domicilio, LocalDate fechaDeInicio) {
         this.id = new PersonaDomicilioId(persona.getId(), domicilio.getId());
         this.persona = persona;
         this.domicilio = domicilio;
         this.fechaDeInicio = fechaDeInicio;
-        this.fechaDeFin = fechaDeFin;
     }
 
-    public PersonaDomicilio(Persona persona, Domicilio domicilio, LocalDate fechaDeInicio) {
-        this(persona, domicilio, fechaDeInicio, null);
-    }
+	public PersonaDomicilioId getId() {
+		return id;
+	}
 
-    // Getters y Setters
-    public PersonaDomicilioId getId() {
-        return id;
-    }
+	public void setId(PersonaDomicilioId id) {
+		this.id = id;
+	}
 
-    public void setId(PersonaDomicilioId id) {
-        this.id = id;
-    }
+	public Persona getPersona() {
+		return persona;
+	}
 
-    public Persona getPersona() {
-        return persona;
-    }
+	public void setPersona(Persona persona) {
+		this.persona = persona;
+	}
 
-    public void setPersona(Persona persona) {
-        this.persona = persona;
-    }
+	public Domicilio getDomicilio() {
+		return domicilio;
+	}
 
-    public Domicilio getDomicilio() {
-        return domicilio;
-    }
+	public void setDomicilio(Domicilio domicilio) {
+		this.domicilio = domicilio;
+	}
 
-    public void setDomicilio(Domicilio domicilio) {
-        this.domicilio = domicilio;
-    }
+	public TipoDeDomicilio getTipoDeDomicilio() {
+		return tipoDeDomicilio;
+	}
 
-    public LocalDate getFechaDeInicio() {
-        return fechaDeInicio;
-    }
+	public void setTipoDeDomicilio(TipoDeDomicilio tipoDeDomicilio) {
+		this.tipoDeDomicilio = tipoDeDomicilio;
+	}
 
-    public void setFechaDeInicio(LocalDate fechaDeInicio) {
-        this.fechaDeInicio = fechaDeInicio;
-    }
+	public LocalDate getFechaDeInicio() {
+		return fechaDeInicio;
+	}
 
-    public LocalDate getFechaDeFin() {
-        return fechaDeFin;
-    }
+	public void setFechaDeInicio(LocalDate fechaDeInicio) {
+		this.fechaDeInicio = fechaDeInicio;
+	}
 
-    public void setFechaDeFin(LocalDate fechaDeFin) {
-        this.fechaDeFin = fechaDeFin;
-    }
+	public LocalDate getFechaDeFin() {
+		return fechaDeFin;
+	}
 
-    @Override
-    public String toString() {
-        return "PersonaDomicilio [persona=" + persona + ", domicilio=" + domicilio + ", fechaDeInicio=" + fechaDeInicio
-                + ", fechaDeFin=" + fechaDeFin + "]";
-    }
+	public void setFechaDeFin(LocalDate fechaDeFin) {
+		this.fechaDeFin = fechaDeFin;
+	}
+
+	@Override
+	public String toString() {
+		return "PersonaDomicilio [id=" + id + ", fechaDeInicio=" + fechaDeInicio + ", fechaDeFin=" + fechaDeFin + "]";
+	}
+
+    
+
 }
 
 

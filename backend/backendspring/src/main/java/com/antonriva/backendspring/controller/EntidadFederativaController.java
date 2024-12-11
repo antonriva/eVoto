@@ -14,7 +14,7 @@ import java.util.Optional;
 @RequestMapping("/api/entidad-federativa")
 @CrossOrigin(origins="http://localhost:5173")
 public class EntidadFederativaController {
-
+	/*
     @Autowired
     private EntidadFederativaService entidadFederativaService;
 
@@ -70,4 +70,5 @@ public class EntidadFederativaController {
             return ResponseEntity.notFound().build();
         }
     }
+    */
 }

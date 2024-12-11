@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @Service
 public class PersonaDomicilioService {
-	
+	/*
     @Autowired
     private PersonaRepository personaRepository;
 
@@ -39,7 +39,6 @@ public class PersonaDomicilioService {
             detalle.setMunicipio(domicilio.getMunicipio().getDescripcion());
             detalle.setColonia(domicilio.getColonia().getDescripcion());
             detalle.setEntidadFederativa(domicilio.getEntidadFederativa().getDescripcion());
-            detalle.setCodigoPostal(String.valueOf(domicilio.getPostal().getDescripcion())); // Conversión
             detalle.setFechaDeInicio(relacion.getFechaDeInicio());
             detalle.setFechaDeFin(relacion.getFechaDeFin());
 
@@ -62,6 +61,8 @@ public class PersonaDomicilioService {
      * @param fechaDeInicio Fecha en la que comienza la relación.
      * @return La relación creada.
      */
+	
+	/*
     @Transactional
     public PersonaDomicilio crearRelacion(Persona persona, Domicilio domicilio, LocalDate fechaDeInicio) {
     	
@@ -95,6 +96,7 @@ public class PersonaDomicilioService {
      *
      * @return Una lista de todas las relaciones.
      */
+	/*
     public List<PersonaDomicilio> obtenerTodasLasRelaciones() {
         return personaDomicilioRepository.findAll();
     }
@@ -104,7 +106,7 @@ public class PersonaDomicilioService {
      *
      * @param persona La persona cuyas relaciones se desean obtener.
      * @return Lista de relaciones de la persona.
-     */
+     *//*
     public List<PersonaDomicilio> obtenerRelacionesPorPersona(Persona persona) {
         return personaDomicilioRepository.findByPersona(persona);
     }
@@ -114,7 +116,7 @@ public class PersonaDomicilioService {
      *
      * @param domicilio El domicilio cuyas relaciones se desean obtener.
      * @return Lista de relaciones del domicilio.
-     */
+     *//*
     public List<PersonaDomicilio> obtenerRelacionesPorDomicilio(Domicilio domicilio) {
         return personaDomicilioRepository.findByDomicilio(domicilio);
     }
@@ -124,7 +126,7 @@ public class PersonaDomicilioService {
      *
      * @param persona   La persona asociada a la relación.
      * @param domicilio El domicilio asociado a la relación.
-     */
+     *//*
     @Transactional
     public void eliminarRelacion(Persona persona, Domicilio domicilio) {
         Optional<PersonaDomicilio> relacion = personaDomicilioRepository.findByPersonaAndDomicilio(persona, domicilio);
@@ -142,7 +144,7 @@ public class PersonaDomicilioService {
      * @param domicilio   El domicilio asociado.
      * @param fechaDeFin  Nueva fecha de fin.
      * @return La relación actualizada.
-     */
+     *//*
     @Transactional
     public PersonaDomicilio actualizarFechaDeFin(Persona persona, Domicilio domicilio, LocalDate fechaDeFin) {
         PersonaDomicilio relacion = personaDomicilioRepository.findByPersonaAndDomicilio(persona, domicilio)
@@ -151,4 +153,5 @@ public class PersonaDomicilioService {
         relacion.setFechaDeFin(fechaDeFin);
         return personaDomicilioRepository.save(relacion);
     }
+    */
 }

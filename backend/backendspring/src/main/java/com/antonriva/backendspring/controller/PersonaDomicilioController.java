@@ -18,7 +18,8 @@ import java.util.List;
 @RequestMapping("/api/persona-domicilio")
 @CrossOrigin(origins="http://localhost:5173")
 public class PersonaDomicilioController {
-
+	
+	/*
     @Autowired
     private PersonaDomicilioService personaDomicilioService;
 
@@ -94,4 +95,5 @@ public class PersonaDomicilioController {
         PersonaDomicilio actualizada = personaDomicilioService.actualizarFechaDeFin(persona, domicilio, fechaFin);
         return ResponseEntity.ok(actualizada);
     }
+    */
 }

@@ -1,54 +1,37 @@
 package com.antonriva.backendspring.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name= "Postal")
+@Table(name="postal")
 public class Postal {
-	
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    
-	@Column(name="DESCRIPCION")
-    private int descripcion;
-	
-    @ManyToOne
-    @JoinColumn(name = "iddecolonia")
-    private Colonia colonia;
-    
-    public Postal() {
-    	
-    }
 
-	public Postal(int id, int descripcion, Colonia colonia) {
-		super();
-		this.id = id;
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "iddecolonia", nullable = false)
+	private Colonia colonia;
+	
+	@Column(name="descripcion", nullable = false)
+	private String descripcion;
+	
+	public Postal () {
+		
+	}
+	
+	public Postal (String descripcion, Colonia colonia ) {
 		this.descripcion = descripcion;
 		this.colonia = colonia;
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public int getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(int descripcion) {
-		this.descripcion = descripcion;
 	}
 
 	public Colonia getColonia() {
@@ -59,11 +42,19 @@ public class Postal {
 		this.colonia = colonia;
 	}
 
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
 	@Override
 	public String toString() {
-		return "Postal [id=" + id + ", descripcion=" + descripcion + ", colonia=" + colonia + "]";
+		return "Postal [id=" + id + ", descripcion=" + descripcion + "]";
 	}
-    
-    
 
+	
+	
 }

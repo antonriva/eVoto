@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class DomicilioService {
+	/*
 
     @Autowired
     private DomicilioRepository domicilioRepository;
@@ -68,9 +69,6 @@ public class DomicilioService {
             if (nuevoDomicilio.getColonia() != null) {
                 domicilio.setColonia(nuevoDomicilio.getColonia());
             }
-            if (nuevoDomicilio.getPostal() != null) {
-                domicilio.setPostal(nuevoDomicilio.getPostal());
-            }
             return domicilioRepository.save(domicilio);
         }).orElseThrow(() -> new RuntimeException("Domicilio no encontrado con ID: " + id));
     }
@@ -82,4 +80,5 @@ public class DomicilioService {
         personaDomicilioRepository.deleteByDomicilio(domicilio);
         domicilioRepository.delete(domicilio);
     }
+    */
 }

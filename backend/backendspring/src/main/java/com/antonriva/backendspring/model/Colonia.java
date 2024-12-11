@@ -1,54 +1,37 @@
 package com.antonriva.backendspring.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name= "Colonia")
+@Table(name="colonia")
 public class Colonia {
 	
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    
-	@Column(name="DESCRIPCION")
-    private String descripcion;
+	private Long id;
 	
-    @ManyToOne
-    @JoinColumn(name = "iddemunicipio")
-    private Municipio municipio;
-    
-    public Colonia() {
-    	
-    }
-
-	public Colonia(int id, String descripcion, Municipio municipio) {
-		super();
-		this.id = id;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "iddemunicipio", nullable = false)
+	private Municipio municipio;
+	
+	@Column(name="descripcion", nullable = false)
+	private String descripcion;
+	
+	public Colonia () {
+		
+	}
+	
+	public Colonia (String descripcion, Municipio municipio ) {
 		this.descripcion = descripcion;
 		this.municipio = municipio;
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
 	}
 
 	public Municipio getMunicipio() {
@@ -59,11 +42,19 @@ public class Colonia {
 		this.municipio = municipio;
 	}
 
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
 	@Override
 	public String toString() {
-		return "Colonia [id=" + id + ", descripcion=" + descripcion + ", municipio=" + municipio + "]";
+		return "Colonia [id=" + id + ", descripcion=" + descripcion + "]";
 	}
-    
-    
+	
+	
 
 }

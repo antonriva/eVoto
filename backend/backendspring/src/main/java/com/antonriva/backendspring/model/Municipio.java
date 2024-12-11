@@ -1,13 +1,6 @@
 package com.antonriva.backendspring.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name= "Municipio")
@@ -15,40 +8,31 @@ public class Municipio {
 	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     
-	@Column(name="DESCRIPCION")
-    private String descripcion;
-	
-    @ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "iddeentidad")
     private EntidadFederativa entidadFederativa;
+    
+	@Column(name="descripcion", nullable=false)
+    private String descripcion;
+	
     
     public Municipio() {
     	
     }
 
-	public Municipio(int id, String descripcion, EntidadFederativa entidadFederativa) {
-		super();
-		this.id = id;
+	public Municipio(String descripcion, EntidadFederativa entidadFederativa) {
 		this.descripcion = descripcion;
 		this.entidadFederativa = entidadFederativa;
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
 	}
 
 	public EntidadFederativa getEntidadFederativa() {
@@ -59,11 +43,19 @@ public class Municipio {
 		this.entidadFederativa = entidadFederativa;
 	}
 
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
 	@Override
 	public String toString() {
-		return "Municipio [id=" + id + ", descripcion=" + descripcion + ", entidadFederativa=" + entidadFederativa
-				+ "]";
+		return "Municipio [id=" + id + ", descripcion=" + descripcion + "]";
 	}
-    
+	
+	
     
 }

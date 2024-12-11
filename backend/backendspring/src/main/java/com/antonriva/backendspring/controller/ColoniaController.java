@@ -14,6 +14,7 @@ import java.util.Optional;
 @RequestMapping("/api/colonia")
 @CrossOrigin(origins="http://localhost:5173")
 public class ColoniaController {
+	/*
 
     @Autowired
     private ColoniaService coloniaService;
@@ -76,4 +77,5 @@ public class ColoniaController {
             return ResponseEntity.notFound().build();
         }
     }
+    */
 }

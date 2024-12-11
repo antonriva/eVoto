@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 public class EntidadFederativaService {
-
+	/*
     @Autowired
     private EntidadFederativaRepository entidadFederativaRepository;
 
@@ -54,5 +54,6 @@ public class EntidadFederativaService {
         }
         entidadFederativaRepository.deleteById(id);
     }
+    */
 }
 

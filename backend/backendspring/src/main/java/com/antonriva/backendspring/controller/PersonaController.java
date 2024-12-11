@@ -1,6 +1,7 @@
 package com.antonriva.backendspring.controller;
 
 import com.antonriva.backendspring.dto.DetalleDomicilioDTO;
+import com.antonriva.backendspring.dto.PersonaBuscarCompletoDTO;
 import com.antonriva.backendspring.dto.PersonaResumenDTO;
 import com.antonriva.backendspring.model.Persona;
 import com.antonriva.backendspring.model.PersonaDomicilio;
@@ -33,12 +34,78 @@ import org.springframework.web.bind.annotation.GetMapping;
 @CrossOrigin(origins="http://localhost:5173")
 public class PersonaController {
 
-    @Autowired
-    private PersonaService personaService;
-    
-    @Autowired
-    private PersonaDomicilioService personaDomicilioService;
 
+    private final PersonaService personaService;
+
+    public PersonaController(PersonaService personaService) {
+        this.personaService = personaService;
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<PersonaBuscarCompletoDTO>> buscarPersonas(
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String apellidoPaterno,
+            @RequestParam(required = false) String apellidoMaterno,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaDeNacimiento,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaDeFin,
+            @RequestParam(required = false) Integer cantidadHijos,
+            @RequestParam(required = false) Integer cantidadDomicilios,
+            @RequestParam(required = false) Long idPadre,
+            @RequestParam(required = false) Long idMadre
+    ) {
+    	try {
+        // Llamar al servicio para realizar la búsqueda
+        List<PersonaBuscarCompletoDTO> resultados = personaService.buscarPersonasConDetalles(
+                nombre, apellidoPaterno, apellidoMaterno, fechaDeNacimiento, fechaDeFin,
+                cantidadHijos, cantidadDomicilios, idPadre, idMadre
+        );
+    	
+ 
+
+        // Retornar la lista de DTOs
+        return ResponseEntity.ok(resultados);
+    	}    catch (Exception e) {
+            throw new RuntimeException("Ocurrió un error al buscar personas con detalles. Por favor intente nuevamente.", e);
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+/*
     // Obtener todas las personas
     // SI FUNCIONA PRUEBA HTTPi
     //NOS DA TAMBIEN PERSONADOMICILIO
@@ -169,4 +236,5 @@ public class PersonaController {
             throw new IllegalArgumentException("El campo 'fechaDeNacimiento' es obligatorio y debe estar en el formato YYYY-MM-DD.");
         }
     }
+    */
 }

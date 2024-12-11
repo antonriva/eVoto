@@ -1,17 +1,14 @@
 package com.antonriva.backendspring.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import com.antonriva.backendspring.model.EntidadFederativa;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import com.antonriva.backendspring.model.EntidadFederativa;
-
 import jakarta.transaction.Transactional;
 
 @Repository
 @Transactional
 @EnableTransactionManagement
-public interface EntidadFederativaRepository extends JpaRepository<EntidadFederativa, Integer>,  JpaSpecificationExecutor<EntidadFederativa> {
+public interface EntidadFederativaRepository extends JpaRepository<EntidadFederativa, Long>,  JpaSpecificationExecutor<EntidadFederativa> {
 
 }

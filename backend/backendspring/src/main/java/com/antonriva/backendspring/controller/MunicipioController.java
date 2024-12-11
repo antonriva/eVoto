@@ -14,6 +14,7 @@ import java.util.Optional;
 @RequestMapping("/api/municipio")
 @CrossOrigin(origins="http://localhost:5173")
 public class MunicipioController {
+	/*
 
     @Autowired
     private MunicipioService municipioService;
@@ -76,5 +77,6 @@ public class MunicipioController {
             return ResponseEntity.notFound().build();
         }
     }
+    */
 }
 

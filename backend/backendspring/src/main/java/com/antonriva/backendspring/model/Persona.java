@@ -3,41 +3,39 @@ package com.antonriva.backendspring.model;
 
 import java.time.LocalDate;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-//Antes estaba en javax.persistence pero ahora se encuentra en jakarta, otra dependencia
-
-import jakarta.persistence.*;
+import jakarta.persistence.*; //Antes estaba en javax.persistence pero ahora se encuentra en jakarta, otra dependencia
 
 @Entity
-@Table(name= "Persona")
+@Table(name= "persona")
 public class Persona {
 	
 	//Aqui tengo que revisar la privacidad de los atributos
 	
+	//Id
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-
+	private Long id;
+	
+	//OneToMany
 	@OneToMany(mappedBy = "persona", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore // Ignorar esta relación al serializar
-	private List<PersonaDomicilio> personaDomicilios;
-
-	@Column(name="NOMBRE")
+	private List<PersonaDomicilio> personaDomicilio;
+	
+	//Columnas normales
+	@Column(name="nombre", nullable = false)
 	private String nombre;
 
-	@Column(name="APELLIDOPATERNO")
+	@Column(name="apellidopaterno", nullable = false)
 	private String apellidoPaterno;
 
-	@Column(name="APELLIDOMATERNO")
+	@Column(name="apellidomaterno", nullable = false)
 	private String apellidoMaterno;
 
-	@Column(name="FECHADENACIMIENTO")
+	@Column(name="fechadenacimiento", nullable = false)
 	private LocalDate fechaDeNacimiento;
 
-	@Column(name="FECHADEFIN")
+	@Column(name="fechadefin", nullable = true)
 	private LocalDate fechaDeFin;
 
 	
@@ -45,32 +43,27 @@ public class Persona {
 		
 	}
 	
-	public Persona(int id, String nombre, String apellidoPaterno, String apellidoMaterno, LocalDate fechaDeNacimiento) {
-		this.id = id;
+	public Persona(String nombre, String apellidoPaterno, String apellidoMaterno, LocalDate fechaDeNacimiento) {
 		this.nombre = nombre;
 		this.apellidoPaterno = apellidoPaterno;
 		this.apellidoMaterno = apellidoMaterno;
 		this.fechaDeNacimiento = fechaDeNacimiento;
 	}
-	
-	public Persona(int id, String nombre, String apellidoPaterno, String apellidoMaterno, LocalDate fechaDeNacimiento, LocalDate fechaDeFin) {
-		this.id = id;
-		this.nombre = nombre;
-		this.apellidoPaterno = apellidoPaterno;
-		this.apellidoMaterno = apellidoMaterno;
-		this.fechaDeNacimiento = fechaDeNacimiento;
-		this.fechaDeFin = fechaDeFin;
-	}
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Usa IDENTITY para delegar la generación a la base de datos
-	public int getId() {
+
+	public Long getId() {
 		return id;
 	}
-    
-    @OneToMany(mappedBy = "persona", cascade = CascadeType.ALL)
-    private List<PersonaDomicilio> personaDomicilio;
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public List<PersonaDomicilio> getPersonaDomicilio() {
+		return personaDomicilio;
+	}
+
+	public void setPersonaDomicilio(List<PersonaDomicilio> personaDomicilio) {
+		this.personaDomicilio = personaDomicilio;
 	}
 
 	public String getNombre() {
@@ -112,25 +105,12 @@ public class Persona {
 	public void setFechaDeFin(LocalDate fechaDeFin) {
 		this.fechaDeFin = fechaDeFin;
 	}
-	
-    public List<PersonaDomicilio> getPersonaDomicilios() {
-        return personaDomicilios;
-    }
 
-    public void setPersonaDomicilios(List<PersonaDomicilio> personaDomicilios) {
-        this.personaDomicilios = personaDomicilios;
-    }
-	
 	@Override
 	public String toString() {
-		return "Persona{" +
-				"id =" + id +
-				", nombre=" + nombre + '\'' +
-				", apellidoPaterno=" + apellidoPaterno + '\'' +
-				", apellidoMaterno=" + apellidoMaterno + '\'' +
-				", fechaDeNacimiento=" + fechaDeNacimiento + '\'' + 
-				", fechaDeFin=" + fechaDeFin + '\'' +
-				"}";
+		return "Persona [id=" + id + ", nombre=" + nombre + ", apellidoPaterno=" + apellidoPaterno
+				+ ", apellidoMaterno=" + apellidoMaterno + ", fechaDeNacimiento=" + fechaDeNacimiento + ", fechaDeFin="
+				+ fechaDeFin + "]";
 	}
 	
 	
