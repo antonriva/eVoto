@@ -65,7 +65,7 @@ public class PersonaSpecifications {
         };
     }
     
-
+/*
     public static Specification<Persona> conFechaDeNacimiento(LocalDate fechaDeNacimiento) {
         return (root, query, criteriaBuilder) -> {
             // Si la fecha es null, no aplica filtro
@@ -86,7 +86,77 @@ public class PersonaSpecifications {
             return criteriaBuilder.equal(root.get("fechaDeFin"), fechaDeFin);
         };
     }
-    
+    */
+    public static Specification<Persona> conFechaDeNacimiento(LocalDate fechaDeNacimiento) {
+        return (root, query, criteriaBuilder) -> {
+            if (fechaDeNacimiento == null) return null;
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Agregar condición para el año
+            predicates.add(criteriaBuilder.equal(
+                criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeNacimiento"), criteriaBuilder.literal("YYYY")),
+                String.valueOf(fechaDeNacimiento.getYear())
+            ));
+
+            // Agregar condición para el mes si es necesario
+            if (fechaDeNacimiento.getMonthValue() != 1) {
+                predicates.add(criteriaBuilder.equal(
+                    criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeNacimiento"), criteriaBuilder.literal("MM")),
+                    String.format("%02d", fechaDeNacimiento.getMonthValue())
+                ));
+            }
+
+            // Agregar condición para el día si es necesario
+            if (fechaDeNacimiento.getDayOfMonth() != 1) {
+                predicates.add(criteriaBuilder.equal(
+                    criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeNacimiento"), criteriaBuilder.literal("DD")),
+                    String.format("%02d", fechaDeNacimiento.getDayOfMonth())
+                ));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+
+    // Similar modification for conFechaDeFin
+
+    public static Specification<Persona> conFechaDeFin(LocalDate fechaDeFin) {
+        return (root, query, criteriaBuilder) -> {
+            if (fechaDeFin == null) return null;
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Agregar condición para el año
+            predicates.add(criteriaBuilder.equal(
+                criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeFin"), criteriaBuilder.literal("YYYY")),
+                String.valueOf(fechaDeFin.getYear())
+            ));
+
+            // Agregar condición para el mes si es necesario
+            if (fechaDeFin.getMonthValue() != 1) {
+                predicates.add(criteriaBuilder.equal(
+                    criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeFin"), criteriaBuilder.literal("MM")),
+                    String.format("%02d", fechaDeFin.getMonthValue())
+                ));
+            }
+
+            // Agregar condición para el día si es necesario
+            if (fechaDeFin.getDayOfMonth() != 1) {
+                predicates.add(criteriaBuilder.equal(
+                    criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeFin"), criteriaBuilder.literal("DD")),
+                    String.format("%02d", fechaDeFin.getDayOfMonth())
+                ));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+
+    // Similar modification for conFechaDeFin
+
     public static Specification<Persona> conCantidadHijos(int cantidadHijos) {
         return (root, query, criteriaBuilder) -> {
             if (cantidadHijos < 0) return null;
