@@ -14,10 +14,24 @@ import java.util.Optional;
 @RequestMapping("/api/municipio")
 @CrossOrigin(origins="http://localhost:5173")
 public class MunicipioController {
+	
+    
+    private final MunicipioService municipioService;
+    
+    public MunicipioController(MunicipioService municipioService) {
+    	this.municipioService = municipioService;
+    }
+    
+    // Buscar municipios por ID de entidad federativa
+    @GetMapping("/entidad/{entidadFederativaId}")
+    public ResponseEntity<List<Municipio>> obtenerMunicipiosPorEntidadFederativaId(@PathVariable Long entidadFederativaId) {
+        List<Municipio> municipios = municipioService.obtenerMunicipiosPorEntidadFederativaId(entidadFederativaId);
+        return ResponseEntity.ok(municipios);
+    }
+
 	/*
 
-    @Autowired
-    private MunicipioService municipioService;
+
 
     // Obtener todos los municipios
     @GetMapping
@@ -33,12 +47,6 @@ public class MunicipioController {
         return municipio.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    // Buscar municipios por ID de entidad federativa
-    @GetMapping("/entidad/{entidadFederativaId}")
-    public ResponseEntity<List<Municipio>> obtenerMunicipiosPorEntidadFederativaId(@PathVariable int entidadFederativaId) {
-        List<Municipio> municipios = municipioService.obtenerMunicipiosPorEntidadFederativaId(entidadFederativaId);
-        return ResponseEntity.ok(municipios);
-    }
 
     // Buscar municipios con filtros
     @GetMapping("/buscar")

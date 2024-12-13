@@ -3,6 +3,9 @@ package com.antonriva.backendspring.service;
 import com.antonriva.backendspring.model.Colonia;
 import com.antonriva.backendspring.repository.ColoniaRepository;
 import com.antonriva.backendspring.specification.ColoniaSpecifications;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,20 @@ import java.util.Optional;
 
 @Service
 public class ColoniaService {
+	
+	
+    private final ColoniaRepository coloniaRepository;
+    
+    public ColoniaService(ColoniaRepository coloniaRepository) {
+    	this.coloniaRepository = coloniaRepository;
+    }
+    
+    // Buscar municipios por ID de entidad federativa
+    @Transactional
+    public List<Colonia> obtenerColoniasPorMunicipioId(Long municipioId) {
+        return coloniaRepository.findByMunicipio_Id(municipioId);
+    }
+    
 	/*
 
     @Autowired

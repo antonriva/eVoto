@@ -3,6 +3,9 @@ package com.antonriva.backendspring.service;
 import com.antonriva.backendspring.model.Municipio;
 import com.antonriva.backendspring.repository.MunicipioRepository;
 import com.antonriva.backendspring.specification.MunicipioSpecifications;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -12,9 +15,21 @@ import java.util.Optional;
 
 @Service
 public class MunicipioService {
+	
+    private final MunicipioRepository municipioRepository;
+    
+    public MunicipioService(MunicipioRepository municipioRepository) {
+    	this.municipioRepository = municipioRepository;
+    }
+    
+    // Buscar municipios por ID de entidad federativa
+    @Transactional
+    public List<Municipio> obtenerMunicipiosPorEntidadFederativaId(Long entidadFederativaId) {
+        return municipioRepository.findByEntidadFederativa_Id(entidadFederativaId);
+    }
+
+
 	/*
-    @Autowired
-    private MunicipioRepository municipioRepository;
 
     // Crear un nuevo municipio
     public Municipio registrarMunicipio(Municipio municipio) {
@@ -31,10 +46,6 @@ public class MunicipioService {
         return municipioRepository.findById(id);
     }
 
-    // Buscar municipios por ID de entidad federativa
-    public List<Municipio> obtenerMunicipiosPorEntidadFederativaId(int entidadFederativaId) {
-        return municipioRepository.findByEntidadFederativa_Id(entidadFederativaId);
-    }
 
     // Buscar municipios con filtros
     public List<Municipio> buscarConFiltros(String descripcion, Integer entidadFederativaId) {

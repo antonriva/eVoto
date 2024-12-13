@@ -1,7 +1,10 @@
 package com.antonriva.backendspring.controller;
 
 import com.antonriva.backendspring.model.Colonia;
+import com.antonriva.backendspring.model.Localidad;
 import com.antonriva.backendspring.service.ColoniaService;
+import com.antonriva.backendspring.service.LocalidadService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,21 @@ import java.util.Optional;
 @RequestMapping("/api/colonia")
 @CrossOrigin(origins="http://localhost:5173")
 public class ColoniaController {
+	
+    private final ColoniaService coloniaService;
+    
+    public ColoniaController(ColoniaService coloniaService) {
+    	this.coloniaService = coloniaService;
+    }
+    
+    // Buscar municipios por ID de entidad federativa
+    @GetMapping("/municipio/{municipioId}")
+    public ResponseEntity<List<Colonia>> obtenerLocalidadesPorMunicipioId(@PathVariable Long municipioId) {
+        List<Colonia> colonias = coloniaService.obtenerColoniasPorMunicipioId(municipioId);
+        return ResponseEntity.ok(colonias);
+    }
+	
+	
 	/*
 
     @Autowired

@@ -3,6 +3,9 @@ package com.antonriva.backendspring.service;
 import com.antonriva.backendspring.model.EntidadFederativa;
 import com.antonriva.backendspring.repository.EntidadFederativaRepository;
 import com.antonriva.backendspring.specification.EntidadFederativaSpecifications;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -18,7 +21,7 @@ public class EntidadFederativaService {
 	public EntidadFederativaService (EntidadFederativaRepository entidadFederativaRepository) {
 		this.entidadFederativaRepository = entidadFederativaRepository;
 	}
-	
+    @Transactional
     public List<EntidadFederativa> obtenerTodasLasEntidades() {
         return entidadFederativaRepository.findAll();
     }

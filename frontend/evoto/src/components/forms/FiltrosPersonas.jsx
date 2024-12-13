@@ -27,6 +27,9 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
       const response = await fetch(`http://localhost:8080/api/municipio/entidad/${entidadId}`);
       const data = await response.json();
       setMunicipios(data);
+      setLocalidades([]);
+      setColonias([]);
+      setCodigosPostales([]);
     } catch (error) {
       console.error("Error al cargar municipios:", error);
     }
@@ -37,16 +40,19 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
       const response = await fetch(`http://localhost:8080/api/localidad/municipio/${municipioId}`);
       const data = await response.json();
       setLocalidades(data);
+      setColonias([]);
+      setCodigosPostales([]);
     } catch (error) {
       console.error("Error al cargar localidades:", error);
     }
   };
 
-  const fetchColonias = async (localidadId) => {
+  const fetchColonias = async (municipioId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/colonia/localidad/${localidadId}`);
+      const response = await fetch(`http://localhost:8080/api/colonia/municipio/${municipioId}`);
       const data = await response.json();
       setColonias(data);
+      setCodigosPostales([]);
     } catch (error) {
       console.error("Error al cargar colonias:", error);
     }
@@ -54,7 +60,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
 
   const fetchCodigosPostales = async (coloniaId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/codigosPostales/colonia/${coloniaId}`);
+      const response = await fetch(`http://localhost:8080/api/postal/colonia/${coloniaId}`);
       const data = await response.json();
       setCodigosPostales(data);
     } catch (error) {
@@ -69,25 +75,26 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
       [name]: value,
     }));
 
-    // Actualizar los selectores dependientes
+    // Actualizar datos dependientes
     if (name === "entidadFederativa") {
+      fetchMunicipios(value);
       setMunicipios([]);
       setLocalidades([]);
       setColonias([]);
       setCodigosPostales([]);
-      if (value) fetchMunicipios(value);
     } else if (name === "municipio") {
+      fetchLocalidades(value);
+      fetchColonias(value);
       setLocalidades([]);
       setColonias([]);
       setCodigosPostales([]);
-      if (value) fetchLocalidades(value);
     } else if (name === "localidad") {
+      fetchColonias(value);
       setColonias([]);
       setCodigosPostales([]);
-      if (value) fetchColonias(value);
     } else if (name === "colonia") {
+      fetchCodigosPostales(value);
       setCodigosPostales([]);
-      if (value) fetchCodigosPostales(value);
     }
   };
 
@@ -96,10 +103,9 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
     onBuscar(filtros); // Llama a la función del padre para buscar con los filtros actuales
   };
 
-
-
   return (
     <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
+      {/* Campos básicos */}
       <div>
         <label>ID:</label>
         <input
@@ -235,7 +241,6 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
       </div>
 
 
-      {/* Nuevos Selectores */}
       <div>
         <label>Entidad Federativa:</label>
         <select
@@ -243,10 +248,10 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
           value={filtros.entidadFederativa || ""}
           onChange={handleChange}
         >
-          <option value="">Seleccione</option>
+          <option value="">Seleccione Entidad Federativa</option>
           {entidades.map((entidad) => (
             <option key={entidad.id} value={entidad.id}>
-              {entidad.nombre}
+              {entidad.descripcion}
             </option>
           ))}
         </select>
@@ -259,10 +264,10 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
           onChange={handleChange}
           disabled={!municipios.length}
         >
-          <option value="">Seleccione</option>
+          <option value="">Seleccione Municipio</option>
           {municipios.map((municipio) => (
             <option key={municipio.id} value={municipio.id}>
-              {municipio.nombre}
+              {municipio.descripcion}
             </option>
           ))}
         </select>
@@ -275,10 +280,10 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
           onChange={handleChange}
           disabled={!localidades.length}
         >
-          <option value="">Seleccione</option>
+          <option value="">Seleccione Localidad</option>
           {localidades.map((localidad) => (
             <option key={localidad.id} value={localidad.id}>
-              {localidad.nombre}
+              {localidad.descripcion}
             </option>
           ))}
         </select>
@@ -291,10 +296,10 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
           onChange={handleChange}
           disabled={!colonias.length}
         >
-          <option value="">Seleccione</option>
+          <option value="">Seleccione Colonia</option>
           {colonias.map((colonia) => (
             <option key={colonia.id} value={colonia.id}>
-              {colonia.nombre}
+              {colonia.descripcion}
             </option>
           ))}
         </select>
@@ -307,15 +312,14 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
           onChange={handleChange}
           disabled={!codigosPostales.length}
         >
-          <option value="">Seleccione</option>
-          {codigosPostales.map((codigo) => (
-            <option key={codigo.id} value={codigo.id}>
-              {codigo.descripcion}
+          <option value="">Seleccione Código Postal</option>
+          {codigosPostales.map((codigoPostal) => (
+            <option key={codigoPostal.id} value={codigoPostal.id}>
+              {codigoPostal.descripcion}
             </option>
           ))}
         </select>
       </div>
-
       <button type="submit">Buscar</button>
     </form>
   );

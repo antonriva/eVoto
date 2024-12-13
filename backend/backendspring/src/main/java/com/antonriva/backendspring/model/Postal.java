@@ -1,5 +1,7 @@
 package com.antonriva.backendspring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +14,7 @@ public class Postal {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "iddecolonia", nullable = false)
+	@JsonIgnore
 	private Colonia colonia;
 	
 	@Column(name="descripcion", nullable = false)

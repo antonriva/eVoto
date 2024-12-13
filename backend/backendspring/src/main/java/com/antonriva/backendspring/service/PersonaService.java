@@ -97,7 +97,7 @@ public class PersonaService {
         }
     }
     
-    
+    @Transactional
     public Map<String, PersonaBuscarCompletoDTO> obtenerPadres(Long idPersona) {
         // Buscar la relación familiar de la persona
         Optional<RelacionFamiliar> relacionOptional = relacionFamiliarRepository.findRelacionFamiliarByPersonaId(idPersona);
@@ -121,7 +121,7 @@ public class PersonaService {
 
         return padres;
     }
-
+    @Transactional
     private PersonaBuscarCompletoDTO mapearAPersonaDTO(Persona persona) {
         return new PersonaBuscarCompletoDTO(
                 persona.getId(),
