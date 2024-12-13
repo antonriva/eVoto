@@ -12,6 +12,18 @@ const PaginaBuscar = () => {
     apellidoMaterno: "",
     fechaDeNacimiento: "",
     fechaDeFin: "", // Nuevo campo para fecha de fin
+    anioNacimiento: "",
+    mesNacimiento: "",
+    diaNacimiento: "",
+    anioFin: "",
+    mesFin: "",
+    diaFin: "",
+    entidadFederativa: "",
+    municipio: "",
+    localidad: "",
+    colonia: "",
+    codigoPostal: "",
+    tipoDeDomicilio:""
   });
 
   // Función para obtener personas con o sin filtros
@@ -52,7 +64,7 @@ const PaginaBuscar = () => {
     "Apellido Materno",
     "Fecha de Nacimiento",
     "Fecha de Fin",
-    "Acciones",
+    "Domicilios",
   ];
 
   return (

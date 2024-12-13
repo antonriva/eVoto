@@ -142,22 +142,22 @@ public class Domicilio {
 	
 	//
 	public String getDescripcionLocalidad() {
-	    return localidad != null ? localidad.getDescripcion() : "Localidad no especificada";
+	    return localidad != null ? localidad.getDescripcion() : "---";
 	}
 	//
 	//
 	public String getDescripcionColonia() {
-	    return colonia != null ? colonia.getDescripcion() : "Colonia no especificada";
+	    return colonia != null ? colonia.getDescripcion() : "---";
 	}
 	//
 	//
 	public String getDescripcionCodigoPostal() {
-	    return codigoPostal != null ? codigoPostal.getDescripcion() : "Codigo postal no especificado";
+	    return codigoPostal != null ? codigoPostal.getDescripcion() : "---";
 	}
 	//
 	//
 	public String getDescripcionCalle() {
-	    return calle != null ? calle : "Calle no especificada";
+	    return calle != null ? calle : "---";
 	}
 	//
 	//

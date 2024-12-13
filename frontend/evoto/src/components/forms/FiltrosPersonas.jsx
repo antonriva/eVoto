@@ -6,10 +6,12 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
   const [localidades, setLocalidades] = useState([]);
   const [colonias, setColonias] = useState([]);
   const [codigosPostales, setCodigosPostales] = useState([]);
+  const [tiposDeDomicilio, setTiposDeDomicilio] = useState([]);
 
   // Fetch inicial para cargar entidades federativas
   useEffect(() => {
     fetchEntidades();
+    fetchTiposDeDomicilio();
   }, []);
 
   const fetchEntidades = async () => {
@@ -65,6 +67,16 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
       setCodigosPostales(data);
     } catch (error) {
       console.error("Error al cargar códigos postales:", error);
+    }
+  };
+
+  const fetchTiposDeDomicilio = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/tipoDeDomicilio`);
+      const data = await response.json();
+      setTiposDeDomicilio(data);
+    } catch (error) {
+      console.error("Error al cargar los tipos de domicilio:", error);
     }
   };
 
@@ -225,7 +237,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
       </div>
 
       <div>
-        <label>Día de Nacimiento:</label>
+        <label>Día de Fin:</label>
         <select
           name="diaFin"
           value={filtros.diaFin || ""}
@@ -320,6 +332,25 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
           ))}
         </select>
       </div>
+      <div>
+        <label>Tipos de domicilio:</label>
+        <select
+          name="tipoDeDomicilio"
+          value={filtros.tipoDeDomicilio || ""}
+          onChange={handleChange}
+        >
+          <option value="">Seleccione tipo de domicilio</option>
+          {tiposDeDomicilio.map((tipoDeDomicilio) => (
+            <option key={tipoDeDomicilio.id} value={tipoDeDomicilio.id}>
+              {tipoDeDomicilio.descripcion}
+            </option>
+          ))}
+        </select>
+      </div>
+
+
+
+
       <button type="submit">Buscar</button>
     </form>
   );
