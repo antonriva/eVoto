@@ -21,7 +21,7 @@ public class Domicilio {
     
     //ManyToOne
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "iddeentidad", nullable = false)
+    @JoinColumn(name = "iddefederativa", nullable = false)
     private EntidadFederativa entidadFederativa;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,9 +38,8 @@ public class Domicilio {
         
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "iddepostal", nullable = true)
-    private Postal postal;
+    private Postal codigoPostal;
 
-    
     @Column(name = "calle", nullable = true)
     private String calle;
 
@@ -101,6 +100,22 @@ public class Domicilio {
 		this.localidad = localidad;
 	}
 
+	public Colonia getColonia() {
+		return colonia;
+	}
+
+	public void setColonia(Colonia colonia) {
+		this.colonia = colonia;
+	}
+
+	public Postal getCodigoPostal() {
+		return codigoPostal;
+	}
+
+	public void setCodigoPostal(Postal codigoPostal) {
+		this.codigoPostal = codigoPostal;
+	}
+
 	public String getCalle() {
 		return calle;
 	}
@@ -108,7 +123,7 @@ public class Domicilio {
 	public void setCalle(String calle) {
 		this.calle = calle;
 	}
-
+	
 	public Integer getNumeroExterior() {
 		return numeroExterior;
 	}
@@ -116,7 +131,7 @@ public class Domicilio {
 	public void setNumeroExterior(Integer numeroExterior) {
 		this.numeroExterior = numeroExterior;
 	}
-
+	
 	public Integer getNumeroInterior() {
 		return numeroInterior;
 	}
@@ -124,13 +139,45 @@ public class Domicilio {
 	public void setNumeroInterior(Integer numeroInterior) {
 		this.numeroInterior = numeroInterior;
 	}
+	
+	//
+	public String getDescripcionLocalidad() {
+	    return localidad != null ? localidad.getDescripcion() : "Localidad no especificada";
+	}
+	//
+	//
+	public String getDescripcionColonia() {
+	    return colonia != null ? colonia.getDescripcion() : "Colonia no especificada";
+	}
+	//
+	//
+	public String getDescripcionCodigoPostal() {
+	    return codigoPostal != null ? codigoPostal.getDescripcion() : "Codigo postal no especificado";
+	}
+	//
+	//
+	public String getDescripcionCalle() {
+	    return calle != null ? calle : "Calle no especificada";
+	}
+	//
+	//
+	public Integer getDescripcionNumeroExterior() {
+	    return numeroExterior != null ? numeroExterior : 0;
+	}
+	//
+	//
+	public Integer getDescripcionNumeroInterior() {
+	    return numeroInterior != null ? numeroInterior : 0;
+	}
+	//
 
 	@Override
 	public String toString() {
 		return "Domicilio [id=" + id + ", calle=" + calle + ", numeroExterior=" + numeroExterior + ", numeroInterior="
 				+ numeroInterior + "]";
 	}
-    
+
+
     
 
 }

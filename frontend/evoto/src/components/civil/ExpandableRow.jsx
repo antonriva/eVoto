@@ -43,12 +43,15 @@ const ExpandableRow = ({ idPersona, rowData, fetchDomicilios, colSpan }) => {
               <table>
                 <thead>
                   <tr>
-                    <th>Calle</th>
-                    <th>Número Exterior</th>
-                    <th>Municipio</th>
-                    <th>Colonia</th>
                     <th>Entidad Federativa</th>
-                    <th>Código Postal</th>
+                    <th>Municipio</th>
+                    <th>Localidad</th>
+                    <th>Colonia</th>
+                    <th>Calle</th>
+                    <th>Número exterior</th>
+                    <th>Número interior</th>
+                    <th>Código postal</th>
+                    <th>Tipo de domicilio</th>
                     <th>Fecha de Inicio</th>
                     <th>Fecha de Fin</th>
                   </tr>
@@ -56,12 +59,15 @@ const ExpandableRow = ({ idPersona, rowData, fetchDomicilios, colSpan }) => {
                 <tbody>
                   {domicilios.map((domicilio, index) => (
                     <tr key={index}>
-                      <td>{domicilio.calle}</td>
-                      <td>{domicilio.numeroExterior}</td>
-                      <td>{domicilio.municipio}</td>
-                      <td>{domicilio.colonia}</td>
                       <td>{domicilio.entidadFederativa}</td>
-                      <td>{domicilio.codigoPostal}</td>
+                      <td>{domicilio.municipio}</td>
+                      <td>{domicilio.localidad || "---"}</td>
+                      <td>{domicilio.colonia || "---"}</td>
+                      <td>{domicilio.calle || "---"}</td>
+                      <td>{domicilio.numeroExterior || "---"}</td>
+                      <td>{domicilio.numeroInterior || "---"}</td>
+                      <td>{domicilio.codigoPostal || "---"}</td>
+                      <td>{domicilio.tipoDeDomicilio}</td>
                       <td>{domicilio.fechaDeInicio}</td>
                       <td>{domicilio.fechaDeFin || "---"}</td>
                     </tr>

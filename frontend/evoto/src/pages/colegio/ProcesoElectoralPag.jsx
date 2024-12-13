@@ -7,7 +7,7 @@ const ProcesoElectoralPag = () => {
       <nav>
         <ul>
           {/* El enlace ahora es relativo a la ruta actual */}
-          <li><Link to="formulario">Definir proceso electoral</Link></li>
+          <li><Link to="">Definir proceso electoral</Link></li>
           <li><Link to="">Buscar proceso electoral</Link></li>
         </ul>
       </nav>

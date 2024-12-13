@@ -14,8 +14,8 @@ const AppCivil = () => {
           <li><Link to="/">Regresar al Menu principal</Link></li>
           <li><Link to="about">Inicio</Link></li>
           <li><Link to="buscar">Buscar Personas</Link></li>
-          <li><Link to="registrar">Registrar Persona</Link></li>
-          <li><Link to="registroDomicilio">Registro Domicilio</Link></li>
+          <li><Link to="">Registrar Persona</Link></li>
+          <li><Link to="">Registro Domicilio</Link></li>
         </ul>
       </nav>
 

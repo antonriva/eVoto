@@ -9,20 +9,14 @@ public class PersonaBuscarCompletoDTO {
     private String apellidoMaterno;
     private LocalDate fechaDeNacimiento;
     private LocalDate fechaDeFin;
-    private int cantidadDeDomicilios;
-    private int cantidadDeHijos;
-    private PersonaIdPadresDTO padresDTO;
     
-    public PersonaBuscarCompletoDTO (Long id, String nombre, String apellidoPaterno, String apellidoMaterno, LocalDate fechaDeNacimiento, LocalDate fechaDeFin, int cantidadDeDomicilios, int cantidadDeHijos, PersonaIdPadresDTO padresDTO) {
+    public PersonaBuscarCompletoDTO (Long id, String nombre, String apellidoPaterno, String apellidoMaterno, LocalDate fechaDeNacimiento, LocalDate fechaDeFin) {
     this.id = id;
     this.nombre = nombre;
     this.apellidoPaterno = apellidoPaterno;
     this.apellidoMaterno = apellidoMaterno;
     this.fechaDeNacimiento = fechaDeNacimiento;
     this.fechaDeFin = fechaDeFin;
-    this.cantidadDeDomicilios = cantidadDeDomicilios;
-    this.cantidadDeHijos = cantidadDeHijos;
-    this.padresDTO = padresDTO;
     }
 
 	public Long getId() {
@@ -73,29 +67,6 @@ public class PersonaBuscarCompletoDTO {
 		this.fechaDeFin = fechaDeFin;
 	}
 
-	public int getCantidadDeDomicilios() {
-		return cantidadDeDomicilios;
-	}
-
-	public void setCantidadDeDomicilios(int cantidadDeDomicilios) {
-		this.cantidadDeDomicilios = cantidadDeDomicilios;
-	}
-
-	public int getCantidadDeHijos() {
-		return cantidadDeHijos;
-	}
-
-	public void setCantidadDeHijos(int cantidadDeHijos) {
-		this.cantidadDeHijos = cantidadDeHijos;
-	}
-
-	public PersonaIdPadresDTO getPadresDTO() {
-		return padresDTO;
-	}
-
-	public void setPadresDTO(PersonaIdPadresDTO padresDTO) {
-		this.padresDTO = padresDTO;
-	}
 
     
 

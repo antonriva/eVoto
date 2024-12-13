@@ -12,6 +12,16 @@ import java.util.Optional;
 
 @Service
 public class EntidadFederativaService {
+	
+	private final EntidadFederativaRepository entidadFederativaRepository;
+	
+	public EntidadFederativaService (EntidadFederativaRepository entidadFederativaRepository) {
+		this.entidadFederativaRepository = entidadFederativaRepository;
+	}
+	
+    public List<EntidadFederativa> obtenerTodasLasEntidades() {
+        return entidadFederativaRepository.findAll();
+    }
 	/*
     @Autowired
     private EntidadFederativaRepository entidadFederativaRepository;
@@ -22,9 +32,7 @@ public class EntidadFederativaService {
     }
 
     // Obtener todas las entidades federativas
-    public List<EntidadFederativa> obtenerTodasLasEntidades() {
-        return entidadFederativaRepository.findAll();
-    }
+
 
     // Obtener una entidad federativa por ID
     public Optional<EntidadFederativa> obtenerEntidadPorId(int id) {

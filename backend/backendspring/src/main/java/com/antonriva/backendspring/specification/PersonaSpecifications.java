@@ -1,13 +1,23 @@
 package com.antonriva.backendspring.specification;
 
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
-import com.antonriva.backendspring.model.Persona;
 
+import com.antonriva.backendspring.model.Colonia;
+import com.antonriva.backendspring.model.Domicilio;
+import com.antonriva.backendspring.model.EntidadFederativa;
+import com.antonriva.backendspring.model.Localidad;
+import com.antonriva.backendspring.model.Municipio;
+import com.antonriva.backendspring.model.Persona;
+import com.antonriva.backendspring.model.PersonaDomicilio;
+import com.antonriva.backendspring.model.Postal;
+import com.antonriva.backendspring.model.TipoDeDomicilio;
+
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 
@@ -65,111 +75,181 @@ public class PersonaSpecifications {
         };
     }
     
-/*
-    public static Specification<Persona> conFechaDeNacimiento(LocalDate fechaDeNacimiento) {
+
+    public static Specification<Persona> conFechaDeNacimiento(Integer anio, Integer mes, Integer dia) {
         return (root, query, criteriaBuilder) -> {
-            // Si la fecha es null, no aplica filtro
-            if (fechaDeNacimiento == null) return null;
-
-            // Generar el filtro usando LocalDate directamente
-            return criteriaBuilder.equal(root.get("fechaDeNacimiento"), fechaDeNacimiento);
-        };
-    }
-
- 
-    public static Specification<Persona> conFechaDeFin(LocalDate fechaDeFin) {
-        return (root, query, criteriaBuilder) -> {
-            // Si la fecha es null, no aplica filtro
-            if (fechaDeFin == null) return null;
-
-            // Generar el filtro usando LocalDate directamente
-            return criteriaBuilder.equal(root.get("fechaDeFin"), fechaDeFin);
-        };
-    }
-    */
-    public static Specification<Persona> conFechaDeNacimiento(LocalDate fechaDeNacimiento) {
-        return (root, query, criteriaBuilder) -> {
-            if (fechaDeNacimiento == null) return null;
-
             List<Predicate> predicates = new ArrayList<>();
 
-            // Agregar condición para el año
-            predicates.add(criteriaBuilder.equal(
-                criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeNacimiento"), criteriaBuilder.literal("YYYY")),
-                String.valueOf(fechaDeNacimiento.getYear())
-            ));
+            // Agregar condición para el año si está presente
+            if (anio != null && anio > 0) {
+                predicates.add(criteriaBuilder.equal(
+                    criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeNacimiento"), criteriaBuilder.literal("YYYY")),
+                    String.valueOf(anio)
+                ));
+            }
 
-            // Agregar condición para el mes si es necesario
-            if (fechaDeNacimiento.getMonthValue() != 1) {
+            // Agregar condición para el mes si es válido
+            if (mes != null && mes > 0) { // Suponemos que 0 o valores negativos indican que no hay filtro para mes
                 predicates.add(criteriaBuilder.equal(
                     criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeNacimiento"), criteriaBuilder.literal("MM")),
-                    String.format("%02d", fechaDeNacimiento.getMonthValue())
+                    String.format("%02d", mes)
                 ));
             }
 
-            // Agregar condición para el día si es necesario
-            if (fechaDeNacimiento.getDayOfMonth() != 1) {
+            // Agregar condición para el día si es válido
+            if (dia != null && dia > 0) { // Suponemos que 0 o valores negativos indican que no hay filtro para día
                 predicates.add(criteriaBuilder.equal(
                     criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeNacimiento"), criteriaBuilder.literal("DD")),
-                    String.format("%02d", fechaDeNacimiento.getDayOfMonth())
+                    String.format("%02d", dia)
                 ));
             }
 
+            // Combinar todos los predicados con AND
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 
 
+
     // Similar modification for conFechaDeFin
 
-    public static Specification<Persona> conFechaDeFin(LocalDate fechaDeFin) {
+    public static Specification<Persona> conFechaDeFin(Integer anio, Integer mes, Integer dia) {
         return (root, query, criteriaBuilder) -> {
-            if (fechaDeFin == null) return null;
-
             List<Predicate> predicates = new ArrayList<>();
 
-            // Agregar condición para el año
-            predicates.add(criteriaBuilder.equal(
-                criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeFin"), criteriaBuilder.literal("YYYY")),
-                String.valueOf(fechaDeFin.getYear())
-            ));
-
-            // Agregar condición para el mes si es necesario
-            if (fechaDeFin.getMonthValue() != 1) {
+            // Agregar condición para el año si está presente
+            if (anio != null && anio > 0) {
                 predicates.add(criteriaBuilder.equal(
-                    criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeFin"), criteriaBuilder.literal("MM")),
-                    String.format("%02d", fechaDeFin.getMonthValue())
+                    criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeNacimiento"), criteriaBuilder.literal("YYYY")),
+                    String.valueOf(anio)
                 ));
             }
 
-            // Agregar condición para el día si es necesario
-            if (fechaDeFin.getDayOfMonth() != 1) {
+            // Agregar condición para el mes si es válido
+            if (mes != null && mes > 0) { // Suponemos que 0 o valores negativos indican que no hay filtro para mes
                 predicates.add(criteriaBuilder.equal(
-                    criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeFin"), criteriaBuilder.literal("DD")),
-                    String.format("%02d", fechaDeFin.getDayOfMonth())
+                    criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeNacimiento"), criteriaBuilder.literal("MM")),
+                    String.format("%02d", mes)
                 ));
             }
 
+            // Agregar condición para el día si es válido
+            if (dia != null && dia > 0) { // Suponemos que 0 o valores negativos indican que no hay filtro para día
+                predicates.add(criteriaBuilder.equal(
+                    criteriaBuilder.function("TO_CHAR", String.class, root.get("fechaDeNacimiento"), criteriaBuilder.literal("DD")),
+                    String.format("%02d", dia)
+                ));
+            }
+
+            // Combinar todos los predicados con AND
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 
-
-    // Similar modification for conFechaDeFin
-
-    public static Specification<Persona> conCantidadHijos(int cantidadHijos) {
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    public static Specification<Persona> conMunicipio(Long municipioId) {
         return (root, query, criteriaBuilder) -> {
-            if (cantidadHijos < 0) return null;
-            query.groupBy(root.get("id"));
-            return criteriaBuilder.equal(criteriaBuilder.count(root.join("relacionFamiliar", JoinType.LEFT)), cantidadHijos);
+            if (municipioId == null) return null;
+
+            // Join con la tabla intermedia PersonaDomicilio
+            Join<Persona, PersonaDomicilio> personaDomicilioJoin = root.join("personaDomicilio", JoinType.LEFT);
+
+            // Join con Domicilio
+            Join<PersonaDomicilio, Domicilio> domicilioJoin = personaDomicilioJoin.join("domicilio", JoinType.LEFT);
+
+            // Join con Municipio dentro de Domicilio
+            Join<Domicilio, Municipio> municipioJoin = domicilioJoin.join("municipio", JoinType.LEFT);
+
+            // Comparar por ID del municipio
+            return criteriaBuilder.equal(municipioJoin.get("id"), municipioId);
         };
     }
 
-    public static Specification<Persona> conCantidadDomicilios(int cantidadDomicilios) {
+
+
+    public static Specification<Persona> conEntidadFederativa(Long entidadFederativaId) {
         return (root, query, criteriaBuilder) -> {
-            if (cantidadDomicilios < 0) return null;
-            query.groupBy(root.get("id"));
-            return criteriaBuilder.equal(criteriaBuilder.count(root.join("personaDomicilio", JoinType.LEFT)), cantidadDomicilios);
+            if (entidadFederativaId == null) return null;
+
+            Join<Persona, PersonaDomicilio> personaDomicilioJoin = root.join("personaDomicilio", JoinType.LEFT);
+            Join<PersonaDomicilio, Domicilio> domicilioJoin = personaDomicilioJoin.join("domicilio", JoinType.LEFT);
+            Join<Domicilio, EntidadFederativa> entidadFederativaJoin = domicilioJoin.join("entidadFederativa", JoinType.LEFT);
+
+            // Comparar por el ID de la Entidad Federativa
+            return criteriaBuilder.equal(entidadFederativaJoin.get("id"), entidadFederativaId);
         };
     }
+
+    public static Specification<Persona> conLocalidad(Long localidadId) {
+        return (root, query, criteriaBuilder) -> {
+            if (localidadId == null) return null;
+
+            Join<Persona, PersonaDomicilio> personaDomicilioJoin = root.join("personaDomicilio", JoinType.LEFT);
+            Join<PersonaDomicilio, Domicilio> domicilioJoin = personaDomicilioJoin.join("domicilio", JoinType.LEFT);
+            Join<Domicilio, Localidad> localidadJoin = domicilioJoin.join("localidad", JoinType.LEFT);
+
+            // Comparar por el ID de la Localidad
+            return criteriaBuilder.equal(localidadJoin.get("id"), localidadId);
+        };
+    }
+
+
+
+    public static Specification<Persona> conColonia(Long coloniaId) {
+        return (root, query, criteriaBuilder) -> {
+            if (coloniaId == null) return null;
+
+            Join<Persona, PersonaDomicilio> personaDomicilioJoin = root.join("personaDomicilio", JoinType.LEFT);
+            Join<PersonaDomicilio, Domicilio> domicilioJoin = personaDomicilioJoin.join("domicilio", JoinType.LEFT);
+            Join<Domicilio, Colonia> coloniaJoin = domicilioJoin.join("colonia", JoinType.LEFT);
+
+            // Comparar por el ID de la Colonia
+            return criteriaBuilder.equal(coloniaJoin.get("id"), coloniaId);
+        };
+    }
+
+
+
+    public static Specification<Persona> conCodigoPostal(Long codigoPostalId) {
+        return (root, query, criteriaBuilder) -> {
+            if (codigoPostalId == null) return null;
+
+            // Join con la tabla intermedia PersonaDomicilio
+            Join<Persona, PersonaDomicilio> personaDomicilioJoin = root.join("personaDomicilio", JoinType.LEFT);
+
+            // Join con Domicilio
+            Join<PersonaDomicilio, Domicilio> domicilioJoin = personaDomicilioJoin.join("domicilio", JoinType.LEFT);
+
+            // Join con la tabla CodigoPostal
+            Join<Domicilio, Postal> codigoPostalJoin = domicilioJoin.join("codigoPostal", JoinType.LEFT);
+
+            // Comparar por el ID de la tabla CodigoPostal
+            return criteriaBuilder.equal(codigoPostalJoin.get("id"), codigoPostalId);
+        };
+    }
+    
+    public static Specification<Persona> conTipoDeDomicilio(Long tipoDeDomicilioId) {
+        return (root, query, criteriaBuilder) -> {
+            if (tipoDeDomicilioId == null) return null;
+
+            // Join con la tabla intermedia PersonaDomicilio
+            Join<Persona, PersonaDomicilio> personaDomicilioJoin = root.join("personaDomicilio", JoinType.LEFT);
+
+            // Join con TipoDeDomicilio
+            Join<PersonaDomicilio, TipoDeDomicilio> tipoDeDomicilioJoin = personaDomicilioJoin.join("tipoDeDomicilio", JoinType.LEFT);
+
+            // Filtro por el ID del TipoDeDomicilio
+            return criteriaBuilder.equal(tipoDeDomicilioJoin.get("id"), tipoDeDomicilioId);
+        };
+    }
+
+
+
+ 
 }

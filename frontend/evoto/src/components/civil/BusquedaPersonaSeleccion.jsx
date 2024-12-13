@@ -8,6 +8,7 @@ const BusquedaPersonaSeleccion = ({ onSeleccionarPersona }) => {
     apellidoPaterno: "",
     apellidoMaterno: "",
     fechaDeNacimiento: "",
+    fechaDeFin: ""
   });
 
   // Método para buscar personas
@@ -97,6 +98,18 @@ const BusquedaPersonaSeleccion = ({ onSeleccionarPersona }) => {
             }
           />
         </div>
+        <div>
+          <label>Fecha de Fin:</label>
+          <input
+            type="date"
+            name="fechaDeFin"
+            value={filtros.fechaDeFin}
+            onChange={(e) =>
+              setFiltros({ ...filtros, fechaDeFin: e.target.value })
+            }
+          />
+        </div>
+        
         <button type="submit">Buscar</button>
       </form>
 
@@ -109,6 +122,7 @@ const BusquedaPersonaSeleccion = ({ onSeleccionarPersona }) => {
             <th>Apellido Paterno</th>
             <th>Apellido Materno</th>
             <th>Fecha de Nacimiento</th>
+            <th>Fecha de Fin</th>
             <th>Acción</th>
           </tr>
         </thead>
@@ -120,6 +134,7 @@ const BusquedaPersonaSeleccion = ({ onSeleccionarPersona }) => {
               <td>{persona.apellidoPaterno}</td>
               <td>{persona.apellidoMaterno}</td>
               <td>{persona.fechaDeNacimiento}</td>
+              <td>{persona.fechaDeFin}</td>
               <td>
                 <button onClick={() => handleSeleccionar(persona.id)}>Seleccionar</button>
               </td>

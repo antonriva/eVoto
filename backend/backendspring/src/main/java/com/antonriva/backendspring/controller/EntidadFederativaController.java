@@ -14,9 +14,22 @@ import java.util.Optional;
 @RequestMapping("/api/entidad-federativa")
 @CrossOrigin(origins="http://localhost:5173")
 public class EntidadFederativaController {
+	
+    
+    private final EntidadFederativaService entidadFederativaService;
+    
+    public EntidadFederativaController(EntidadFederativaService entidadFederativaService) {
+    	this.entidadFederativaService = entidadFederativaService;
+    }
+    
+    @GetMapping
+    public ResponseEntity<List<EntidadFederativa>> obtenerTodasLasEntidades() {
+        List<EntidadFederativa> entidades = entidadFederativaService.obtenerTodasLasEntidades();
+        return ResponseEntity.ok(entidades);
+    }
+
 	/*
-    @Autowired
-    private EntidadFederativaService entidadFederativaService;
+
 
     // Obtener todas las entidades federativas
     @GetMapping

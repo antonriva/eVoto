@@ -11,7 +11,6 @@ const PaginaBuscar = () => {
     apellidoPaterno: "",
     apellidoMaterno: "",
     fechaDeNacimiento: "",
-    cantidadDomicilios: "", // Nuevo campo para cantidad exacta de domicilios
     fechaDeFin: "", // Nuevo campo para fecha de fin
   });
 
@@ -53,7 +52,6 @@ const PaginaBuscar = () => {
     "Apellido Materno",
     "Fecha de Nacimiento",
     "Fecha de Fin",
-    "Cantidad de Domicilios",
     "Acciones",
   ];
 
@@ -83,7 +81,6 @@ const PaginaBuscar = () => {
               persona.apellidoMaterno,
               persona.fechaDeNacimiento,
               persona.fechaDeFin || "---",
-              persona.cantidadDomicilios,
             ]}
             fetchDomicilios={fetchDomicilios}
             colSpan={8}

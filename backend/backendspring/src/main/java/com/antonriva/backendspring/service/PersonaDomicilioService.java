@@ -1,8 +1,9 @@
 package com.antonriva.backendspring.service;
 
-import com.antonriva.backendspring.model.Persona;
+import com.antonriva.backendspring.model.*;
 import com.antonriva.backendspring.dto.DetalleDomicilioDTO;
 import com.antonriva.backendspring.model.Domicilio;
+import com.antonriva.backendspring.model.Localidad;
 import com.antonriva.backendspring.model.PersonaDomicilio;
 import com.antonriva.backendspring.repository.PersonaDomicilioRepository;
 import com.antonriva.backendspring.repository.PersonaRepository;
@@ -20,27 +21,42 @@ import java.util.Optional;
 
 @Service
 public class PersonaDomicilioService {
-	/*
-    @Autowired
-    private PersonaRepository personaRepository;
-
-    public List<DetalleDomicilioDTO> obtenerDomiciliosPorPersona(int idPersona) {
+	
+    
+    private final PersonaRepository personaRepository;  
+    private final PersonaDomicilioRepository personaDomicilioRepository;
+    
+    public PersonaDomicilioService (PersonaRepository personaRepository, PersonaDomicilioRepository personaDomicilioRepository) {
+    	this.personaDomicilioRepository = personaDomicilioRepository;
+    	this.personaRepository = personaRepository;
+    }
+    
+    @Transactional
+    public List<DetalleDomicilioDTO> obtenerDomiciliosPorPersona(Long idPersona) {
         Persona persona = personaRepository.findById(idPersona)
                 .orElseThrow(() -> new RuntimeException("Persona no encontrada"));
 
         List<DetalleDomicilioDTO> detalles = new ArrayList<>();
+        
 
-        for (PersonaDomicilio relacion : persona.getPersonaDomicilios()) {
+
+        for (PersonaDomicilio relacion : persona.getPersonaDomicilio()) {
             DetalleDomicilioDTO detalle = new DetalleDomicilioDTO();
             Domicilio domicilio = relacion.getDomicilio();
-
-            detalle.setCalle(domicilio.getCalle());
-            detalle.setNumeroExterior(domicilio.getNumeroExterior());
-            detalle.setMunicipio(domicilio.getMunicipio().getDescripcion());
-            detalle.setColonia(domicilio.getColonia().getDescripcion());
+            detalle.setId(domicilio.getId());
             detalle.setEntidadFederativa(domicilio.getEntidadFederativa().getDescripcion());
+            detalle.setMunicipio(domicilio.getMunicipio().getDescripcion());
+                   
+            detalle.setLocalidad(domicilio.getDescripcionLocalidad());
+            detalle.setColonia(domicilio.getDescripcionColonia());
+            detalle.setCodigoPostal(domicilio.getDescripcionCodigoPostal());
+            detalle.setCalle(domicilio.getDescripcionCalle());
+            detalle.setNumeroExterior(domicilio.getDescripcionNumeroExterior());
+            detalle.setNumeroInterior(domicilio.getDescripcionNumeroInterior());
+
             detalle.setFechaDeInicio(relacion.getFechaDeInicio());
             detalle.setFechaDeFin(relacion.getFechaDeFin());
+            detalle.setTipoDeDomicilio(relacion.getTipoDeDomicilio().getDescripcion());
 
             detalles.add(detalle);
         }
@@ -50,8 +66,8 @@ public class PersonaDomicilioService {
     
 
 
-    @Autowired
-    private PersonaDomicilioRepository personaDomicilioRepository;
+	/*
+
 
     /**
      * Crear una nueva relación entre Persona y Domicilio.

@@ -27,7 +27,7 @@ public class PersonaDomicilio {
     private Domicilio domicilio;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "iddetipodedomicilio", nullable = true)
+    @JoinColumn(name = "iddetipodedomicilio", nullable = false)
     private TipoDeDomicilio tipoDeDomicilio;
     
     //Columna normal
@@ -96,6 +96,8 @@ public class PersonaDomicilio {
 	public void setFechaDeFin(LocalDate fechaDeFin) {
 		this.fechaDeFin = fechaDeFin;
 	}
+	
+	
 
 	@Override
 	public String toString() {

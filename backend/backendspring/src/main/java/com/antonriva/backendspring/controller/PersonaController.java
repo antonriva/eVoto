@@ -2,7 +2,6 @@ package com.antonriva.backendspring.controller;
 
 import com.antonriva.backendspring.dto.DetalleDomicilioDTO;
 import com.antonriva.backendspring.dto.PersonaBuscarCompletoDTO;
-import com.antonriva.backendspring.dto.PersonaResumenDTO;
 import com.antonriva.backendspring.model.Persona;
 import com.antonriva.backendspring.model.PersonaDomicilio;
 import com.antonriva.backendspring.service.PersonaDomicilioService;
@@ -36,40 +35,82 @@ public class PersonaController {
 
 
     private final PersonaService personaService;
+    private final PersonaDomicilioService personaDomicilioService;
 
-    public PersonaController(PersonaService personaService) {
+    public PersonaController(PersonaService personaService, PersonaDomicilioService personaDomicilioService) {
         this.personaService = personaService;
+        this.personaDomicilioService = personaDomicilioService;
     }
-
+    
     @GetMapping("/buscar")
     public ResponseEntity<List<PersonaBuscarCompletoDTO>> buscarPersonas(
+            @RequestParam(required = false) Long id,
             @RequestParam(required = false) String nombre,
             @RequestParam(required = false) String apellidoPaterno,
             @RequestParam(required = false) String apellidoMaterno,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaDeNacimiento,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaDeFin,
-            @RequestParam(required = false) Integer cantidadHijos,
-            @RequestParam(required = false) Integer cantidadDomicilios,
-            @RequestParam(required = false) Long idPadre,
-            @RequestParam(required = false) Long idMadre
-    ) {
-    	try {
-        // Llamar al servicio para realizar la búsqueda
-        List<PersonaBuscarCompletoDTO> resultados = personaService.buscarPersonasConDetalles(
-                nombre, apellidoPaterno, apellidoMaterno, fechaDeNacimiento, fechaDeFin,
-                cantidadHijos, cantidadDomicilios, idPadre, idMadre
-        );
-    	
+            @RequestParam(required = false) Integer anioNacimiento,
+            @RequestParam(required = false) Integer mesNacimiento,
+            @RequestParam(required = false) Integer diaNacimiento,
+            @RequestParam(required = false) Integer anioFin,
+            @RequestParam(required = false) Integer mesFin,
+            @RequestParam(required = false) Integer diaFin,
+            @RequestParam(required = false) Long entidadFederativa,
+            @RequestParam(required = false) Long municipio,
+            @RequestParam(required = false) Long localidad,
+            @RequestParam(required = false) Long colonia,
+            @RequestParam(required = false) Long codigoPostal,
+            @RequestParam(required = false) Long tipoDeDomicilio
  
+            
+            
+    ) {
+        try {
+            // Llamar al servicio para realizar la búsqueda
+            List<PersonaBuscarCompletoDTO> resultados = personaService.buscarPersonasConDetalles(
+            		id,
+                    nombre,
+                    apellidoPaterno,
+                    apellidoMaterno,
+                    anioNacimiento,
+                    mesNacimiento,
+                    diaNacimiento,
+                    anioFin,
+                    mesFin,
+                    diaFin,
+                    entidadFederativa,
+                    municipio,
+                    localidad, 
+                    colonia, 
+                    codigoPostal,
+                    tipoDeDomicilio
+            );
 
-        // Retornar la lista de DTOs
-        return ResponseEntity.ok(resultados);
-    	}    catch (Exception e) {
+            // Retornar la lista de DTOs
+            return ResponseEntity.ok(resultados);
+        } catch (Exception e) {
             throw new RuntimeException("Ocurrió un error al buscar personas con detalles. Por favor intente nuevamente.", e);
         }
     }
     
+    @GetMapping("/{idPersona}/detalles-domicilios")
+    public ResponseEntity<List<DetalleDomicilioDTO>> obtenerDomiciliosDetalle(@PathVariable Long idPersona) {
+        List<DetalleDomicilioDTO> detalles = personaDomicilioService.obtenerDomiciliosPorPersona(idPersona);
+        return ResponseEntity.ok(detalles);
+    }
+
     
+    @GetMapping("/{id}/padres")
+    public ResponseEntity<Map<String, PersonaBuscarCompletoDTO>> obtenerPadres(@PathVariable Long id) {
+        try {
+            Map<String,PersonaBuscarCompletoDTO> padres = personaService.obtenerPadres(id);
+            return ResponseEntity.ok(padres);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+}
     
     
     
@@ -116,11 +157,7 @@ public class PersonaController {
     }
     
     // Endpoint para obtener los domicilios detallados de una persona
-    @GetMapping("/{idPersona}/detalles-domicilios")
-    public ResponseEntity<List<DetalleDomicilioDTO>> obtenerDomiciliosDetalle(@PathVariable int idPersona) {
-        List<DetalleDomicilioDTO> detalles = personaDomicilioService.obtenerDomiciliosPorPersona(idPersona);
-        return ResponseEntity.ok(detalles);
-    }
+
 
     // Obtener una persona por ID
     //SI FUNCIONA NOS DA TAMBIEN PERSONA DOMICILIO
@@ -237,4 +274,3 @@ public class PersonaController {
         }
     }
     */
-}
