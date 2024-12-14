@@ -27,7 +27,11 @@ public interface PersonaDomicilioRepository extends JpaRepository<PersonaDomicil
 
     void deleteByDomicilio(Domicilio domicilio);
     
-    @Query("SELECT COUNT(pd) FROM PersonaDomicilio pd WHERE pd.persona.id = :personaId")
-    int countDomiciliosByPersonaId(@Param("personaId") Long personaId);
+    // Elimina todas las relaciones de persona con domicilio dado el ID de Persona
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM PersonaDomicilio pd WHERE pd.persona.id = :personaId")
+    void deleteByPersonaId(@Param("personaId") Long personaId);
     
+
 }

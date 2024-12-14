@@ -3,7 +3,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import AboutCiv from "./AboutCiv";
 import PaginaBuscar from "./PaginaBuscar";
 import PaginaRegistrar from "./PaginaRegistrar"
-import PaginaRegistroDomicilio from "./PaginaRegistroDomicilio"
+
 
 const AppCivil = () => {
   return (
@@ -23,7 +23,6 @@ const AppCivil = () => {
         <Route path="about" element={<AboutCiv />} />
         <Route path="buscar" element={<PaginaBuscar />} />
         <Route path="registrar" element={<PaginaRegistrar />} />
-        <Route path="registroDomicilio" element={<PaginaRegistroDomicilio />} />
       </Routes>
     </div>
   );

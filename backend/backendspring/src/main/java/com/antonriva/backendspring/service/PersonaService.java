@@ -1,18 +1,23 @@
 package com.antonriva.backendspring.service;
 
 import com.antonriva.backendspring.dto.PersonaBuscarCompletoDTO;
+import com.antonriva.backendspring.model.Elector;
 import com.antonriva.backendspring.model.Persona;
 import com.antonriva.backendspring.model.RelacionFamiliar;
+import com.antonriva.backendspring.repository.ElectorRepository;
+import com.antonriva.backendspring.repository.PersonaCandidaturaRepository;
 import com.antonriva.backendspring.repository.PersonaDomicilioRepository;
 import com.antonriva.backendspring.repository.PersonaRepository;
 import com.antonriva.backendspring.repository.RelacionFamiliarRepository;
 import com.antonriva.backendspring.specification.PersonaSpecifications;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,14 +31,27 @@ public class PersonaService {
     private final PersonaRepository personaRepository;
     private final RelacionFamiliarRepository relacionFamiliarRepository;
     private final PersonaDomicilioRepository personaDomicilioRepository;
+    private final PersonaCandidaturaRepository personaCandidaturaRepository;
+    private final ElectorRepository electorRepository;
+    
     
 
-    public PersonaService(PersonaRepository personaRepository, RelacionFamiliarRepository relacionFamiliarRepository, PersonaDomicilioRepository personaDomicilioRepository) {
+    public PersonaService(
+    		PersonaRepository personaRepository, RelacionFamiliarRepository relacionFamiliarRepository, 
+    		PersonaDomicilioRepository personaDomicilioRepository,
+    		PersonaCandidaturaRepository personaCandidaturaRepository, 
+    		ElectorRepository electorRepository
+    		) {
         this.personaRepository = personaRepository;
         this.relacionFamiliarRepository = relacionFamiliarRepository;
         this.personaDomicilioRepository = personaDomicilioRepository;
+        this.personaCandidaturaRepository = personaCandidaturaRepository;
+        this.electorRepository = electorRepository;
     }
     
+    
+    
+    //GET
     @Transactional
     public List<PersonaBuscarCompletoDTO> buscarPersonasConDetalles(
     		Long id,
@@ -80,6 +98,7 @@ public class PersonaService {
         return personas.stream().map(persona -> {
 
 
+        	
             // Construir el DTO principal
             return new PersonaBuscarCompletoDTO(
                     persona.getId(),
@@ -121,6 +140,7 @@ public class PersonaService {
 
         return padres;
     }
+    
     @Transactional
     private PersonaBuscarCompletoDTO mapearAPersonaDTO(Persona persona) {
         return new PersonaBuscarCompletoDTO(
@@ -132,7 +152,53 @@ public class PersonaService {
                 persona.getFechaDeFin()
         );
     }
+
+    
+    
+    //DELETE
+    @Transactional
+    public void eliminarPersona(Long id) {
+        // Verificar si la persona existe
+        Optional<Persona> persona = personaRepository.findById(id);
+        if (persona.isEmpty()) {
+            throw new EntityNotFoundException("La persona con ID " + id + " no existe.");
+        }
+
+        // Verificar dependencias críticas
+        List<String> dependenciasCriticas = verificarDependenciasCriticas(id);
+        if (!dependenciasCriticas.isEmpty()) {
+            throw new IllegalStateException("No se puede eliminar la persona. Relacionada con: " +
+                    String.join(", ", dependenciasCriticas));
+        }
+
+        // Eliminar relaciones permisibles
+        personaDomicilioRepository.deleteByPersonaId(id);
+        relacionFamiliarRepository.deleteByPersonaId(id);
+
+        // Eliminar la persona
+        personaRepository.deleteById(id);
+    }
+
+    private List<String> verificarDependenciasCriticas(Long id) {
+        List<String> tablasCriticas = new ArrayList<>();
+
+        // Verificar relaciones en Elector
+        if (electorRepository.existsByPersonaId(id)) {
+            tablasCriticas.add("Elector");
+        }
+
+        // Verificar relaciones en Candidato
+        if (personaCandidaturaRepository.existsByPersonaId(id)) {
+            tablasCriticas.add("Candidato");
+        }
+
+        return tablasCriticas;
+    }
+
 }
+
+
+
     
     
     

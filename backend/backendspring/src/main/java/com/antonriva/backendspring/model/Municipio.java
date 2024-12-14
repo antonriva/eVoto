@@ -13,7 +13,7 @@ public class Municipio {
     private Long id;
     
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "iddeentidad")
+    @JoinColumn(name = "iddeentidad", nullable=false)
 	@JsonIgnore
     private EntidadFederativa entidadFederativa;
     

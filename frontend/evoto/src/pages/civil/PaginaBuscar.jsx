@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Table from "../../components/civil/Table";
-import ExpandableRow from "../../components/civil/ExpandableRow";
-import FiltrosPersonas from "../../components/forms/FiltrosPersonas"; // Nuevo componente
+import { useNavigate } from "react-router-dom";
+import Table from "../../components/civil/paginaBuscar/Table";
+import ExpandableRow from "../../components/civil/paginaBuscar/ExpandableRow";
+import FiltrosPersonas from "../../components/civil/paginaBuscar/FiltrosPersonas"; // Nuevo componente
 
 const PaginaBuscar = () => {
   const [personas, setPersonas] = useState([]);
@@ -25,6 +26,8 @@ const PaginaBuscar = () => {
     codigoPostal: "",
     tipoDeDomicilio:""
   });
+
+  const navigate = useNavigate(); // Para navegación entre páginas
 
   // Función para obtener personas con o sin filtros
   const fetchPersonas = async (params = {}) => {
@@ -57,6 +60,36 @@ const PaginaBuscar = () => {
     return response.json();
   };
 
+  // Función para eliminar una persona
+  const eliminarPersona = async (id) => {
+    const confirmar = window.confirm("¿Estás seguro de que deseas eliminar esta persona?");
+    if (confirmar) {
+      try {
+        const response = await fetch(`http://localhost:8080/api/persona/${id}`, { method: "DELETE" });
+  
+        if (response.ok) {
+          alert("Persona eliminada exitosamente.");
+          setPersonas((prev) => prev.filter((persona) => persona.id !== id));
+        } else if (response.status === 409) {
+          const errorMessage = await response.text();
+          alert(`No se pudo eliminar la persona. ${errorMessage}`);
+        } else {
+          alert("Error al eliminar persona.");
+        }
+      } catch (error) {
+        console.error(`Error al eliminar persona con ID ${id}:`, error);
+        alert("Error inesperado al eliminar persona.");
+      }
+    }
+  };
+  
+
+  // Función para redirigir a la página de edición
+  const editarPersona = (id) => {
+    navigate(`/editar/${id}`);
+  };
+  
+
   const headers = [
     "ID",
     "Nombre",
@@ -65,6 +98,7 @@ const PaginaBuscar = () => {
     "Fecha de Nacimiento",
     "Fecha de Fin",
     "Domicilios",
+    "Acciones"
   ];
 
   return (
@@ -95,7 +129,9 @@ const PaginaBuscar = () => {
               persona.fechaDeFin || "---",
             ]}
             fetchDomicilios={fetchDomicilios}
-            colSpan={8}
+            colSpan={9}
+            onEdit={(id) => editarPersona(id)} // Función de edición
+            onDelete={(id) => eliminarPersona(id)} // Función de eliminación
           />
         )}
       />

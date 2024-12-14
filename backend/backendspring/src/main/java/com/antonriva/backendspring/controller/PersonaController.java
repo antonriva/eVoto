@@ -7,6 +7,8 @@ import com.antonriva.backendspring.model.PersonaDomicilio;
 import com.antonriva.backendspring.service.PersonaDomicilioService;
 import com.antonriva.backendspring.service.PersonaService;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -37,6 +39,9 @@ public class PersonaController {
     private final PersonaService personaService;
     private final PersonaDomicilioService personaDomicilioService;
 
+    
+    //GET
+    
     public PersonaController(PersonaService personaService, PersonaDomicilioService personaDomicilioService) {
         this.personaService = personaService;
         this.personaDomicilioService = personaDomicilioService;
@@ -110,14 +115,30 @@ public class PersonaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    
+    
+    //DELETE
+    
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarPersona(@PathVariable Long id) {
+        try {
+            personaService.eliminarPersona(id);
+            return ResponseEntity.ok("Persona eliminada correctamente.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error: " + e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Error: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al eliminar la persona: " + e.getMessage());
+        }
+    }
 }
     
-    
-    
-    
-    
-    
-    
+  
     
     
     
@@ -147,54 +168,7 @@ public class PersonaController {
     
     
 /*
-    // Obtener todas las personas
-    // SI FUNCIONA PRUEBA HTTPi
-    //NOS DA TAMBIEN PERSONADOMICILIO
-    @GetMapping
-    public ResponseEntity<List<PersonaResumenDTO>> obtenerResumenDePersonas() {
-        List<PersonaResumenDTO> resumenPersonas = personaService.obtenerResumenDePersonas();
-        return ResponseEntity.ok(resumenPersonas);
-    }
-    
-    // Endpoint para obtener los domicilios detallados de una persona
 
-
-    // Obtener una persona por ID
-    //SI FUNCIONA NOS DA TAMBIEN PERSONA DOMICILIO
-    @GetMapping("/{id}")
-    public ResponseEntity<Persona> obtenerPersonaPorId(@PathVariable int id) {
-        return personaService.obtenerPersonaPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    //SI FUNCIONA
-    @GetMapping("/buscar")
-    public ResponseEntity<List<PersonaResumenDTO>> buscarConFiltros(
-            @RequestParam(required = false) Integer id,
-            @RequestParam(required = false) String nombre,
-            @RequestParam(required = false) String apellidoPaterno,
-            @RequestParam(required = false) String apellidoMaterno,
-            @RequestParam(required = false) String fechaDeNacimiento,
-            @RequestParam(required = false) String fechaDeFin,
-            @RequestParam(required = false) Integer cantidadDomicilios) {
-
-        List<PersonaResumenDTO> personas = personaService.buscarConFiltros(
-            id, nombre, apellidoPaterno, apellidoMaterno, fechaDeNacimiento, fechaDeFin, cantidadDomicilios);
-
-        return ResponseEntity.ok(personas);
-    }
-
-
-    
-    //si funciona
-    @GetMapping("/{personaId}/domicilios")
-    public ResponseEntity<?> obtenerPersonaConDomicilios(@PathVariable Integer personaId) {
-        Optional<Persona> persona = personaService.obtenerPersonaConDomicilios(personaId);
-        return persona.map(ResponseEntity::ok)
-                      .orElse(ResponseEntity.notFound().build());
-    }
-    
 
 
 
@@ -233,7 +207,7 @@ public class PersonaController {
     // Actualizar una persona
  // Actualizar una persona
     //SI FUNCIONA TODOS LOS DATOS DEBEN PASARSE PARA QUE FUNCIONE
-    @PutMapping("/{id}")
+    @PutMapping("/{id}")w
     public ResponseEntity<Persona> actualizarPersona(@PathVariable int id, @RequestBody Persona nuevaPersona) {
         try {
             validarDatosPersona(nuevaPersona); // Apply restrictions on incoming data

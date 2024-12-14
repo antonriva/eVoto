@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 
-const ExpandableRow = ({ idPersona, rowData, fetchDomicilios, colSpan }) => {
+const ExpandableRow = ({ idPersona, rowData, fetchDomicilios, colSpan, onEdit, onDelete }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [domicilios, setDomicilios] = useState([]);
 
   const toggleExpand = async () => {
     setIsExpanded(!isExpanded);
+
+    
 
     if (!isExpanded && domicilios.length === 0) {
       setLoading(true);
@@ -32,6 +34,11 @@ const ExpandableRow = ({ idPersona, rowData, fetchDomicilios, colSpan }) => {
           <button onClick={toggleExpand}>
             {isExpanded ? "Contraer" : "Expandir"}
           </button>
+        </td>
+        <td>
+          {/* Botones de acción */}
+          <button onClick={() => onEdit(idPersona)}>Editar</button>
+          <button onClick={() => onDelete(idPersona)}>Eliminar</button>
         </td>
       </tr>
       {isExpanded && (

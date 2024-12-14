@@ -5,13 +5,14 @@ import ColegioElectoralPag from './ColegioElectoralPag';
 import ResultadosPag from './ResultadosPag';
 import ProcesoElectoralPag from './ProcesoElectoralPag';
 import DefineProcesoElectoralPag from './ColegioElectoralDir/ProcesoElectoralDir/DefineProcesoElectoralPag';
+import SistemaP from './sistemaElectoral/SistemaP';
 
 const AppColegio = () => {
     const [menuVisible, setMenuVisible] = useState(true); // Estado para mostrar/ocultar el menú
     const location = useLocation(); // Obtener la ruta actual
   
     // Páginas donde se debe ocultar el menú
-    const hideMenuPages = ['/colegio/proceso', '/colegio/proceso/definir'];
+    const hideMenuPages = ['/colegio/proceso', '/colegio/proceso/definir', '/colegio/sistema'];
   
     // Usamos useEffect para detectar cambios en la ruta
     useEffect(() => {
@@ -28,6 +29,9 @@ const AppColegio = () => {
       if (path.includes("proceso")) {
         setMenuVisible(false);
       }
+      if (path.includes("sistema")) {
+        setMenuVisible(false);
+      }
     };
   
   return (
@@ -38,6 +42,7 @@ const AppColegio = () => {
         <nav>
           <ul>
             <li><Link to="about" onClick={() => setMenuVisible(true)}>Acerca del Colegio Electoral</Link></li>
+            <li><Link to="sistema" onClick={() => handleMenuToggle("sistema")}>Sistema electoral</Link></li>
             <li><Link to="proceso" onClick={() => handleMenuToggle("proceso")}>Proceso Electoral</Link></li>
             <li><Link to="resultados" onClick={() => setMenuVisible(true)}>Resultados</Link></li>
           </ul>
@@ -51,6 +56,12 @@ const AppColegio = () => {
         <Route path="resultados" element={<ResultadosPag />} />
         <Route path="proceso/definir" element={<ProcesoElectoralPag />} />
         <Route path="proceso/definir/formulario" element={<DefineProcesoElectoralPag />} />
+
+        {/* Sistema electoral */}
+        <Route path="sistema" element={<SistemaP/>}/>
+        <Route path="sistema/par" element={<SistemaP/>}/>
+        <Route path="sistema/ele" element={<SistemaP/>}/>
+        <Route path="sistema/gen" element={<SistemaP/>}/>
       </Routes>
     </div>
   );
