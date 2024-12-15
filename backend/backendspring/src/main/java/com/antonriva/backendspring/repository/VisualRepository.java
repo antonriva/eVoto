@@ -22,6 +22,8 @@ public interface VisualRepository extends JpaRepository<Visual, Long> {
 
 	   Optional<Visual> findByPartidoIdAndTipoDeVisualIdAndRecursoVigenteId(Long partidoId, Long tipoDeVisualId, Long recursoVigenteId);
 
+	   void deleteByPartidoId(Long partidoId);
+
 	
 
 }

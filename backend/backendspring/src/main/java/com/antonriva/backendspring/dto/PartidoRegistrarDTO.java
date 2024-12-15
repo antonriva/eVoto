@@ -2,13 +2,11 @@ package com.antonriva.backendspring.dto;
 
 import java.time.LocalDate;
 
-import jakarta.validation.constraints.Pattern;
-import java.time.LocalDate;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
-public class PartidoEditarDTO {
-
-    private Long id;
-
+public class PartidoRegistrarDTO {
+	
     @Pattern(regexp = "^[A-Z]+( [A-Z]+)*$", message = "La denominación debe contener solo letras mayúsculas y espacios, sin números ni caracteres especiales.")
     private String denominacion;
 
@@ -16,26 +14,15 @@ public class PartidoEditarDTO {
     private String siglas;
 
     private LocalDate fechaDeInicio;
-    private LocalDate fechaDeFin;
-    private String visualUrl;
 
-    public PartidoEditarDTO(Long id, String denominacion, String siglas, LocalDate fechaDeInicio, LocalDate fechaDeFin, String visualUrl) {
-        this.id = id;
+    // Constructor
+    public PartidoRegistrarDTO(String denominacion, String siglas, LocalDate fechaDeInicio) {
         this.denominacion = normalizeName(denominacion);
         this.siglas = normalizeSingleWord(siglas);
         this.fechaDeInicio = fechaDeInicio;
-        this.fechaDeFin = fechaDeFin;
-        this.visualUrl = visualUrl;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    // Getters y Setters
     public String getDenominacion() {
         return denominacion;
     }
@@ -60,22 +47,6 @@ public class PartidoEditarDTO {
         this.fechaDeInicio = fechaDeInicio;
     }
 
-    public LocalDate getFechaDeFin() {
-        return fechaDeFin;
-    }
-
-    public void setFechaDeFin(LocalDate fechaDeFin) {
-        this.fechaDeFin = fechaDeFin;
-    }
-
-    public String getVisualUrl() {
-        return visualUrl;
-    }
-
-    public void setVisualUrl(String visualUrl) {
-        this.visualUrl = visualUrl;
-    }
-
     // Métodos auxiliares para normalizar los campos
     private String normalizeName(String value) {
         if (value == null) {
@@ -90,6 +61,5 @@ public class PartidoEditarDTO {
         }
         return value.trim(); // Solo elimina espacios al inicio y final
     }
-}
 
-    
+}

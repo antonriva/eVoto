@@ -1,8 +1,11 @@
 package com.antonriva.backendspring.model;
 
 
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +28,13 @@ public class Elector {
     @JoinColumn(name = "iddepersona", nullable = false)
     @JsonIgnore
     private Persona persona;
+    
+	@Column(name="fechadeinicio", nullable = false)
+	private LocalDate fechaDeInicio;
+
+	@Column(name="fechadefin", nullable = true)
+	private LocalDate fechaDeFin;
+
 
     public Elector() {
     	

@@ -1,5 +1,7 @@
 package com.antonriva.backendspring.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -13,4 +15,5 @@ import jakarta.transaction.Transactional;
 @Transactional
 @EnableTransactionManagement
 public interface PartidoRepository extends JpaRepository<Partido, Long>, JpaSpecificationExecutor<Partido> {
+	 Optional<Partido> findByDenominacionOrSiglas(String denominacion, String siglas);
 }

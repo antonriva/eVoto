@@ -16,7 +16,6 @@ import com.antonriva.backendspring.repository.DomicilioRepository;
 import com.antonriva.backendspring.repository.ElectorRepository;
 import com.antonriva.backendspring.repository.EntidadFederativaRepository;
 import com.antonriva.backendspring.repository.MunicipioRepository;
-import com.antonriva.backendspring.repository.PersonaCandidaturaRepository;
 import com.antonriva.backendspring.repository.PersonaDomicilioRepository;
 import com.antonriva.backendspring.repository.PersonaRepository;
 import com.antonriva.backendspring.repository.RelacionFamiliarRepository;
@@ -45,7 +44,6 @@ public class PersonaService {
     private final PersonaRepository personaRepository;
     private final RelacionFamiliarRepository relacionFamiliarRepository;
     private final PersonaDomicilioRepository personaDomicilioRepository;
-    private final PersonaCandidaturaRepository personaCandidaturaRepository;
     private final ElectorRepository electorRepository;
     private final EntidadFederativaRepository entidadFederativaRepository;
     private final MunicipioRepository municipioRepository;
@@ -57,7 +55,6 @@ public class PersonaService {
     public PersonaService(
     		PersonaRepository personaRepository, RelacionFamiliarRepository relacionFamiliarRepository, 
     		PersonaDomicilioRepository personaDomicilioRepository,
-    		PersonaCandidaturaRepository personaCandidaturaRepository, 
     		ElectorRepository electorRepository,
     		EntidadFederativaRepository entidadFederativaRepository,
     		MunicipioRepository municipioRepository, 
@@ -67,7 +64,6 @@ public class PersonaService {
         this.personaRepository = personaRepository;
         this.relacionFamiliarRepository = relacionFamiliarRepository;
         this.personaDomicilioRepository = personaDomicilioRepository;
-        this.personaCandidaturaRepository = personaCandidaturaRepository;
         this.electorRepository = electorRepository;
         this.entidadFederativaRepository = entidadFederativaRepository;
         this.municipioRepository = municipioRepository;
@@ -389,8 +385,6 @@ public class PersonaService {
             throw new IllegalArgumentException("Debe proporcionar tanto Entidad Federativa como Municipio, o ninguno.");
         }
 
-        // 1. Verificar si ya existe una persona con las mismas características
-
         // 2. Crear la nueva persona
         System.out.println("Creando nueva persona.");
         Persona nuevaPersona = new Persona();
@@ -530,11 +524,6 @@ public class PersonaService {
         // Verificar relaciones en Elector
         if (electorRepository.existsByPersonaId(id)) {
             tablasCriticas.add("Elector");
-        }
-
-        // Verificar relaciones en Candidato
-        if (personaCandidaturaRepository.existsByPersonaId(id)) {
-            tablasCriticas.add("Candidato");
         }
 
         return tablasCriticas;

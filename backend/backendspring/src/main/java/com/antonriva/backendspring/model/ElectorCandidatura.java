@@ -2,32 +2,29 @@ package com.antonriva.backendspring.model;
 
 import java.time.LocalDateTime;
 
-import com.antonriva.backendspring.id.PersonaCandidaturaId;
+import com.antonriva.backendspring.id.ElectorCandidaturaId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
-import jakarta.persistence.Table;
 
-@Entity
-@Table(name= "personacandidatura")
-public class PersonaCandidatura {
+public class ElectorCandidatura {
 	
+
 	//Id compuesto
     @EmbeddedId
-    private PersonaCandidaturaId id;
+    private ElectorCandidaturaId id;
     
     //ManyToOne
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("idDePersona") // Vincula con el campo idDePersona del EmbeddedId
-    @JoinColumn(name = "iddepersona", nullable = false)
+    @MapsId("idDeElector") // Vincula con el campo idDePersona del EmbeddedId
+    @JoinColumn(name = "iddeelector", nullable = false)
     @JsonIgnore
-    private Persona persona;
+    private Elector elector;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idDeCandidatura") 
@@ -41,33 +38,30 @@ public class PersonaCandidatura {
 
     @Column(name = "fechahoradefin", nullable = false)
     private LocalDateTime fechaHoraDeFin;
-    
-    public PersonaCandidatura() {
-    }
 
-    // Constructor con fechas
-    public PersonaCandidatura(Persona persona, Candidatura candidatura, LocalDateTime fechaHoraDeInicio, LocalDateTime fechaHoraDeFin) {
-        this.id = new PersonaCandidaturaId(persona.getId(), candidatura.getId());
-        this.persona = persona;
-        this.candidatura = candidatura;
-        this.fechaHoraDeInicio = fechaHoraDeInicio;
-        this.fechaHoraDeFin = fechaHoraDeFin;
-    }
+	public ElectorCandidatura( Elector elector, Candidatura candidatura,
+			LocalDateTime fechaHoraDeInicio, LocalDateTime fechaHoraDeFin) {
+		this.id = new ElectorCandidaturaId(elector.getId(), candidatura.getId());
+		this.elector = elector;
+		this.candidatura = candidatura;
+		this.fechaHoraDeInicio = fechaHoraDeInicio;
+		this.fechaHoraDeFin = fechaHoraDeFin;
+	}
 
-	public PersonaCandidaturaId getId() {
+	public ElectorCandidaturaId getId() {
 		return id;
 	}
 
-	public void setId(PersonaCandidaturaId id) {
+	public void setId(ElectorCandidaturaId id) {
 		this.id = id;
 	}
 
-	public Persona getPersona() {
-		return persona;
+	public Elector getElector() {
+		return elector;
 	}
 
-	public void setPersona(Persona persona) {
-		this.persona = persona;
+	public void setElector(Elector elector) {
+		this.elector = elector;
 	}
 
 	public Candidatura getCandidatura() {
@@ -96,9 +90,11 @@ public class PersonaCandidatura {
 
 	@Override
 	public String toString() {
-		return "PersonaCandidatura [id=" + id + ", fechaHoraDeInicio=" + fechaHoraDeInicio + ", fechaHoraDeFin="
-				+ fechaHoraDeFin + "]";
+		return "ElectorCandidatura [fechaHoraDeInicio=" + fechaHoraDeInicio + ", fechaHoraDeFin=" + fechaHoraDeFin
+				+ "]";
 	}
-
+    
+    
+    
 
 }
