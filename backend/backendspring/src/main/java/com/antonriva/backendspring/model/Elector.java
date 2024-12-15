@@ -61,9 +61,27 @@ public class Elector {
 		this.persona = persona;
 	}
 
+	public LocalDate getFechaDeInicio() {
+		return fechaDeInicio;
+	}
+
+	public void setFechaDeInicio(LocalDate fechaDeInicio) {
+		this.fechaDeInicio = fechaDeInicio;
+	}
+
+	public LocalDate getFechaDeFin() {
+		return fechaDeFin;
+	}
+
+	public void setFechaDeFin(LocalDate fechaDeFin) {
+		this.fechaDeFin = fechaDeFin;
+	}
+
 	@Override
 	public String toString() {
-		return "Elector [id=" + id + "]";
+		return "Elector [id=" + id + ", persona=" + persona + ", fechaDeInicio=" + fechaDeInicio + ", fechaDeFin="
+				+ fechaDeFin + "]";
 	}
-    
+
+
 }

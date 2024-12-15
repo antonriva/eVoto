@@ -1,5 +1,7 @@
 package com.antonriva.backendspring.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -19,5 +21,7 @@ public interface ElectorRepository extends JpaRepository<Elector, Long>, JpaSpec
 	    @Query("SELECT COUNT(e) > 0 FROM Elector e WHERE e.persona.id = :personaId")
 	    boolean existsByPersonaId(@Param("personaId") Long personaId);
 	
+	    Optional<Elector> findByPersonaId(Long personaId);
+	    
 
 }

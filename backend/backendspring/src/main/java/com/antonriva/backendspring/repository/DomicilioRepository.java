@@ -20,6 +20,17 @@ public interface DomicilioRepository extends JpaRepository<Domicilio, Long>,  Jp
 	
     Optional<Domicilio> findByEntidadFederativaIdAndMunicipioIdAndCalleIsNullAndNumeroExteriorIsNullAndNumeroInteriorIsNullAndCodigoPostalIsNullAndColoniaIsNullAndLocalidadIsNull(
             Long entidadFederativaId, Long municipioId);
+    
+    Optional<Domicilio> findByEntidadFederativaIdAndMunicipioIdAndLocalidadIdAndColoniaIdAndCodigoPostalIdAndCalleAndNumeroExteriorAndNumeroInterior(
+            Long entidadFederativaId,
+            Long municipioId,
+            Long localidadId,
+            Long coloniaId,
+            Long codigoPostalId,
+            String calle,
+            Integer numeroExterior,
+            Integer numeroInterior
+    );
 
 	
 	

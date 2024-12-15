@@ -229,6 +229,7 @@ public class PersonaService {
         );
     }
     
+    
     @Transactional
     public void editarPersona(Long id, PersonaEditarDTO dto) {
         // Imprimir datos recibidos
@@ -241,6 +242,7 @@ public class PersonaService {
         System.out.println("Entidad Federativa ID: " + dto.getEntidadFederativaId());
         System.out.println("Municipio ID: " + dto.getMunicipioId());
         System.out.println("Fecha de Inicio: " + dto.getFechaDeInicio());
+        System.out.println("Fecha de Fin: " + dto.getFechaDeFin());
 
         // 1. Buscar a la persona
         System.out.println("Buscando persona con ID: " + id);
@@ -268,6 +270,16 @@ public class PersonaService {
         persona.setFechaDeFin(dto.getFechaDeFin());
         personaRepository.save(persona);
         System.out.println("Datos básicos de la persona actualizados.");
+
+        // 3.1. Si se actualiza la fecha de fin, sincronizar con el elector asociado
+        if (dto.getFechaDeFin() != null) {
+            System.out.println("Sincronizando fechaDeFin con el elector asociado.");
+            Elector elector = electorRepository.findByPersonaId(persona.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Elector no encontrado para la persona con ID " + persona.getId()));
+            elector.setFechaDeFin(dto.getFechaDeFin());
+            electorRepository.save(elector);
+            System.out.println("Fecha de fin actualizada en el elector asociado.");
+        }
 
         // 4. Si no se proporcionaron datos de domicilio, salir del método
         if (!entidadFederativaProporcionada && !municipioProporcionado) {
@@ -358,7 +370,7 @@ public class PersonaService {
         System.out.println("Relación PersonaDomicilio guardada exitosamente.");
         System.out.println("Proceso de actualización de persona finalizado.");
     }
- 
+
    
     //REGISTRO Y VERIFICACION DE EXISTENCIA PREVIA
 

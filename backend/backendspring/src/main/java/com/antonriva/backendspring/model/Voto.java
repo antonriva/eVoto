@@ -27,6 +27,47 @@ public class Voto {
     @JoinColumn(name = "iddeinstanciadeproceso", nullable = false)
     private InstanciaDeProceso instanciaDeProceso;
     
+    public Voto() {
+    	
+    }
+
+	public Voto(Long id, Candidatura candidatura, InstanciaDeProceso instanciaDeProceso) {
+		super();
+		this.id = id;
+		this.candidatura = candidatura;
+		this.instanciaDeProceso = instanciaDeProceso;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Candidatura getCandidatura() {
+		return candidatura;
+	}
+
+	public void setCandidatura(Candidatura candidatura) {
+		this.candidatura = candidatura;
+	}
+
+	public InstanciaDeProceso getInstanciaDeProceso() {
+		return instanciaDeProceso;
+	}
+
+	public void setInstanciaDeProceso(InstanciaDeProceso instanciaDeProceso) {
+		this.instanciaDeProceso = instanciaDeProceso;
+	}
+
+	@Override
+	public String toString() {
+		return "Voto [id=" + id + "]";
+	}
+    
+	
     
 
 }

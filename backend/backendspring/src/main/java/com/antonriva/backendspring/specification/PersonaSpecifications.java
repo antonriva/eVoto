@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import com.antonriva.backendspring.model.Colonia;
 import com.antonriva.backendspring.model.Domicilio;
+import com.antonriva.backendspring.model.Elector;
 import com.antonriva.backendspring.model.EntidadFederativa;
 import com.antonriva.backendspring.model.Localidad;
 import com.antonriva.backendspring.model.Municipio;
@@ -248,6 +249,8 @@ public class PersonaSpecifications {
             return criteriaBuilder.equal(tipoDeDomicilioJoin.get("id"), tipoDeDomicilioId);
         };
     }
+    
+
 
 
 
