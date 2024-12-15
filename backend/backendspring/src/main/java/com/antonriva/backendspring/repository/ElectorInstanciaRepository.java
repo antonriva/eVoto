@@ -5,18 +5,17 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.antonriva.backendspring.id.ElectorCandidaturaId;
-import com.antonriva.backendspring.model.ElectorCandidatura;
+import com.antonriva.backendspring.id.ElectorInstanciaId;
+import com.antonriva.backendspring.model.ElectorInstancia;
 
 import jakarta.transaction.Transactional;
 
 @Repository
 @Transactional
 @EnableTransactionManagement
-public interface ElectorCandidaturaRepository extends JpaRepository<ElectorCandidatura, ElectorCandidaturaId>, JpaSpecificationExecutor<ElectorCandidatura> {
+public interface ElectorInstanciaRepository extends JpaRepository<ElectorInstancia, ElectorInstanciaId>, JpaSpecificationExecutor<ElectorInstancia> {
 	
 	boolean existsByElectorId(Long idDeElector);
 
-	
 
 }

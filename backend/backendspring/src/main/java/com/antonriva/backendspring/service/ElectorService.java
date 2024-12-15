@@ -1,6 +1,7 @@
 package com.antonriva.backendspring.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.antonriva.backendspring.dto.DomicilioDTO;
 import com.antonriva.backendspring.dto.ElectorBuscarCompletoDTO;
 import com.antonriva.backendspring.dto.ElectorBuscarDTO;
 import com.antonriva.backendspring.dto.ElectorEditarDTO;
@@ -21,11 +23,14 @@ import com.antonriva.backendspring.model.Persona;
 import com.antonriva.backendspring.model.PersonaDomicilio;
 import com.antonriva.backendspring.repository.ColoniaRepository;
 import com.antonriva.backendspring.repository.DomicilioRepository;
+import com.antonriva.backendspring.repository.ElectorCandidaturaRepository;
+import com.antonriva.backendspring.repository.ElectorInstanciaRepository;
 import com.antonriva.backendspring.repository.ElectorRepository;
 import com.antonriva.backendspring.repository.EntidadFederativaRepository;
 import com.antonriva.backendspring.repository.LocalidadRepository;
 import com.antonriva.backendspring.repository.MunicipioRepository;
 import com.antonriva.backendspring.repository.PersonaDomicilioRepository;
+import com.antonriva.backendspring.repository.PersonaRepository;
 import com.antonriva.backendspring.repository.PostalRepository;
 import com.antonriva.backendspring.repository.TipoDeDomicilioRepository;
 import com.antonriva.backendspring.specification.ElectorSpecifications;
@@ -47,6 +52,8 @@ public class ElectorService {
     private final PostalRepository postalRepository;
     private final ColoniaRepository coloniaRepository;
     private final TipoDeDomicilioRepository tipoDeDomicilioRepository;
+    private final ElectorInstanciaRepository electorInstanciaRepository;
+    private final ElectorCandidaturaRepository electorCandidaturaRepository;
     
     
     public ElectorService(
@@ -59,7 +66,9 @@ public class ElectorService {
     		PostalRepository postalRepository,
     		ColoniaRepository coloniaRepository,
     		TipoDeDomicilioRepository tipoDeDomicilioRepository, 
-    		PersonaRepository personaRepository
+    		PersonaRepository personaRepository,
+    		ElectorInstanciaRepository electorInstanciaRepository,
+    		ElectorCandidaturaRepository electorCandidaturaRepository
     		) {
         this.electorRepository = electorRepository;
         this.personaDomicilioRepository = personaDomicilioRepository;
@@ -71,6 +80,8 @@ public class ElectorService {
         this.tipoDeDomicilioRepository = tipoDeDomicilioRepository;
         this.postalRepository = postalRepository;
         this.personaRepository = personaRepository;
+        this.electorInstanciaRepository = electorInstanciaRepository;
+        this.electorCandidaturaRepository = electorCandidaturaRepository;
     }
     //BUSCAR COMPLETO
     @Transactional
@@ -319,81 +330,107 @@ public class ElectorService {
     
     @Transactional
     public Elector registrarElector(Long idPersona, LocalDate fechaDeInicioElector, DomicilioDTO domicilioDTO) {
-        // Verificar si la persona existe
-        Persona persona = personaRepository.findById(idPersona)
-                .orElseThrow(() -> new EntityNotFoundException("La persona con ID " + idPersona + " no existe."));
+        try {
+            System.out.println("Iniciando registro de elector para la persona con ID: " + idPersona);
 
-        // Validar que la persona tiene al menos 17 años
-        LocalDate fechaActual = LocalDate.now();
-        if (persona.getFechaDeNacimiento() == null || fechaActual.minusYears(17).isBefore(persona.getFechaDeNacimiento())) {
-            throw new IllegalArgumentException("La persona debe tener al menos 17 años para ser registrada como elector.");
+            // Verificar si la persona existe
+            System.out.println("Verificando si la persona existe...");
+            Persona persona = personaRepository.findById(idPersona)
+                    .orElseThrow(() -> new EntityNotFoundException("La persona con ID " + idPersona + " no existe."));
+            System.out.println("Persona encontrada: " + persona);
+
+            // Validar que la persona tiene al menos 17 años
+            System.out.println("Validando la edad de la persona...");
+            LocalDate fechaActual = LocalDate.now();
+            if (persona.getFechaDeNacimiento() == null || fechaActual.minusYears(17).isBefore(persona.getFechaDeNacimiento())) {
+                System.out.println("La persona no cumple con la edad mínima de 17 años.");
+                throw new IllegalArgumentException("La persona debe tener al menos 17 años para ser registrada como elector.");
+            }
+            System.out.println("Validación de edad completada.");
+
+            // Validar que la fecha de inicio del elector no sea nula
+            System.out.println("Validando la fecha de inicio del elector...");
+            if (fechaDeInicioElector == null) {
+                System.out.println("La fecha de inicio del elector no fue proporcionada.");
+                throw new IllegalArgumentException("La fecha de inicio del elector es obligatoria.");
+            }
+            System.out.println("Fecha de inicio válida: " + fechaDeInicioElector);
+
+            // Verificar si ya existe un domicilio con las características exactas
+            System.out.println("Buscando domicilio con las características proporcionadas...");
+            Domicilio domicilio = domicilioRepository
+                    .findByEntidadFederativaIdAndMunicipioIdAndLocalidadIdAndColoniaIdAndCodigoPostalIdAndCalleAndNumeroExteriorAndNumeroInterior(
+                            domicilioDTO.getEntidadFederativaId(),
+                            domicilioDTO.getMunicipioId(),
+                            domicilioDTO.getLocalidadId(),
+                            domicilioDTO.getColoniaId(),
+                            domicilioDTO.getCodigoPostalId(),
+                            domicilioDTO.getCalle(),
+                            domicilioDTO.getNumeroExterior(),
+                            domicilioDTO.getNumeroInterior()
+                    ).orElseGet(() -> {
+                        System.out.println("No se encontró un domicilio existente. Creando uno nuevo...");
+                        Domicilio nuevoDomicilio = new Domicilio();
+                        nuevoDomicilio.setEntidadFederativa(
+                                entidadFederativaRepository.findById(domicilioDTO.getEntidadFederativaId())
+                                        .orElseThrow(() -> new EntityNotFoundException("Entidad Federativa no encontrada."))
+                        );
+                        nuevoDomicilio.setMunicipio(
+                                municipioRepository.findById(domicilioDTO.getMunicipioId())
+                                        .orElseThrow(() -> new EntityNotFoundException("Municipio no encontrado."))
+                        );
+                        nuevoDomicilio.setLocalidad(localidadRepository.findById(domicilioDTO.getLocalidadId()).orElse(null));
+                        nuevoDomicilio.setColonia(coloniaRepository.findById(domicilioDTO.getColoniaId()).orElse(null));
+                        nuevoDomicilio.setCodigoPostal(postalRepository.findById(domicilioDTO.getCodigoPostalId()).orElse(null));
+                        nuevoDomicilio.setCalle(domicilioDTO.getCalle());
+                        nuevoDomicilio.setNumeroExterior(domicilioDTO.getNumeroExterior());
+                        nuevoDomicilio.setNumeroInterior(domicilioDTO.getNumeroInterior());
+                        System.out.println("Nuevo domicilio configurado: " + nuevoDomicilio);
+                        return domicilioRepository.save(nuevoDomicilio);
+                    });
+            System.out.println("Domicilio seleccionado o creado: " + domicilio);
+
+            // Eliminar cualquier relación existente de tipo 2 para evitar duplicados
+            System.out.println("Verificando si existe una relación PersonaDomicilio de tipo 2...");
+            Optional<PersonaDomicilio> relacionExistente = personaDomicilioRepository
+                    .findByPersonaIdAndTipoDeDomicilioId(idPersona, 2L);
+
+            if (relacionExistente.isPresent()) {
+                System.out.println("Relación de tipo 2 encontrada. Eliminándola...");
+                personaDomicilioRepository.delete(relacionExistente.get());
+                System.out.println("Relación eliminada.");
+            } else {
+                System.out.println("No se encontró ninguna relación de tipo 2.");
+            }
+
+            System.out.println("Creando nueva relación PersonaDomicilio...");
+            PersonaDomicilio nuevaRelacion = new PersonaDomicilio();
+            PersonaDomicilioId idCompuesto = new PersonaDomicilioId(idPersona, domicilio.getId());
+            nuevaRelacion.setId(idCompuesto);
+            nuevaRelacion.setPersona(persona);
+            nuevaRelacion.setDomicilio(domicilio);
+            nuevaRelacion.setTipoDeDomicilio(
+                    tipoDeDomicilioRepository.findById(2L)
+                            .orElseThrow(() -> new EntityNotFoundException("Tipo de domicilio no encontrado."))
+            );
+            nuevaRelacion.setFechaDeInicio(fechaActual); // Usar la fecha actual como fecha de inicio
+            personaDomicilioRepository.save(nuevaRelacion);
+            System.out.println("Nueva relación PersonaDomicilio creada: " + nuevaRelacion);
+
+
+            // Crear un nuevo elector asociado a la persona
+            System.out.println("Creando un nuevo elector asociado a la persona...");
+            Elector nuevoElector = new Elector();
+            nuevoElector.setPersona(persona);
+            nuevoElector.setFechaDeInicio(fechaDeInicioElector);
+            electorRepository.save(nuevoElector);
+            System.out.println("Elector registrado exitosamente: " + nuevoElector);
+
+            return nuevoElector;
+        } catch (Exception e) {
+            System.out.println("Error durante el registro del elector: " + e.getMessage());
+            throw e; // Re-lanzar la excepción para ser manejada en capas superiores
         }
-
-        // Validar que la fecha de inicio del elector no sea nula
-        if (fechaDeInicioElector == null) {
-            throw new IllegalArgumentException("La fecha de inicio del elector es obligatoria.");
-        }
-
-        // Verificar si ya existe un domicilio con las características exactas
-        Domicilio domicilio = domicilioRepository
-                .findByEntidadFederativaIdAndMunicipioIdAndLocalidadIdAndColoniaIdAndCodigoPostalIdAndCalleAndNumeroExteriorAndNumeroInterior(
-                        domicilioDTO.getEntidadFederativaId(),
-                        domicilioDTO.getMunicipioId(),
-                        domicilioDTO.getLocalidadId(),
-                        domicilioDTO.getColoniaId(),
-                        domicilioDTO.getCodigoPostalId(),
-                        domicilioDTO.getCalle(),
-                        domicilioDTO.getNumeroExterior(),
-                        domicilioDTO.getNumeroInterior()
-                ).orElseGet(() -> {
-                    // Crear un nuevo domicilio si no existe
-                    Domicilio nuevoDomicilio = new Domicilio();
-                    nuevoDomicilio.setEntidadFederativa(
-                            entidadFederativaRepository.findById(domicilioDTO.getEntidadFederativaId())
-                                    .orElseThrow(() -> new EntityNotFoundException("Entidad Federativa no encontrada."))
-                    );
-                    nuevoDomicilio.setMunicipio(
-                            municipioRepository.findById(domicilioDTO.getMunicipioId())
-                                    .orElseThrow(() -> new EntityNotFoundException("Municipio no encontrado."))
-                    );
-                    nuevoDomicilio.setLocalidad(localidadRepository.findById(domicilioDTO.getLocalidadId()).orElse(null));
-                    nuevoDomicilio.setColonia(coloniaRepository.findById(domicilioDTO.getColoniaId()).orElse(null));
-                    nuevoDomicilio.setCodigoPostal(postalRepository.findById(domicilioDTO.getCodigoPostalId()).orElse(null));
-                    nuevoDomicilio.setCalle(domicilioDTO.getCalle());
-                    nuevoDomicilio.setNumeroExterior(domicilioDTO.getNumeroExterior());
-                    nuevoDomicilio.setNumeroInterior(domicilioDTO.getNumeroInterior());
-                    return domicilioRepository.save(nuevoDomicilio);
-                });
-
-        // Eliminar cualquier relación existente de tipo 2 para evitar duplicados
-        Optional<PersonaDomicilio> relacionExistente = personaDomicilioRepository
-                .findByPersonaIdAndTipoDeDomicilioId(idPersona, 2L);
-
-        if (relacionExistente.isPresent()) {
-            personaDomicilioRepository.delete(relacionExistente.get());
-            System.out.println("Relación de tipo 2 existente eliminada.");
-        }
-
-        // Crear una nueva relación PersonaDomicilio
-        PersonaDomicilio nuevaRelacion = new PersonaDomicilio();
-        nuevaRelacion.setPersona(persona);
-        nuevaRelacion.setDomicilio(domicilio);
-        nuevaRelacion.setTipoDeDomicilio(
-                tipoDeDomicilioRepository.findById(2L)
-                        .orElseThrow(() -> new EntityNotFoundException("Tipo de domicilio no encontrado."))
-        );
-        nuevaRelacion.setFechaDeInicio(fechaActual); // Usar la fecha actual como fecha de inicio
-        personaDomicilioRepository.save(nuevaRelacion);
-
-        // Crear un nuevo elector asociado a la persona
-        Elector nuevoElector = new Elector();
-        nuevoElector.setPersona(persona);
-        nuevoElector.setFechaDeInicio(fechaDeInicioElector);
-        electorRepository.save(nuevoElector);
-
-        System.out.println("Elector registrado exitosamente: " + nuevoElector);
-
-        return nuevoElector;
     }
 
     public Optional<Elector> buscarElectorPorPersona(Long idPersona) {
@@ -408,6 +445,42 @@ public class ElectorService {
     
     
     //ELIMINAR ELECTOR
+
+    @Transactional
+    public void eliminarElector(Long idDeElector) {
+        // Verificar si el elector existe
+        Optional<Elector> electorOpt = electorRepository.findById(idDeElector);
+        if (electorOpt.isEmpty()) {
+            throw new EntityNotFoundException("El elector con ID " + idDeElector + " no existe.");
+        }
+
+        // Verificar dependencias críticas
+        List<String> dependenciasCriticas = verificarDependenciasCriticasElector(idDeElector);
+        if (!dependenciasCriticas.isEmpty()) {
+            throw new IllegalStateException("No se puede eliminar el elector. Relacionado con: " +
+                    String.join(", ", dependenciasCriticas));
+        }
+
+        // Eliminar el elector
+        electorRepository.deleteById(idDeElector);
+        System.out.println("Elector eliminado exitosamente: ID " + idDeElector);
+    }
+
+    private List<String> verificarDependenciasCriticasElector(Long idDeElector) {
+        List<String> tablasCriticas = new ArrayList<>();
+
+        // Verificar relaciones en ElectorInstancia
+        if (electorInstanciaRepository.existsByElectorId(idDeElector)) {
+            tablasCriticas.add("ElectorInstancia");
+        }
+
+        // Verificar relaciones en ElectorCandidatura
+        if (electorCandidaturaRepository.existsByElectorId(idDeElector)) {
+            tablasCriticas.add("ElectorCandidatura");
+        }
+
+        return tablasCriticas;
+    }
 
 
 
