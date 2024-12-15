@@ -85,8 +85,9 @@ const PaginaBuscar = () => {
   
 
   // Función para redirigir a la página de edición
+  //////SE QUITO UNA BARRA 
   const editarPersona = (id) => {
-    navigate(`/editar/${id}`);
+    navigate(`editar/${id}`);
   };
   
 

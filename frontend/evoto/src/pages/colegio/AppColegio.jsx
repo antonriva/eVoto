@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import AboutPag from './AboutPag';
-import ColegioElectoralPag from './ColegioElectoralPag';
 import ResultadosPag from './ResultadosPag';
-import ProcesoElectoralPag from './ProcesoElectoralPag';
-import DefineProcesoElectoralPag from './ColegioElectoralDir/ProcesoElectoralDir/DefineProcesoElectoralPag';
+
+//Partido
 import SistemaP from './sistemaElectoral/SistemaP';
+import PartidosP from './sistemaElectoral/PartidosP'
+import BuscarPartidoP from './sistemaElectoral/partidosP/BuscarPartidoP'
+
+//Elector
+import ElectoresP from './sistemaElectoral/ElectoresP'
+import BuscarElectorP from './sistemaElectoral/electoresP/BuscarElectorP';
 
 const AppColegio = () => {
     const [menuVisible, setMenuVisible] = useState(true); // Estado para mostrar/ocultar el menú
     const location = useLocation(); // Obtener la ruta actual
   
     // Páginas donde se debe ocultar el menú
-    const hideMenuPages = ['/colegio/proceso', '/colegio/proceso/definir', '/colegio/sistema'];
+    const hideMenuPages = ['/colegio/sistema','/colegio/proceso'];
   
     // Usamos useEffect para detectar cambios en la ruta
     useEffect(() => {
@@ -26,10 +31,10 @@ const AppColegio = () => {
   
     // Cambiar la visibilidad del menú cuando el usuario haga clic en "Proceso Electoral"
     const handleMenuToggle = (path) => {
-      if (path.includes("proceso")) {
+      if (path.includes("sistema")) {
         setMenuVisible(false);
       }
-      if (path.includes("sistema")) {
+      if (path.includes("proceso")) {
         setMenuVisible(false);
       }
     };
@@ -52,16 +57,26 @@ const AppColegio = () => {
       {/* Rutas para mostrar el contenido de cada página */}
       <Routes>
         <Route path="about" element={<AboutPag />} />
-        <Route path="proceso" element={<ColegioElectoralPag />} />
         <Route path="resultados" element={<ResultadosPag />} />
-        <Route path="proceso/definir" element={<ProcesoElectoralPag />} />
-        <Route path="proceso/definir/formulario" element={<DefineProcesoElectoralPag />} />
 
         {/* Sistema electoral */}
         <Route path="sistema" element={<SistemaP/>}/>
-        <Route path="sistema/par" element={<SistemaP/>}/>
-        <Route path="sistema/ele" element={<SistemaP/>}/>
-        <Route path="sistema/gen" element={<SistemaP/>}/>
+
+        <Route path="sistema/par" element={<PartidosP/>}/>
+        <Route path="sistema/ele" element={<ElectoresP/>}/>
+          
+          {/* Partido */}
+          <Route path="sistema/par/buscar" element={<BuscarPartidoP/>}/>
+
+          {/* Elector */}
+          <Route path="sistema/ele/buscar" element={<BuscarElectorP/>}/>
+
+          {/* Proceso electoral */}
+
+          {/* Instancia */}
+
+          {/* Candidatura */}
+
       </Routes>
     </div>
   );

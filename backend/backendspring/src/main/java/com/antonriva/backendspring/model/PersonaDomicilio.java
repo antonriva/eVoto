@@ -27,7 +27,7 @@ public class PersonaDomicilio {
     private Domicilio domicilio;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "iddetipodedomicilio", nullable = false)
+    @JoinColumn(name = "iddetipodedomicilio", nullable = true)
     private TipoDeDomicilio tipoDeDomicilio;
     
     //Columna normal

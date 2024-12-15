@@ -1,11 +1,17 @@
 package com.antonriva.backendspring.service;
 
 import com.antonriva.backendspring.model.Domicilio;
+import com.antonriva.backendspring.model.EntidadFederativa;
+import com.antonriva.backendspring.model.Municipio;
 import com.antonriva.backendspring.model.Persona;
 import com.antonriva.backendspring.model.PersonaDomicilio;
 import com.antonriva.backendspring.repository.DomicilioRepository;
+import com.antonriva.backendspring.repository.EntidadFederativaRepository;
+import com.antonriva.backendspring.repository.MunicipioRepository;
 import com.antonriva.backendspring.repository.PersonaDomicilioRepository;
 import com.antonriva.backendspring.specification.DomicilioSpecifications;
+
+import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,6 +24,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class DomicilioService {
+	
+	
+	
 	/*
 
     @Autowired

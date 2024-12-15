@@ -1,6 +1,8 @@
 package com.antonriva.backendspring.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +23,7 @@ public class Elector {
 	
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "iddepersona", nullable = false)
+    @JsonIgnore
     private Persona persona;
 
     public Elector() {

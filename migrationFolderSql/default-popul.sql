@@ -45,3 +45,23 @@ COMMIT;
 
 --------
 
+INSERT INTO RecursoVigente (ID, DESCRIPCION)
+VALUES (1, 'Vigente');
+
+INSERT INTO RecursoVigente (ID, DESCRIPCION)
+VALUES (2, 'No vigente');
+
+COMMIT;
+
+-------------
+
+INSERT INTO TipoDeVisual (ID, DESCRIPCION)
+VALUES (1, 'Logo');
+
+INSERT INTO TipoDeVisual (ID, DESCRIPCION)
+VALUES (2, 'FotoCandidato');
+
+
+COMMIT;
+
+

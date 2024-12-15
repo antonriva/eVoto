@@ -18,6 +18,7 @@ import jakarta.transaction.Transactional;
 public interface PersonaDomicilioRepository extends JpaRepository<PersonaDomicilio, PersonaDomicilioId>, JpaSpecificationExecutor<PersonaDomicilio> {
 
     Optional<PersonaDomicilio> findByPersonaAndDomicilio(Persona persona, Domicilio domicilio);
+    
 
     List<PersonaDomicilio> findByPersona(Persona persona);
 
@@ -32,6 +33,9 @@ public interface PersonaDomicilioRepository extends JpaRepository<PersonaDomicil
     @Modifying
     @Query("DELETE FROM PersonaDomicilio pd WHERE pd.persona.id = :personaId")
     void deleteByPersonaId(@Param("personaId") Long personaId);
+    
+    Optional<PersonaDomicilio> findByPersonaIdAndTipoDeDomicilioId(Long personaId, Long tipoDeDomicilioId);
+
     
 
 }

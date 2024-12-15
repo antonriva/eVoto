@@ -25,9 +25,18 @@ public class Visual {
 	
     //ManyToOne
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "iddepartido", nullable = false)
-	@JsonIgnore
+    @JoinColumn(name = "iddepartido", nullable = true)
     private Partido partido;
+    
+    //ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "iddetipodevisual", nullable = false)
+    private TipoDeVisual tipoDeVisual;
+    
+    //ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idderecursovigente", nullable = false)
+    private RecursoVigente recursoVigente;
     
     public Visual() {
     	
@@ -62,6 +71,24 @@ public class Visual {
 
 	public void setPartido(Partido partido) {
 		this.partido = partido;
+	}
+	
+	
+
+	public TipoDeVisual getTipoDeVisual() {
+		return tipoDeVisual;
+	}
+
+	public void setTipoDeVisual(TipoDeVisual tipoDeVisual) {
+		this.tipoDeVisual = tipoDeVisual;
+	}
+
+	public RecursoVigente getRecursoVigente() {
+		return recursoVigente;
+	}
+
+	public void setRecursoVigente(RecursoVigente recursoVigente) {
+		this.recursoVigente = recursoVigente;
 	}
 
 	@Override

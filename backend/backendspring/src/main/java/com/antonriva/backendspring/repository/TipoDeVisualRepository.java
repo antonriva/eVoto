@@ -5,12 +5,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.antonriva.backendspring.model.TipoDeDomicilio;
+import com.antonriva.backendspring.model.TipoDeVisual;
 
 import jakarta.transaction.Transactional;
 
 @Repository
 @Transactional
 @EnableTransactionManagement
-public interface TipoDeDomicilioRepository extends JpaRepository<TipoDeDomicilio, Long> {
+public interface TipoDeVisualRepository extends JpaRepository<TipoDeVisual, Long> {
 
 }

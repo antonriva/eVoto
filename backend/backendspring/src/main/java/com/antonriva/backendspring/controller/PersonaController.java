@@ -2,15 +2,20 @@ package com.antonriva.backendspring.controller;
 
 import com.antonriva.backendspring.dto.DetalleDomicilioDTO;
 import com.antonriva.backendspring.dto.PersonaBuscarCompletoDTO;
+import com.antonriva.backendspring.dto.PersonaEditarDTO;
+import com.antonriva.backendspring.dto.PersonaRegistroDTO;
 import com.antonriva.backendspring.model.Persona;
 import com.antonriva.backendspring.model.PersonaDomicilio;
 import com.antonriva.backendspring.service.PersonaDomicilioService;
 import com.antonriva.backendspring.service.PersonaService;
+import com.antonriva.backendspring.repository.PersonaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,6 +35,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
+
 @RequestMapping("/api/persona")
 @RestController
 @CrossOrigin(origins="http://localhost:5173")
@@ -39,13 +45,15 @@ public class PersonaController {
     private final PersonaService personaService;
     private final PersonaDomicilioService personaDomicilioService;
 
-    
-    //GET
-    
+
     public PersonaController(PersonaService personaService, PersonaDomicilioService personaDomicilioService) {
         this.personaService = personaService;
         this.personaDomicilioService = personaDomicilioService;
     }
+    
+//PAGINA DE BUSQUEDA
+    
+  //------------------// BUSCAR CON PARAMETROS, DEVUELVE BUSQUEDA COMPLETA
     
     @GetMapping("/buscar")
     public ResponseEntity<List<PersonaBuscarCompletoDTO>> buscarPersonas(
@@ -97,6 +105,8 @@ public class PersonaController {
         }
     }
     
+    //BUSCAR ELEMENTOS ASOCIADOS EN UNA TABLA CON RELACION INTERMEDIA
+    
     @GetMapping("/{idPersona}/detalles-domicilios")
     public ResponseEntity<List<DetalleDomicilioDTO>> obtenerDomiciliosDetalle(@PathVariable Long idPersona) {
         List<DetalleDomicilioDTO> detalles = personaDomicilioService.obtenerDomiciliosPorPersona(idPersona);
@@ -104,6 +114,8 @@ public class PersonaController {
     }
 
     
+    
+    //ESTE NO LO ESTAMOS USANDO, PERO EN CASO DE SER REQUERIDO. PROBABLEMENTE ELIMINEMOS LA RELACION CON PADR
     @GetMapping("/{id}/padres")
     public ResponseEntity<Map<String, PersonaBuscarCompletoDTO>> obtenerPadres(@PathVariable Long id) {
         try {
@@ -116,9 +128,45 @@ public class PersonaController {
         }
     }
     
+
     
-    //DELETE
+ //------------------//EN EL FRONTEND, TENDREMOS SELECCION DE EDITAR EN LA PAGINA DE BUSQUEDA. AQUI VIENE LO QUE UTILIZAMOS PARA EDITAR O UPDATE  
     
+    //OBTENEMOS TODOS LOS DATOS PARA QUE APAREZCAN COMO DEFAULT EN LOS CAMPOS, GET
+    
+    @GetMapping("/{id}/editar")
+    public ResponseEntity<?> obtenerDatosParaEdicion(@PathVariable Long id) {
+        try {
+            PersonaEditarDTO personaEditarDTO = personaService.obtenerDatosParaEdicion(id);
+            return ResponseEntity.ok(personaEditarDTO);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al obtener los datos para edición.");
+        }
+    }
+    
+    //HACEMOS LA EDICION CON LOS DATOS QUE QUEREMOS, PUT
+    
+    @PutMapping("/{id}/editar")
+    public ResponseEntity<?> editarPersona(
+            @PathVariable Long id,
+            @RequestBody @Valid PersonaEditarDTO personaEditarDTO) {
+        try {
+            personaService.editarPersona(id, personaEditarDTO);
+            return ResponseEntity.ok("Persona actualizada exitosamente.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar la persona.");
+        }
+    }
+
+ 
+    
+  //------------------//ELIMINACION DE UNA PERSONA
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminarPersona(@PathVariable Long id) {
@@ -136,7 +184,46 @@ public class PersonaController {
                     .body("Error al eliminar la persona: " + e.getMessage());
         }
     }
+    
+    
+    
+//PAGINA DE REGISTRO DE LA PERSONA
+    @PostMapping("/registrar")
+    public ResponseEntity<?> registrarPersona(@RequestBody @Valid PersonaEditarDTO personaRegistrarDTO, 
+                                              @RequestParam(required = false) boolean confirmar) {
+        try {
+            // Verificar si ya existe una persona con las mismas características
+            Optional<Persona> personaExistente = personaService.buscarPersonaExacta(personaRegistrarDTO);
+
+            if (personaExistente.isPresent() && !confirmar) {
+                Persona persona = personaExistente.get();
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                        "Ya existe una persona con estas características: ID " + persona.getId() + 
+                        ". Si desea continuar, añada el parámetro `confirmar=true`."
+                );
+            }
+
+            // Registrar nueva persona
+            Persona nuevaPersona = personaService.registrarPersona(personaRegistrarDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    "Persona registrada exitosamente con ID: " + nuevaPersona.getId()
+            );
+
+        } catch (IllegalArgumentException e) {
+            // Manejo de errores de validación
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            // Manejo de entidades no encontradas
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            // Manejo de errores internos
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al registrar la persona.");
+        }
+    }
+ 
 }
+
+
     
   
     
@@ -166,85 +253,3 @@ public class PersonaController {
     
     
     
-    
-/*
-
-
-
-
-
-    // Asignar un domicilio a una persona
-    //SI FUNCIONA, LA FECHA SI ES MAS QUE LA ACTUAL SE PONE LA DEL DIA ACTUAL
-    @PostMapping("/{personaId}/domicilio/{domicilioId}")
-    public ResponseEntity<?> asignarDomicilioAPersona(
-        @PathVariable Integer personaId,
-        @PathVariable Integer domicilioId,
-        @RequestParam(value = "fechaDeInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaDeInicio
-    ) {
-        // Ensure fechaDeInicio is provided and valid
-        if (fechaDeInicio == null) {
-            return ResponseEntity.badRequest().body("El parámetro 'fechaDeInicio' es obligatorio.");
-        }
-
-        // Validate that fechaDeInicio is not in the future
-        if (fechaDeInicio.isAfter(LocalDate.now())) {
-            return ResponseEntity.badRequest().body("La fecha de inicio no puede ser posterior al día actual.");
-        }
-
-        PersonaDomicilio personaDomicilio = personaService.asignarDomicilioAPersona(personaId, domicilioId, fechaDeInicio);
-        return ResponseEntity.ok(personaDomicilio);
-    }
-
-
-    // Crear una persona
-    @PostMapping
-    public ResponseEntity<Persona> crearPersona(@RequestBody Persona nuevaPersona) {
-        validarDatosPersona(nuevaPersona);
-        Persona personaGuardada = personaService.registrarPersona(nuevaPersona);
-        return ResponseEntity.status(HttpStatus.CREATED).body(personaGuardada);
-    }
-
-    // Actualizar una persona
- // Actualizar una persona
-    //SI FUNCIONA TODOS LOS DATOS DEBEN PASARSE PARA QUE FUNCIONE
-    @PutMapping("/{id}")w
-    public ResponseEntity<Persona> actualizarPersona(@PathVariable int id, @RequestBody Persona nuevaPersona) {
-        try {
-            validarDatosPersona(nuevaPersona); // Apply restrictions on incoming data
-            Persona personaActualizada = personaService.actualizarPersona(id, nuevaPersona);
-            return ResponseEntity.ok(personaActualizada);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build(); // Return 404 if the person is not found
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(null); // Return 400 for validation or other errors
-        }
-    }
-
-
-    // Eliminar una persona
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarPersona(@PathVariable Integer id) {
-        try {
-            personaService.eliminarPersona(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    // Método de validación
-    private void validarDatosPersona(Persona persona) {
-        if (persona.getNombre() == null || persona.getNombre().isBlank() || !persona.getNombre().matches("^[A-ZÁÉÍÓÚÑ]+( [A-ZÁÉÍÓÚÑ]+)?$")) {
-            throw new IllegalArgumentException("El nombre debe estar en mayúsculas, no contener números ni caracteres especiales, y no puede estar vacío.");
-        }
-        if (persona.getApellidoPaterno() == null || persona.getApellidoPaterno().isBlank() || !persona.getApellidoPaterno().matches("^[A-ZÁÉÍÓÚÑ]+$")) {
-            throw new IllegalArgumentException("El apellido paterno debe estar en mayúsculas, no contener números ni caracteres especiales, y no puede estar vacío.");
-        }
-        if (persona.getApellidoMaterno() == null || persona.getApellidoMaterno().isBlank() || !persona.getApellidoMaterno().matches("^[A-ZÁÉÍÓÚÑ]+$")) {
-            throw new IllegalArgumentException("El apellido materno debe estar en mayúsculas, no contener números ni caracteres especiales, y no puede estar vacío.");
-        }
-        if (persona.getFechaDeNacimiento() == null) {
-            throw new IllegalArgumentException("El campo 'fechaDeNacimiento' es obligatorio y debe estar en el formato YYYY-MM-DD.");
-        }
-    }
-    */

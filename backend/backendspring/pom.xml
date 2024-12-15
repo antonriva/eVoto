@@ -63,6 +63,24 @@
 			<type>pom</type>
 		</dependency>
 		
+		<dependency>
+    		<groupId>javax.validation</groupId>
+		    <artifactId>validation-api</artifactId>
+		    <version>2.0.1.Final</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.hibernate.validator</groupId>
+		    <artifactId>hibernate-validator</artifactId>
+		    <version>8.0.1.Final</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.oracle.oci.sdk</groupId>
+		    <artifactId>oci-java-sdk-objectstorage</artifactId>
+		    <version>3.28.0</version> <!-- Usa la última versión disponible -->
+		</dependency>
+		
 	<!-- TEST -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

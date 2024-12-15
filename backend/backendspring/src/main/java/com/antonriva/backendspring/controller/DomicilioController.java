@@ -3,6 +3,9 @@ package com.antonriva.backendspring.controller;
 import com.antonriva.backendspring.model.Domicilio;
 import com.antonriva.backendspring.model.Persona;
 import com.antonriva.backendspring.service.DomicilioService;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,10 @@ import java.util.Optional;
 @RequestMapping("/api/domicilio")
 @CrossOrigin(origins = "http://localhost:5173")
 public class DomicilioController {
+	
+}
+
+	
 	/*
 
     @Autowired
@@ -110,5 +117,3 @@ public class DomicilioController {
         }
     }
     */
-}
-
