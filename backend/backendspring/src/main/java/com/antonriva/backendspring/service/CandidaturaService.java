@@ -1,12 +1,14 @@
 package com.antonriva.backendspring.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.antonriva.backendspring.dto.CandidaturaDetalleDTO;
+
+import com.antonriva.backendspring.dto.CandidaturaElectorDetalleDTO;
 import com.antonriva.backendspring.dto.ProcesoLugarDTO;
 import com.antonriva.backendspring.model.Candidatura;
 import com.antonriva.backendspring.model.Elector;
@@ -40,70 +42,52 @@ public class CandidaturaService {
 		
 	}
 	
-	@Transactional(readOnly = true)
-	public List<CandidaturaDetalleDTO> obtenerCandidaturasPorElector(Long idDeElector) {
-	    System.out.println("Iniciando búsqueda de candidaturas para el elector con ID: " + idDeElector);
+    public List<CandidaturaElectorDetalleDTO> getDetalleDeCandidaturaElector(Long electorId) {
+        System.out.println("Buscando relaciones para el elector con ID: " + electorId);
+        List<ElectorCandidatura> relaciones = electorCandidaturaRepository.findByElectorId(electorId);
 
-	    // Verificar si el elector existe
-	    Elector elector = electorRepository.findById(idDeElector)
-	            .orElseThrow(() -> {
-	                System.err.println("El elector con ID " + idDeElector + " no existe.");
-	                return new EntityNotFoundException("El elector con ID " + idDeElector + " no existe.");
-	            });
-	    System.out.println("Elector encontrado: ID " + elector.getId());
+        if (relaciones.isEmpty()) {
+            System.out.println("No se encontraron relaciones para el elector con ID: " + electorId);
+            throw new IllegalArgumentException("No se encontraron relaciones para el elector con ID: " + electorId);
+        }
 
-	    // Obtener todas las relaciones ElectorCandidatura para el elector
-	    List<ElectorCandidatura> relaciones = electorCandidaturaRepository.findByElectorId(idDeElector);
-	    System.out.println("Relaciones ElectorCandidatura encontradas: " + relaciones.size());
+        return relaciones.stream().map(relacion -> {
+            System.out.println("Procesando relación: " + relacion);
 
-	    // Transformar las relaciones en DTOs con la información requerida
-	    return relaciones.stream().map(relacion -> {
-	        System.out.println("Procesando relación ElectorCandidatura con ID: " + relacion.getId());
+            Candidatura candidatura = relacion.getCandidatura();
+            if (candidatura == null) {
+                System.out.println("La candidatura asociada no se encontró para la relación con ID de elector: " + electorId);
+                throw new IllegalStateException("La candidatura asociada no se encontró para la relación con ID de elector: " + electorId);
+            }
+            System.out.println("Candidatura encontrada: " + candidatura);
 
-	        // Inicializar relación perezosa
-	        Hibernate.initialize(relacion.getCandidatura());
-	        Candidatura candidatura = relacion.getCandidatura();
-	        System.out.println("Candidatura encontrada: ID " + candidatura.getId());
+            InstanciaDeProceso instanciaDeProceso = candidatura.getInstanciaDeProceso();
+            if (instanciaDeProceso == null) {
+                System.out.println("La instancia de proceso no se encontró para la candidatura con ID: " + candidatura.getId());
+                throw new IllegalStateException("La instancia de proceso no se encontró para la candidatura con ID: " + candidatura.getId());
+            }
+            System.out.println("Instancia de proceso encontrada: " + instanciaDeProceso);
 
-	        Hibernate.initialize(candidatura.getInstanciaDeProceso());
-	        InstanciaDeProceso instanciaDeProceso = candidatura.getInstanciaDeProceso();
-	        System.out.println("Instancia de Proceso asociada: ID " + instanciaDeProceso.getId());
+            ProcesoLugar procesoLugar = instanciaDeProceso.getProcesoLugar();
+            if (procesoLugar == null) {
+                System.out.println("El proceso lugar no se encontró para la instancia de proceso con ID: " + instanciaDeProceso.getId());
+                throw new IllegalStateException("El proceso lugar no se encontró para la instancia de proceso con ID: " + instanciaDeProceso.getId());
+            }
+            System.out.println("Proceso lugar encontrado: " + procesoLugar);
 
-	        // Asegurar que ProcesoLugar está cargado
-	        ProcesoLugar procesoLugar = procesoLugarRepository.findByInstanciaDeProcesoId(instanciaDeProceso.getId())
-	                .orElseThrow(() -> {
-	                    System.err.println("No se encontró ProcesoLugar asociado a la instancia de proceso con ID " + instanciaDeProceso.getId());
-	                    return new EntityNotFoundException(
-	                            "No se encontró ProcesoLugar asociado a la instancia de proceso con ID " + instanciaDeProceso.getId());
-	                });
-	        System.out.println("ProcesoLugar encontrado para InstanciaDeProceso ID: " + instanciaDeProceso.getId());
-
-	        // Transformar ProcesoLugar a DTO
-	        ProcesoLugarDTO lugarDTO = new ProcesoLugarDTO(
-	                procesoLugar.getMunicipio() != null ? procesoLugar.getMunicipio().getDescripcion() : null,
-	                procesoLugar.getEntidadFederativa() != null ? procesoLugar.getEntidadFederativa().getDescripcion() : null,
-	                procesoLugar.getLocalidad() != null ? procesoLugar.getLocalidad().getDescripcion() : null
-	        );
-	        System.out.println("ProcesoLugarDTO creado: " + lugarDTO);
-
-	        // Crear el DTO principal
-	        CandidaturaDetalleDTO candidaturaDetalleDTO = new CandidaturaDetalleDTO(
-	                candidatura.getId(),
-	                instanciaDeProceso.getId(),
-	                instanciaDeProceso.getNivel().getDescripcion(),
-	                instanciaDeProceso.getProceso().getDescripcion(),
-	                candidatura.getPartido().getDenominacion(),
-	                candidatura.getVoto(),
-	                relacion.getFechaHoraDeInicio(),
-	                relacion.getFechaHoraDeFin(),
-	                lugarDTO
-	        );
-	        System.out.println("CandidaturaDetalleDTO creado: " + candidaturaDetalleDTO);
-
-	        return candidaturaDetalleDTO;
-	    }).toList();
-	}
-
-
-
+            return new CandidaturaElectorDetalleDTO(
+                candidatura.getId(),
+                instanciaDeProceso.getId(),
+                instanciaDeProceso.getNivel().getDescripcion(),
+                instanciaDeProceso.getProceso().getDescripcion(),
+                candidatura.getPartido().getDenominacion(),
+                candidatura.getVoto(),
+                relacion.getFechaHoraDeInicio(),
+                relacion.getFechaHoraDeFin(),
+                procesoLugar.getEntidadFederativa() != null ? procesoLugar.getEntidadFederativa().getDescripcion() : null,
+                procesoLugar.getMunicipio() != null ? procesoLugar.getMunicipio().getDescripcion() : null,
+                procesoLugar.getLocalidad() != null ? procesoLugar.getLocalidad().getDescripcion() : null
+            );
+        }).collect(Collectors.toList());
+    }
 }

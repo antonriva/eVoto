@@ -42,6 +42,8 @@ public class ElectorCandidatura {
 
     @Column(name = "fechahoradefin", nullable = false)
     private LocalDateTime fechaHoraDeFin;
+    
+    public ElectorCandidatura() {}
 
 	public ElectorCandidatura( Elector elector, Candidatura candidatura,
 			LocalDateTime fechaHoraDeInicio, LocalDateTime fechaHoraDeFin) {

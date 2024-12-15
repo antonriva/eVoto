@@ -32,6 +32,11 @@ public class InstanciaDeProceso {
     @JoinColumn(name = "iddenivel", nullable = false)
 	@JsonIgnore
     private Nivel nivel;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "iddeprocesolugar", nullable = false)
+	@JsonIgnore
+    private ProcesoLugar procesoLugar;
 
     @Column(name = "ganadoresnum", nullable = false)
     private Integer ganadoresNum;
@@ -48,14 +53,14 @@ public class InstanciaDeProceso {
     }
 
 	public InstanciaDeProceso(Long id, Proceso proceso, Nivel nivel, Integer ganadoresNum,
-			LocalDateTime fechaHoraDeInicio, LocalDateTime fechaHoraDeFin) {
-		super();
+			LocalDateTime fechaHoraDeInicio, LocalDateTime fechaHoraDeFin, ProcesoLugar procesoLugar) {
 		this.id = id;
 		this.proceso = proceso;
 		this.nivel = nivel;
 		this.ganadoresNum = ganadoresNum;
 		this.fechaHoraDeInicio = fechaHoraDeInicio;
 		this.fechaHoraDeFin = fechaHoraDeFin;
+		this.procesoLugar = procesoLugar;
 	}
 
 	public Long getId() {
@@ -104,6 +109,16 @@ public class InstanciaDeProceso {
 
 	public void setFechaHoraDeFin(LocalDateTime fechaHoraDeFin) {
 		this.fechaHoraDeFin = fechaHoraDeFin;
+	}
+	
+	
+
+	public ProcesoLugar getProcesoLugar() {
+		return procesoLugar;
+	}
+
+	public void setProcesoLugar(ProcesoLugar procesoLugar) {
+		this.procesoLugar = procesoLugar;
 	}
 
 	@Override

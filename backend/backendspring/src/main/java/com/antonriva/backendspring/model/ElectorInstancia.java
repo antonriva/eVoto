@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import com.antonriva.backendspring.id.ElectorInstanciaId;
 import com.antonriva.backendspring.id.PersonaDomicilioId;
-import com.antonriva.backendspring.id.ProcesoLugarId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;

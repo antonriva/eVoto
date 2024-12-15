@@ -2,12 +2,14 @@ package com.antonriva.backendspring.model;
 
 
 import com.antonriva.backendspring.id.PersonaDomicilioId;
-import com.antonriva.backendspring.id.ProcesoLugarId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
@@ -19,20 +21,12 @@ import jakarta.persistence.Table;
 public class ProcesoLugar {
 	
 	//Id compuesto por instanciaDeProceso y nivel
-    @EmbeddedId
-    private ProcesoLugarId id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
-    //ManyToOne
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("idDeInstanciaDeProceso") // Vincula con el campo idDePersona del EmbeddedId
-    @JoinColumn(name = "iddeinstanciadeproceso", nullable = false)
-    @JsonIgnore
-    private InstanciaDeProceso instanciaDeProceso;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("idDeNivel") 
-    @JoinColumn(name = "iddenivel", nullable = false)
-    @JsonIgnore
+    @JoinColumn(name = "iddenivel", nullable = true)
     private Nivel nivel;
     
     @ManyToOne(fetch = FetchType.LAZY)
@@ -49,30 +43,21 @@ public class ProcesoLugar {
     
     public ProcesoLugar() {}
 
-	public ProcesoLugar(InstanciaDeProceso instanciaDeProceso, Nivel nivel, Localidad localidad,
+	public ProcesoLugar(Long id, Nivel nivel, Localidad localidad,
 			EntidadFederativa entidadFederativa, Municipio municipio) {
-		this.id = new ProcesoLugarId(instanciaDeProceso.getId(), nivel.getId());
-		this.instanciaDeProceso = instanciaDeProceso;
+		this.id = id;
 		this.nivel = nivel;
 		this.localidad = localidad;
 		this.entidadFederativa = entidadFederativa;
 		this.municipio = municipio;
 	}
 
-	public ProcesoLugarId getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(ProcesoLugarId id) {
+	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public InstanciaDeProceso getInstanciaDeProceso() {
-		return instanciaDeProceso;
-	}
-
-	public void setInstanciaDeProceso(InstanciaDeProceso instanciaDeProceso) {
-		this.instanciaDeProceso = instanciaDeProceso;
 	}
 
 	public Nivel getNivel() {

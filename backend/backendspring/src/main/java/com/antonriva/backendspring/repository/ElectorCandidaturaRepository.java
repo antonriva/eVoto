@@ -22,5 +22,6 @@ public interface ElectorCandidaturaRepository extends JpaRepository<ElectorCandi
     // Buscar todas las relaciones de ElectorCandidatura por ID de Elector
     List<ElectorCandidatura> findByElectorId(Long idDeElector);
 	
+    List<ElectorCandidatura> findById_IdDeElector(Long idDeElector);
 
 }
