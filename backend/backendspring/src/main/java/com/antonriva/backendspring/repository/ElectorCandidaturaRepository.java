@@ -1,5 +1,7 @@
 package com.antonriva.backendspring.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -17,6 +19,8 @@ public interface ElectorCandidaturaRepository extends JpaRepository<ElectorCandi
 	
 	boolean existsByElectorId(Long idDeElector);
 
+    // Buscar todas las relaciones de ElectorCandidatura por ID de Elector
+    List<ElectorCandidatura> findByElectorId(Long idDeElector);
 	
 
 }

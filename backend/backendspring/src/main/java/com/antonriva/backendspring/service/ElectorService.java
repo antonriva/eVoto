@@ -17,8 +17,11 @@ import com.antonriva.backendspring.dto.ElectorBuscarCompletoDTO;
 import com.antonriva.backendspring.dto.ElectorBuscarDTO;
 import com.antonriva.backendspring.dto.ElectorEditarDTO;
 import com.antonriva.backendspring.id.PersonaDomicilioId;
+import com.antonriva.backendspring.model.Candidatura;
 import com.antonriva.backendspring.model.Domicilio;
 import com.antonriva.backendspring.model.Elector;
+import com.antonriva.backendspring.model.ElectorCandidatura;
+import com.antonriva.backendspring.model.InstanciaDeProceso;
 import com.antonriva.backendspring.model.Persona;
 import com.antonriva.backendspring.model.PersonaDomicilio;
 import com.antonriva.backendspring.repository.ColoniaRepository;
@@ -36,6 +39,9 @@ import com.antonriva.backendspring.repository.TipoDeDomicilioRepository;
 import com.antonriva.backendspring.specification.ElectorSpecifications;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 
 
 
@@ -326,8 +332,6 @@ public class ElectorService {
 
     //REGISTRAR ELECTOR 
     
-    
-    
     @Transactional
     public Elector registrarElector(Long idPersona, LocalDate fechaDeInicioElector, DomicilioDTO domicilioDTO) {
         try {
@@ -482,6 +486,118 @@ public class ElectorService {
         return tablasCriticas;
     }
 
+
+    
+    
+    
+    //BUSQUEDA QUE SERVIRA PARA CANDIDATURA
+    
+    @Transactional
+    public List<ElectorBuscarCompletoDTO> buscarElectorConDetalleEsCandidato(
+            Long idElector,
+            Long id,
+            String nombre,
+            String apellidoPaterno,
+            String apellidoMaterno,
+            Integer anioNacimiento,
+            Integer mesNacimiento,
+            Integer diaNacimiento,
+            Integer anioFin,
+            Integer mesFin,
+            Integer diaFin,
+            Integer anioInicioElector,
+            Integer mesInicioElector,
+            Integer diaInicioElector,
+            Long entidadFederativa,
+            Long municipio,
+            Long localidad,
+            Long colonia,
+            Long codigoPostal,
+            Long tipoDeDomicilioId,
+            Long idDeInstanciaProceso,
+            Long idDePartido,
+            Long idDeNivel,
+            Long idDeProceso
+    ) {
+        Logger log = LoggerFactory.getLogger(ElectorService.class);
+
+        try {
+            // Filtrar electores que están en ElectorCandidatura
+            Specification<Elector> spec = Specification.where((root, query, criteriaBuilder) -> {
+                // Verificar si existe una relación en ElectorCandidatura
+                Join<Elector, ElectorCandidatura> electorcandidaturaJoin = root.join("electorCandidatura", JoinType.INNER);
+                return criteriaBuilder.isNotNull(electorcandidaturaJoin.get("id"));
+            });
+
+            // Agregar filtros adicionales de Elector
+            spec = spec.and(ElectorSpecifications.conIdElector(idElector))
+                    .and(ElectorSpecifications.conIdPersona(id))
+                    .and(ElectorSpecifications.conNombrePersona(nombre))
+                    .and(ElectorSpecifications.conApellidoPaternoPersona(apellidoPaterno))
+                    .and(ElectorSpecifications.conApellidoMaternoPersona(apellidoMaterno))
+                    .and(ElectorSpecifications.conFechaDeNacimientoPersona(anioNacimiento, mesNacimiento, diaNacimiento))
+                    .and(ElectorSpecifications.conFechaDeFin(anioFin, mesFin, diaFin))
+                    .and(ElectorSpecifications.conFechaDeInicioElector(anioInicioElector, mesInicioElector, diaInicioElector))
+                    .and(ElectorSpecifications.conEntidadFederativa(entidadFederativa))
+                    .and(ElectorSpecifications.conMunicipioPersona(municipio))
+                    .and(ElectorSpecifications.conLocalidad(localidad))
+                    .and(ElectorSpecifications.conColonia(colonia))
+                    .and(ElectorSpecifications.conCodigoPostal(codigoPostal))
+                    .and(ElectorSpecifications.conTipoDeDomicilio(tipoDeDomicilioId));
+
+            // Agregar filtros relacionados con Candidatura y sus relaciones
+            spec = spec.and((root, query, criteriaBuilder) -> {
+                Join<Elector, ElectorCandidatura> electorcandidaturaJoin = root.join("electorCandidatura", JoinType.INNER);
+                Join<ElectorCandidatura, Candidatura> candidaturaJoin = electorcandidaturaJoin.join("candidatura", JoinType.INNER);
+                Join<Candidatura, InstanciaDeProceso> instanciaJoin = candidaturaJoin.join("instanciaDeProceso", JoinType.INNER);
+
+                List<Predicate> predicates = new ArrayList<>();
+
+                if (idDeInstanciaProceso != null) {
+                    predicates.add(criteriaBuilder.equal(candidaturaJoin.get("idDeInstanciaProceso"), idDeInstanciaProceso));
+                }
+
+                if (idDePartido != null) {
+                    predicates.add(criteriaBuilder.equal(candidaturaJoin.get("idDePartido"), idDePartido));
+                }
+
+                if (idDeNivel != null) {
+                    predicates.add(criteriaBuilder.equal(instanciaJoin.get("idDeNivel"), idDeNivel));
+                }
+
+                if (idDeProceso != null) {
+                    predicates.add(criteriaBuilder.equal(instanciaJoin.get("idDeProceso"), idDeProceso));
+                }
+
+                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            });
+
+            // Consultar electores que coincidan
+            List<Elector> electores = electorRepository.findAll(spec);
+
+            // Transformar cada elector en un DTO con información adicional
+            return electores.stream().map(elector -> {
+                Persona persona = elector.getPersona();
+
+                // Construir el DTO principal
+                return new ElectorBuscarCompletoDTO(
+                        elector.getId(),
+                        elector.getFechaDeInicio(),
+                        elector.getFechaDeFin(),
+                        persona.getId(),
+                        persona.getNombre(),
+                        persona.getApellidoPaterno(),
+                        persona.getApellidoMaterno(),
+                        persona.getFechaDeNacimiento(),
+                        persona.getFechaDeFin()
+                );
+            }).toList();
+        } catch (Exception e) {
+            // Manejo de excepciones
+            log.error("Error al buscar electores con detalle de candidaturas", e);
+            throw new RuntimeException("Ocurrió un error al buscar electores con detalle de candidaturas. Por favor intente nuevamente.");
+        }
+    }
 
 
 }

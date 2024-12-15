@@ -27,7 +27,6 @@ import java.util.List;
 public class ElectorSpecifications {
 
 
-
     public static Specification<Elector> conIdElector(Long idElector) {
         return (root, query, criteriaBuilder) ->
             idElector == null ? null : criteriaBuilder.equal(root.get("id"), idElector);

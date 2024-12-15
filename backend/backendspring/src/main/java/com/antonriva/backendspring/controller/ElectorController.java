@@ -194,5 +194,65 @@ public class ElectorController {
     }
 
     
+    @GetMapping("/buscar/candidatos")
+    public ResponseEntity<?> buscarElectorConDetalleEsCandidato(
+            @RequestParam(required = false) Long idElector,
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String apellidoPaterno,
+            @RequestParam(required = false) String apellidoMaterno,
+            @RequestParam(required = false) Integer anioNacimiento,
+            @RequestParam(required = false) Integer mesNacimiento,
+            @RequestParam(required = false) Integer diaNacimiento,
+            @RequestParam(required = false) Integer anioFin,
+            @RequestParam(required = false) Integer mesFin,
+            @RequestParam(required = false) Integer diaFin,
+            @RequestParam(required = false) Integer anioInicioElector,
+            @RequestParam(required = false) Integer mesInicioElector,
+            @RequestParam(required = false) Integer diaInicioElector,
+            @RequestParam(required = false) Long entidadFederativa,
+            @RequestParam(required = false) Long municipio,
+            @RequestParam(required = false) Long localidad,
+            @RequestParam(required = false) Long colonia,
+            @RequestParam(required = false) Long codigoPostal,
+            @RequestParam(required = false) Long tipoDeDomicilioId,
+            @RequestParam(required = false) Long idDeInstanciaProceso,
+            @RequestParam(required = false) Long idDePartido,
+            @RequestParam(required = false) Long idDeNivel,
+            @RequestParam(required = false) Long idDeProceso
+    ) {
+        try {
+            List<ElectorBuscarCompletoDTO> resultados = electorService.buscarElectorConDetalleEsCandidato(
+                    idElector,
+                    id,
+                    nombre,
+                    apellidoPaterno,
+                    apellidoMaterno,
+                    anioNacimiento,
+                    mesNacimiento,
+                    diaNacimiento,
+                    anioFin,
+                    mesFin,
+                    diaFin,
+                    anioInicioElector,
+                    mesInicioElector,
+                    diaInicioElector,
+                    entidadFederativa,
+                    municipio,
+                    localidad,
+                    colonia,
+                    codigoPostal,
+                    tipoDeDomicilioId,
+                    idDeInstanciaProceso,
+                    idDePartido,
+                    idDeNivel,
+                    idDeProceso
+            );
+            return ResponseEntity.ok(resultados);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al buscar electores con detalle de candidaturas: " + e.getMessage());
+        }
+    }
 
 }
