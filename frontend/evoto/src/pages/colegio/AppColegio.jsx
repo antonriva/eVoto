@@ -16,6 +16,12 @@ import BuscarElectorP from './sistemaElectoral/electoresP/PaginaBuscarElectores'
 import EditarElectorP from '../../components/colegio/paginaBuscar/ElectorEditar';
 import RegistroElectorP from './sistemaElectoral/electoresP/ElectorRegistro';
 
+
+//PROCESO
+import ProcesoP from './procesoElectoral/ProcesoP'
+import RegistroProcesoP from './procesoElectoral/instanciaP/RegistroProceso'
+import BusquedaProcesoP from './procesoElectoral/instanciaP/BusquedaProceso'
+
 const AppColegio = () => {
     const [menuVisible, setMenuVisible] = useState(true); // Estado para mostrar/ocultar el menú
     const location = useLocation(); // Obtener la ruta actual
@@ -83,6 +89,9 @@ const AppColegio = () => {
           <Route path="sistema/ele/registro" element={<RegistroElectorP/>}/>
 
           {/* Proceso electoral */}
+          <Route path="proceso" element={<ProcesoP/>}/>
+          <Route path="proceso/registro" element={<RegistroProcesoP/>}/>
+          <Route path="proceso/buscar" element={<BusquedaProcesoP/>}/>
 
           {/* Instancia */}
 
