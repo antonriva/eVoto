@@ -19,5 +19,7 @@ public interface CandidaturaRepository extends JpaRepository<Candidatura, Long>{
     List<Candidatura> findByInstanciaDeProcesoId(Long instanciaDeProcesoId);
     
     boolean existsByInstanciaDeProcesoIdAndPartidoId(Long instanciaDeProcesoId, Long partidoId);
+    
+    boolean existsByInstanciaDeProcesoId(Long instanciaDeProcesoId);
 
 }

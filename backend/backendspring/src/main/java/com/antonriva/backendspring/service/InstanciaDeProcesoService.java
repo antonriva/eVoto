@@ -1,6 +1,7 @@
 package com.antonriva.backendspring.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ import com.antonriva.backendspring.model.Municipio;
 import com.antonriva.backendspring.model.Nivel;
 import com.antonriva.backendspring.model.Proceso;
 import com.antonriva.backendspring.model.ProcesoLugar;
+import com.antonriva.backendspring.repository.CandidaturaRepository;
 import com.antonriva.backendspring.repository.ColoniaRepository;
 import com.antonriva.backendspring.repository.EntidadFederativaRepository;
 import com.antonriva.backendspring.repository.InstanciaDeProcesoRepository;
@@ -42,6 +44,7 @@ public class InstanciaDeProcesoService {
     private final NivelRepository nivelRepository;
     private final ProcesoRepository procesoRepository;
     private final ProcesoLugarRepository procesoLugarRepository;
+    private final CandidaturaRepository candidaturaRepository;
     
     public InstanciaDeProcesoService(InstanciaDeProcesoRepository instanciaDeProcesoRepository, 
     		VotoRepository votoRepository, 
@@ -50,7 +53,8 @@ public class InstanciaDeProcesoService {
     		LocalidadRepository localidadRepository,
     		NivelRepository nivelRepository,
     		ProcesoRepository procesoRepository,
-    		ProcesoLugarRepository procesoLugarRepository
+    		ProcesoLugarRepository procesoLugarRepository,
+    		CandidaturaRepository candidaturaRepository
     		) {
     	this.instanciaDeProcesoRepository = instanciaDeProcesoRepository;
     	this.votoRepository = votoRepository;	
@@ -60,6 +64,7 @@ public class InstanciaDeProcesoService {
     	this.procesoRepository = procesoRepository;
     	this.nivelRepository = nivelRepository;
     	this.procesoLugarRepository = procesoLugarRepository;
+    	this.candidaturaRepository = candidaturaRepository;
     }
 	
     
@@ -269,6 +274,51 @@ public class InstanciaDeProcesoService {
         System.out.println("Nueva instancia de proceso registrada con ID: " + instanciaGuardada.getId());
 
         return instanciaGuardada.getId();
+    }
+
+    
+    //ELiminar 
+    
+    @Transactional(readOnly = true)
+    public List<String> verificarDependenciasCriticas(Long idDeInstancia) {
+        List<String> tablasCriticas = new ArrayList<>();
+
+        // Verificar si existen votos asociados a la instancia
+        if (votoRepository.existsByInstanciaDeProcesoId(idDeInstancia)) {
+            tablasCriticas.add("Votos");
+        }
+
+        // Verificar si existen candidaturas asociadas a la instancia
+        if (candidaturaRepository.existsByInstanciaDeProcesoId(idDeInstancia)) {
+            tablasCriticas.add("Candidaturas");
+        }
+
+        return tablasCriticas;
+    }
+
+    @Transactional
+    public void eliminarInstancia(Long idDeInstancia) {
+        // Buscar la instancia de proceso
+        InstanciaDeProceso instancia = instanciaDeProcesoRepository.findById(idDeInstancia)
+                .orElseThrow(() -> new EntityNotFoundException("La instancia con ID " + idDeInstancia + " no existe."));
+
+        // Verificar dependencias críticas
+        List<String> dependenciasCriticas = verificarDependenciasCriticas(idDeInstancia);
+        if (!dependenciasCriticas.isEmpty()) {
+            throw new IllegalStateException("No se puede eliminar la instancia. Relacionada con: " +
+                    String.join(", ", dependenciasCriticas));
+        }
+
+        // Eliminar la instancia
+        instanciaDeProcesoRepository.delete(instancia);
+
+        // Eliminar el procesoLugar asociado
+        ProcesoLugar procesoLugar = instancia.getProcesoLugar();
+        if (procesoLugar != null) {
+            procesoLugarRepository.delete(procesoLugar);
+        }
+
+        System.out.println("Instancia de proceso y su ProcesoLugar asociado eliminados correctamente.");
     }
 
     

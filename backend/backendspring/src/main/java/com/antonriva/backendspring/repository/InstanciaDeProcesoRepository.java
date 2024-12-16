@@ -31,6 +31,6 @@ public interface InstanciaDeProcesoRepository extends JpaRepository<InstanciaDeP
              @Param("nivelId") Long nivelId,
              @Param("procesoId") Long procesoId
      );
-	
+    
 
 }

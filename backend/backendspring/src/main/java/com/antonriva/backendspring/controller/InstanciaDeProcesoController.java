@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,8 @@ public class InstanciaDeProcesoController {
     public InstanciaDeProcesoController(InstanciaDeProcesoService instanciaDeProcesoService) {
     	this.instanciaDeProcesoService=instanciaDeProcesoService;
     }
+    
+    //BUSCAR
 
     @GetMapping("/buscar")
     public ResponseEntity<?> buscarInstanciasConFiltros(
@@ -60,6 +63,7 @@ public class InstanciaDeProcesoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado: " + e.getMessage());
         }
     }
+    //EDITAR
     
     @GetMapping("/editar/{idDeInstancia}")
     public ResponseEntity<?> obtenerDatosParaEdicion(@PathVariable Long idDeInstancia) {
@@ -87,6 +91,7 @@ public class InstanciaDeProcesoController {
         }
     }
     
+    //REGISTRAR
     
     @PostMapping("/crear")
     public ResponseEntity<?> registrarNuevaInstancia(@RequestBody InstanciaEditarDTO dto) {
@@ -101,5 +106,33 @@ public class InstanciaDeProcesoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado: " + e.getMessage());
         }
     }
+
+    //ELIMINAR 
+    
+    @DeleteMapping("/eliminar/{idDeInstancia}")
+    public ResponseEntity<?> eliminarInstancia(@PathVariable Long idDeInstancia) {
+        try {
+            // Verificar dependencias críticas
+            List<String> dependenciasCriticas = instanciaDeProcesoService.verificarDependenciasCriticas(idDeInstancia);
+            if (!dependenciasCriticas.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("No se puede eliminar la instancia. Relacionada con: " +
+                        String.join(", ", dependenciasCriticas));
+            }
+
+            // Proceder a eliminar
+            instanciaDeProcesoService.eliminarInstancia(idDeInstancia);
+            return ResponseEntity.ok("Instancia de proceso eliminada correctamente.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado: " + e.getMessage());
+        }
+    }
+
+
+
+
 
 }
