@@ -3,21 +3,19 @@ package com.antonriva.backendspring.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.antonriva.backendspring.model.Candidatura;
+import com.antonriva.backendspring.model.Nivel;
 
 import jakarta.transaction.Transactional;
+
 
 @Repository
 @Transactional
 @EnableTransactionManagement
-public interface CandidaturaRepository extends JpaRepository<Candidatura, Long>{
+public interface NivelRepository extends JpaRepository<Nivel, Long>, JpaSpecificationExecutor<Nivel> {
 	
-    boolean existsByPartidoId(Long partidoId);
-    List<Candidatura> findByInstanciaDeProcesoId(Long instanciaDeProcesoId);
-    
-    boolean existsByInstanciaDeProcesoIdAndPartidoId(Long instanciaDeProcesoId, Long partidoId);
 
 }

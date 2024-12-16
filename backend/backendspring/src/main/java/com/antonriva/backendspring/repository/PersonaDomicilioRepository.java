@@ -35,7 +35,7 @@ public interface PersonaDomicilioRepository extends JpaRepository<PersonaDomicil
     void deleteByPersonaId(@Param("personaId") Long personaId);
     
     Optional<PersonaDomicilio> findByPersonaIdAndTipoDeDomicilioId(Long personaId, Long tipoDeDomicilioId);
-
+    
     
 
 }
