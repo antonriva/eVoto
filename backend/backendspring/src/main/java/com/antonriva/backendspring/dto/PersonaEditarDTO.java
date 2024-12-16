@@ -11,10 +11,10 @@ public class PersonaEditarDTO {
     @Pattern(regexp = "^[A-Z]+( [A-Z]+)*$", message = "El nombre debe contener solo letras mayúsculas y espacios, sin números ni caracteres especiales.")
     private String nombre;
 
-    @Pattern(regexp = "^[A-Z]+$", message = "El apellido paterno debe contener solo letras mayúsculas, sin números ni caracteres especiales.")
+    @Pattern(regexp = "^[A-Z]+( [A-Z]+)*$", message = "El apellido paterno debe contener solo letras mayúsculas, sin números ni caracteres especiales.")
     private String apellidoPaterno;
 
-    @Pattern(regexp = "^[A-Z]+$", message = "El apellido materno debe contener solo letras mayúsculas, sin números ni caracteres especiales.")
+    @Pattern(regexp = "^[A-Z]+( [A-Z]+)*$", message = "El apellido materno debe contener solo letras mayúsculas, sin números ni caracteres especiales.")
     private String apellidoMaterno;
 
     private LocalDate fechaDeNacimiento;

@@ -7,10 +7,14 @@ import ResultadosPag from './ResultadosPag';
 import SistemaP from './sistemaElectoral/SistemaP';
 import PartidosP from './sistemaElectoral/PartidosP'
 import BuscarPartidoP from './sistemaElectoral/partidosP/BuscarPartidoP'
+import EditarPartidoP from '../../components/colegio/partido/EditarPartido'
+import RegistroPartidoP from './sistemaElectoral/partidosP/RegistroPartidoP';
 
 //Elector
 import ElectoresP from './sistemaElectoral/ElectoresP'
-import BuscarElectorP from './sistemaElectoral/electoresP/BuscarElectorP';
+import BuscarElectorP from './sistemaElectoral/electoresP/PaginaBuscarElectores';
+import EditarElectorP from '../../components/colegio/paginaBuscar/ElectorEditar';
+import RegistroElectorP from './sistemaElectoral/electoresP/ElectorRegistro';
 
 const AppColegio = () => {
     const [menuVisible, setMenuVisible] = useState(true); // Estado para mostrar/ocultar el menú
@@ -46,6 +50,7 @@ const AppColegio = () => {
       {menuVisible && !hideMenuPages.includes(location.pathname) && (
         <nav>
           <ul>
+            <li><Link to="/">Regresar al Menú Principal</Link></li>
             <li><Link to="about" onClick={() => setMenuVisible(true)}>Acerca del Colegio Electoral</Link></li>
             <li><Link to="sistema" onClick={() => handleMenuToggle("sistema")}>Sistema electoral</Link></li>
             <li><Link to="proceso" onClick={() => handleMenuToggle("proceso")}>Proceso Electoral</Link></li>
@@ -67,9 +72,15 @@ const AppColegio = () => {
           
           {/* Partido */}
           <Route path="sistema/par/buscar" element={<BuscarPartidoP/>}/>
+          <Route path="sistema/par/buscar/editar/:id" element={<EditarPartidoP/>}/>
+          <Route path="sistema/par/registro" element={<RegistroPartidoP/>}/>
+
 
           {/* Elector */}
+
           <Route path="sistema/ele/buscar" element={<BuscarElectorP/>}/>
+          <Route path="sistema/ele/buscar/editar/:id" element={<EditarElectorP/>}/>
+          <Route path="sistema/ele/registro" element={<RegistroElectorP/>}/>
 
           {/* Proceso electoral */}
 

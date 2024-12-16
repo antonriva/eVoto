@@ -51,18 +51,6 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
     }
   };
 
-  const fetchColonias = async (municipioId) => {
-    try {
-      if (!municipioId) {
-        return;
-      }
-      const response = await fetch(`http://localhost:8080/api/colonia/municipio/${municipioId}`);
-      const data = await response.json();
-      setCodigosPostales([]);
-    } catch (error) {
-      console.error("Error al cargar colonias:", error);
-    }
-  };
 
 
   const fetchTiposDeDomicilio = async () => {
@@ -99,11 +87,11 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
   return (
     <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
       <div>
-        <label>ID:</label>
+        <label>ID de Elector:</label>
         <input
           type="text"
-          name="id"
-          value={filtros.id || ""}
+          name="idElector"
+          value={filtros.idElector || ""}
           onChange={handleChange}
           pattern="^\d*$" // Solo números
           title="El ID solo puede contener números."

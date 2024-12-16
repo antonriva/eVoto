@@ -2,8 +2,8 @@ import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import AboutCiv from "./AboutCiv";
 import PaginaBuscar from "./PaginaBuscar";
-import PaginaRegistrar from "./PaginaRegistrar";
-import EditarPersona from "../../components/civil/paginaBuscar/EditarPersona";
+import PaginaRegistro from "./PaginaRegistro";
+import PaginaEditar from "../../components/civil/paginaBuscar/PaginaEditar";
 
 const AppCivil = () => {
   return (
@@ -14,15 +14,15 @@ const AppCivil = () => {
           <li><Link to="/">Regresar al Menú Principal</Link></li>
           <li><Link to="about">Inicio</Link></li>
           <li><Link to="buscar">Buscar Personas</Link></li>
-          <li><Link to="registrar">Registrar Persona</Link></li>
+          <li><Link to="registro">Registrar Persona</Link></li>
         </ul>
       </nav>
 
       <Routes>
         <Route path="about" element={<AboutCiv />} />
         <Route path="buscar" element={<PaginaBuscar />} />
-        <Route path="registrar" element={<PaginaRegistrar />} />
-        <Route path="buscar/editar/:id" element={<EditarPersona />} />
+        <Route path="registro" element={<PaginaRegistro />} />
+        <Route path="buscar/editar/:id" element={<PaginaEditar />} />
       </Routes>
     </div>
   );

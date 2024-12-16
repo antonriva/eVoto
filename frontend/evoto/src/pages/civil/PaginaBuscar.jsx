@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Table from "../../components/civil/paginaBuscar/Table";
 import ExpandableRow from "../../components/civil/paginaBuscar/ExpandableRow";
-import FiltrosPersonas from "../../components/civil/paginaBuscar/FiltrosPersonas"; // Nuevo componente
+import FiltrosPersonas from "../../components/civil/paginaBuscar/FiltrosPersonas";
 
 const PaginaBuscar = () => {
   const [personas, setPersonas] = useState([]);
@@ -11,8 +11,6 @@ const PaginaBuscar = () => {
     nombre: "",
     apellidoPaterno: "",
     apellidoMaterno: "",
-    fechaDeNacimiento: "",
-    fechaDeFin: "", // Nuevo campo para fecha de fin
     anioNacimiento: "",
     mesNacimiento: "",
     diaNacimiento: "",
@@ -24,23 +22,42 @@ const PaginaBuscar = () => {
     localidad: "",
     colonia: "",
     codigoPostal: "",
-    tipoDeDomicilio:""
+    tipoDeDomicilio: ""
   });
 
-  const navigate = useNavigate(); // Para navegación entre páginas
+  const navigate = useNavigate();
 
-  // Función para obtener personas con o sin filtros
+  // Función para formatear los filtros, eliminando valores vacíos
+  const formatFilters = (filters) => {
+    return Object.fromEntries(
+      Object.entries(filters).filter(([_, value]) => value !== "")
+    );
+  };
+
+  const [error, setError] = useState("");
+
+  // Función para obtener personas con filtros
   const fetchPersonas = async (params = {}) => {
     try {
-      const query = new URLSearchParams(params).toString();
+      const query = new URLSearchParams(formatFilters(params)).toString();
       const response = await fetch(`http://localhost:8080/api/persona/buscar?${query}`);
       if (!response.ok) {
         throw new Error("Error al cargar personas.");
       }
       const data = await response.json();
-      setPersonas(data);
+
+      // Transformar datos si es necesario (fechas en formato LocalDate)
+      const formattedData = data.map((persona) => ({
+        ...persona,
+        fechaDeNacimiento: persona.fechaDeNacimiento || "---",
+        fechaDeFin: persona.fechaDeFin || "---",
+      }));
+
+      setPersonas(formattedData);
+      setError(""); // Limpia el mensaje de error si la carga es exitosa
     } catch (error) {
       console.error("Error al cargar personas:", error);
+      setError("Error al cargar personas. Por favor, inténtalo de nuevo."); // Actualiza el mensaje
     }
   };
 
@@ -49,47 +66,55 @@ const PaginaBuscar = () => {
     fetchPersonas();
   }, []);
 
-  // Función para obtener domicilios
-  const fetchDomicilios = async (id) => {
-    const response = await fetch(
-      `http://localhost:8080/api/persona/${id}/detalles-domicilios`
-    );
-    if (!response.ok) {
-      throw new Error(`Error al obtener domicilios para persona con ID ${id}`);
-    }
-    return response.json();
-  };
+    // Función para obtener domicilios de una persona
+    const fetchDomicilios = async (idPersona) => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/persona/${idPersona}/detalles-domicilios`);
+        if (!response.ok) {
+          throw new Error(`Error al obtener domicilios para persona con ID ${idPersona}`);
+        }
+        return await response.json();
+      } catch (error) {
+        console.error("Error al cargar domicilios:", error);
+        return []; // Retorna un arreglo vacío en caso de error
+      }
+    };
+
 
   // Función para eliminar una persona
-  const eliminarPersona = async (id) => {
-    const confirmar = window.confirm("¿Estás seguro de que deseas eliminar esta persona?");
-    if (confirmar) {
-      try {
-        const response = await fetch(`http://localhost:8080/api/persona/${id}`, { method: "DELETE" });
-  
-        if (response.ok) {
-          alert("Persona eliminada exitosamente.");
-          setPersonas((prev) => prev.filter((persona) => persona.id !== id));
+const eliminarPersona = async (id) => {
+  const confirmar = window.confirm("¿Estás seguro de que deseas eliminar esta persona?");
+  if (confirmar) {
+    try {
+      const response = await fetch(`http://localhost:8080/api/persona/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        alert("Persona eliminada correctamente.");
+        setPersonas((prev) => prev.filter((persona) => persona.id !== id));
+      } else {
+        const errorMessage = await response.text();
+        if (response.status === 404) {
+          alert(`Error: La persona con ID ${id} no existe.`);
         } else if (response.status === 409) {
-          const errorMessage = await response.text();
-          alert(`No se pudo eliminar la persona. ${errorMessage}`);
+          alert(`Error: ${errorMessage}`);
         } else {
-          alert("Error al eliminar persona.");
+          alert(`Error inesperado al eliminar la persona: ${errorMessage}`);
         }
-      } catch (error) {
-        console.error(`Error al eliminar persona con ID ${id}:`, error);
-        alert("Error inesperado al eliminar persona.");
       }
+    } catch (error) {
+      console.error(`Error al eliminar persona con ID ${id}:`, error);
+      alert("Error inesperado al eliminar la persona. Por favor, inténtelo nuevamente.");
     }
-  };
-  
+  }
+};
+
 
   // Función para redirigir a la página de edición
-  //////SE QUITO UNA BARRA 
   const editarPersona = (id) => {
     navigate(`editar/${id}`);
   };
-  
 
   const headers = [
     "ID",
@@ -105,12 +130,13 @@ const PaginaBuscar = () => {
   return (
     <div>
       <h1>Catálogo de Personas</h1>
-      
+
+      {error && <p style={{ color: "red" }}>{error}</p>} {/* Muestra el error al usuario */}
       {/* Formulario de Filtros */}
       <FiltrosPersonas
         filtros={filtros}
         setFiltros={setFiltros}
-        onBuscar={fetchPersonas}
+        onBuscar={() => fetchPersonas(filtros)}
       />
 
       {/* Tabla de Personas */}
@@ -126,13 +152,13 @@ const PaginaBuscar = () => {
               persona.nombre,
               persona.apellidoPaterno,
               persona.apellidoMaterno,
-              persona.fechaDeNacimiento,
-              persona.fechaDeFin || "---",
+              persona.fechaDeNacimiento, // Mostrar la fecha de nacimiento directamente
+              persona.fechaDeFin, // Mostrar la fecha de fin directamente
             ]}
-            fetchDomicilios={fetchDomicilios}
-            colSpan={9}
-            onEdit={(id) => editarPersona(id)} // Función de edición
-            onDelete={(id) => eliminarPersona(id)} // Función de eliminación
+            fetchDomicilios={() => fetchDomicilios(persona.id)}
+            colSpan={headers.length}
+            onEdit={(id) => editarPersona(id)}
+            onDelete={(id) => eliminarPersona(id)}
           />
         )}
       />

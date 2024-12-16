@@ -57,51 +57,80 @@ public class PersonaController {
     
     @GetMapping("/buscar")
     public ResponseEntity<List<PersonaBuscarCompletoDTO>> buscarPersonas(
-            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String id,
             @RequestParam(required = false) String nombre,
             @RequestParam(required = false) String apellidoPaterno,
             @RequestParam(required = false) String apellidoMaterno,
-            @RequestParam(required = false) Integer anioNacimiento,
-            @RequestParam(required = false) Integer mesNacimiento,
-            @RequestParam(required = false) Integer diaNacimiento,
-            @RequestParam(required = false) Integer anioFin,
-            @RequestParam(required = false) Integer mesFin,
-            @RequestParam(required = false) Integer diaFin,
-            @RequestParam(required = false) Long entidadFederativa,
-            @RequestParam(required = false) Long municipio,
-            @RequestParam(required = false) Long localidad,
-            @RequestParam(required = false) Long colonia,
-            @RequestParam(required = false) Long codigoPostal,
-            @RequestParam(required = false) Long tipoDeDomicilio
- 
-            
-            
+            @RequestParam(required = false) String anioNacimiento,
+            @RequestParam(required = false) String mesNacimiento,
+            @RequestParam(required = false) String diaNacimiento,
+            @RequestParam(required = false) String anioFin,
+            @RequestParam(required = false) String mesFin,
+            @RequestParam(required = false) String diaFin,
+            @RequestParam(required = false) String entidadFederativa,
+            @RequestParam(required = false) String municipio,
+            @RequestParam(required = false) String localidad,
+            @RequestParam(required = false) String colonia,
+            @RequestParam(required = false) String codigoPostal,
+            @RequestParam(required = false) String tipoDeDomicilio
     ) {
         try {
+            // Limpiar los valores de los parámetros
+            Long idParsed = parseLongOrNull(id);
+            Integer anioNacimientoParsed = parseIntegerOrNull(anioNacimiento);
+            Integer mesNacimientoParsed = parseIntegerOrNull(mesNacimiento);
+            Integer diaNacimientoParsed = parseIntegerOrNull(diaNacimiento);
+            Integer anioFinParsed = parseIntegerOrNull(anioFin);
+            Integer mesFinParsed = parseIntegerOrNull(mesFin);
+            Integer diaFinParsed = parseIntegerOrNull(diaFin);
+            Long entidadFederativaParsed = parseLongOrNull(entidadFederativa);
+            Long municipioParsed = parseLongOrNull(municipio);
+            Long localidadParsed = parseLongOrNull(localidad);
+            Long coloniaParsed = parseLongOrNull(colonia);
+            Long codigoPostalParsed = parseLongOrNull(codigoPostal);
+            Long tipoDeDomicilioParsed = parseLongOrNull(tipoDeDomicilio);
+
             // Llamar al servicio para realizar la búsqueda
             List<PersonaBuscarCompletoDTO> resultados = personaService.buscarPersonasConDetalles(
-            		id,
+                    idParsed,
                     nombre,
                     apellidoPaterno,
                     apellidoMaterno,
-                    anioNacimiento,
-                    mesNacimiento,
-                    diaNacimiento,
-                    anioFin,
-                    mesFin,
-                    diaFin,
-                    entidadFederativa,
-                    municipio,
-                    localidad, 
-                    colonia, 
-                    codigoPostal,
-                    tipoDeDomicilio
+                    anioNacimientoParsed,
+                    mesNacimientoParsed,
+                    diaNacimientoParsed,
+                    anioFinParsed,
+                    mesFinParsed,
+                    diaFinParsed,
+                    entidadFederativaParsed,
+                    municipioParsed,
+                    localidadParsed,
+                    coloniaParsed,
+                    codigoPostalParsed,
+                    tipoDeDomicilioParsed
             );
 
             // Retornar la lista de DTOs
             return ResponseEntity.ok(resultados);
         } catch (Exception e) {
             throw new RuntimeException("Ocurrió un error al buscar personas con detalles. Por favor intente nuevamente.", e);
+        }
+    }
+
+    // Métodos auxiliares para convertir valores
+    private Long parseLongOrNull(String value) {
+        try {
+            return (value != null && !"null".equals(value) && !value.isEmpty()) ? Long.parseLong(value) : null;
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private Integer parseIntegerOrNull(String value) {
+        try {
+            return (value != null && !"null".equals(value) && !value.isEmpty()) ? Integer.parseInt(value) : null;
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
     

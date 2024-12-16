@@ -28,7 +28,7 @@ public class VisualService {
     private final TipoDeVisualRepository tipoDeVisualRepository;
     private final RecursoVigenteRepository recursoVigenteRepository;
 
-    private static final String FILE_DIRECTORY = "/home/mrschopen/Documents/proyectoBDII/eVoto/frontend/evoto/src/assets/visuales"; // Cambia esta ruta según tu estructura
+    private static final String FILE_DIRECTORY = "/home/mrschopen/Documents/proyectoBDII/eVoto/frontend/evoto/public/visuales"; // Cambia esta ruta según tu estructura
 
     public VisualService(VisualRepository visualRepository, 
                          PartidoRepository partidoRepository, 
@@ -92,9 +92,14 @@ public class VisualService {
             // 5. Registrar el nuevo logo con recursoVigenteId = 1
             RecursoVigente recursoVigente = recursoVigenteRepository.findById(recursoVigenteId)
                     .orElseThrow(() -> new EntityNotFoundException("Recurso vigente no encontrado con ID: " + recursoVigenteId));
+            
+            // Ruta relativa desde el directorio público
+            String relativePath = "/visuales/" + fileName;
+            System.out.println("Archivo guardado en: " + relativePath);
+
 
             Visual nuevoVisual = new Visual();
-            nuevoVisual.setContenido(filePath); // Guardar la ruta absoluta del archivo
+            nuevoVisual.setContenido(relativePath); // Guardar la ruta absoluta del archivo
             nuevoVisual.setPartido(partido);
             nuevoVisual.setTipoDeVisual(tipoDeVisual);
             nuevoVisual.setRecursoVigente(recursoVigente);

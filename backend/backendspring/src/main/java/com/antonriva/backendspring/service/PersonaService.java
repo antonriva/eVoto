@@ -249,6 +249,24 @@ public class PersonaService {
         Persona persona = personaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("La persona con ID " + id + " no existe."));
         System.out.println("Persona encontrada: " + persona);
+        
+        //1.1 Validar que las fechas no sean posteriores a la fecha actual
+        LocalDate hoy = LocalDate.now();
+
+        if (dto.getFechaDeNacimiento() != null &&
+               dto.getFechaDeNacimiento().isAfter(hoy)) {
+            throw new IllegalArgumentException("La fecha de nacimiento no puede ser posterior a hoy.");
+        }
+
+        if (dto.getFechaDeFin() != null &&
+                dto.getFechaDeFin().isAfter(hoy)) {
+            throw new IllegalArgumentException("La fecha de fin no puede ser posterior a hoy.");
+        }
+
+        if (dto.getFechaDeInicio() != null &&
+                dto.getFechaDeInicio().isAfter(hoy)) {
+            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a hoy.");
+        }
 
         // 2. Validar la coherencia de los datos de domicilio
         boolean entidadFederativaProporcionada = dto.getEntidadFederativaId() != null;
