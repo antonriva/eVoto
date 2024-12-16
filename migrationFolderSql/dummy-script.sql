@@ -195,3 +195,128 @@ END;
 /
 
 COMMIT;
+
+DECLARE
+    v_proceso_lugar_1 NUMBER;
+    v_proceso_lugar_2 NUMBER;
+    v_id_instancia1 NUMBER;
+    v_id_instancia2 NUMBER;
+BEGIN
+    -- ProcesoLugar sin entidad federativa y con valores nulos excepto nivel
+    INSERT INTO PROCESOLUGAR (IDDeNivel)
+    VALUES (1)
+    RETURNING ID INTO v_proceso_lugar_1;
+
+    -- ProcesoLugar con entidad federativa 31
+    INSERT INTO PROCESOLUGAR (IDDeNivel, IDDeEntidad)
+    VALUES (2, 31)
+    RETURNING ID INTO v_proceso_lugar_2;
+
+    -- InstanciaDeProceso con el primer ProcesoLugar
+    INSERT INTO INSTANCIADEPROCESO (IDDeProceso, IDDeNivel, IDDeProcesoLugar, GANADORESNUM, FECHAHORADEINICIO, FECHAHORADEFIN)
+    VALUES (
+        1, -- IDDeProceso asociado
+        1, -- IDDeNivel asociado
+        v_proceso_lugar_1, -- ID del ProcesoLugar creado previamente
+        1, -- Número de ganadores
+        TO_DATE('2024-12-15 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), -- Fecha y hora de inicio
+        TO_DATE('2024-12-15 23:59:59', 'YYYY-MM-DD HH24:MI:SS')  -- Fecha y hora de fin
+    )
+    RETURNING ID INTO v_id_instancia1;
+
+    -- InstanciaDeProceso con el segundo ProcesoLugar
+    INSERT INTO INSTANCIADEPROCESO (IDDeProceso, IDDeNivel, IDDeProcesoLugar, GANADORESNUM, FECHAHORADEINICIO, FECHAHORADEFIN)
+    VALUES (
+        2, -- IDDeProceso asociado
+        2, -- IDDeNivel asociado
+        v_proceso_lugar_2, -- ID del ProcesoLugar creado previamente
+        1, -- Número de ganadores
+        TO_DATE('2024-12-15 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), -- Fecha y hora de inicio
+        TO_DATE('2024-12-15 23:59:59', 'YYYY-MM-DD HH24:MI:SS')  -- Fecha y hora de fin
+    )
+    RETURNING ID INTO v_id_instancia2;
+
+    DBMS_OUTPUT.PUT_LINE('Instancia 1 creada con ID: ' || v_id_instancia1);
+    DBMS_OUTPUT.PUT_LINE('Instancia 2 creada con ID: ' || v_id_instancia2);
+
+END;
+/
+COMMIT;
+
+
+
+DECLARE
+    v_id_instancia1 NUMBER;
+    v_id_instancia2 NUMBER;
+    v_id_partido NUMBER;
+    v_id_candidatura1 NUMBER;
+    v_id_candidatura2 NUMBER;
+BEGIN
+    -- Crear partido
+    INSERT INTO PARTIDO (DENOMINACION, SIGLAS, FECHADEINICIO)
+    VALUES ('PARTIDO DEMOCRATICO', 'PD', TO_DATE('1990-01-01', 'YYYY-MM-DD'))
+    RETURNING ID INTO v_id_partido;
+
+    -- Crear instancias de proceso
+    INSERT INTO PROCESOLUGAR (IDDENIVEL)
+    VALUES (1)
+    RETURNING ID INTO v_id_instancia1;
+
+    INSERT INTO PROCESOLUGAR (IDDENIVEL, IDDEENTIDAD)
+    VALUES (2, 31)
+    RETURNING ID INTO v_id_instancia2;
+
+    INSERT INTO INSTANCIADEPROCESO (IDDEPROCESO, IDDENIVEL, IDDEPROCESOLUGAR, GANADORESNUM, FECHAHORADEINICIO, FECHAHORADEFIN)
+    VALUES (1, 1, v_id_instancia1, 1, TO_DATE('2024-12-15 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-12-15 23:59:59', 'YYYY-MM-DD HH24:MI:SS'))
+    RETURNING ID INTO v_id_instancia1;
+
+    INSERT INTO INSTANCIADEPROCESO (IDDEPROCESO, IDDENIVEL, IDDEPROCESOLUGAR, GANADORESNUM, FECHAHORADEINICIO, FECHAHORADEFIN)
+    VALUES (2, 2, v_id_instancia2, 1, TO_DATE('2024-12-15 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-12-15 23:59:59', 'YYYY-MM-DD HH24:MI:SS'))
+    RETURNING ID INTO v_id_instancia2;
+
+    -- Crear candidaturas asociadas a las instancias de proceso
+    INSERT INTO CANDIDATURA (IDDEINSTANCIADEPROCESO, IDDEPARTIDO)
+    VALUES (v_id_instancia1, v_id_partido)
+    RETURNING ID INTO v_id_candidatura1;
+
+    INSERT INTO CANDIDATURA (IDDEINSTANCIADEPROCESO, IDDEPARTIDO)
+    VALUES (v_id_instancia2, v_id_partido)
+    RETURNING ID INTO v_id_candidatura2;
+
+    DBMS_OUTPUT.PUT_LINE('Candidatura 1 creada con ID: ' || v_id_candidatura1);
+    DBMS_OUTPUT.PUT_LINE('Candidatura 2 creada con ID: ' || v_id_candidatura2);
+END;
+/
+
+COMMIT;
+
+ROLLBACK;
+
+
+DECLARE
+    v_id_elector NUMBER;
+    v_id_candidatura NUMBER;
+BEGIN
+    -- Asociar un elector a una candidatura existente
+    -- Suponiendo que los IDs de Elector y Candidatura ya existen:
+    v_id_elector := 10; -- Reemplazar con el ID real del Elector
+    v_id_candidatura := 67; -- Reemplazar con el ID real de la Candidatura
+
+    INSERT INTO ElectorCandidatura (IdDeElector, IdDeCandidatura, fechaHoraDeInicio, fechaHoraDeFin)
+    VALUES (
+        v_id_elector,
+        v_id_candidatura,
+        TO_DATE('2024-12-15 08:00:00', 'YYYY-MM-DD HH24:MI:SS'),
+        TO_DATE('2024-12-15 18:00:00', 'YYYY-MM-DD HH24:MI:SS')
+    );
+
+    DBMS_OUTPUT.PUT_LINE('Elector ' || v_id_elector || ' asociado a candidatura ' || v_id_candidatura || '.');
+END;
+/
+
+
+
+
+
+
+

@@ -280,3 +280,6 @@ END;
 
 -- Confirmar transacciones
 COMMIT;
+
+
+

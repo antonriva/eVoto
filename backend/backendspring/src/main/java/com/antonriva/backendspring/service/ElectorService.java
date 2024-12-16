@@ -1,10 +1,12 @@
 package com.antonriva.backendspring.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,30 +14,39 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.antonriva.backendspring.dto.CandidaturaProcesoDTO;
 import com.antonriva.backendspring.dto.DomicilioDTO;
 import com.antonriva.backendspring.dto.ElectorBuscarCompletoDTO;
 import com.antonriva.backendspring.dto.ElectorBuscarDTO;
 import com.antonriva.backendspring.dto.ElectorEditarDTO;
+import com.antonriva.backendspring.dto.ProcesosAbiertosDTO;
+import com.antonriva.backendspring.id.ElectorCandidaturaId;
 import com.antonriva.backendspring.id.PersonaDomicilioId;
 import com.antonriva.backendspring.model.Candidatura;
 import com.antonriva.backendspring.model.Domicilio;
 import com.antonriva.backendspring.model.Elector;
 import com.antonriva.backendspring.model.ElectorCandidatura;
 import com.antonriva.backendspring.model.InstanciaDeProceso;
+import com.antonriva.backendspring.model.Partido;
 import com.antonriva.backendspring.model.Persona;
 import com.antonriva.backendspring.model.PersonaDomicilio;
+import com.antonriva.backendspring.model.ProcesoLugar;
+import com.antonriva.backendspring.model.Visual;
+import com.antonriva.backendspring.repository.CandidaturaRepository;
 import com.antonriva.backendspring.repository.ColoniaRepository;
 import com.antonriva.backendspring.repository.DomicilioRepository;
 import com.antonriva.backendspring.repository.ElectorCandidaturaRepository;
 import com.antonriva.backendspring.repository.ElectorInstanciaRepository;
 import com.antonriva.backendspring.repository.ElectorRepository;
 import com.antonriva.backendspring.repository.EntidadFederativaRepository;
+import com.antonriva.backendspring.repository.InstanciaDeProcesoRepository;
 import com.antonriva.backendspring.repository.LocalidadRepository;
 import com.antonriva.backendspring.repository.MunicipioRepository;
 import com.antonriva.backendspring.repository.PersonaDomicilioRepository;
 import com.antonriva.backendspring.repository.PersonaRepository;
 import com.antonriva.backendspring.repository.PostalRepository;
 import com.antonriva.backendspring.repository.TipoDeDomicilioRepository;
+import com.antonriva.backendspring.repository.VisualRepository;
 import com.antonriva.backendspring.specification.ElectorSpecifications;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -60,6 +71,9 @@ public class ElectorService {
     private final TipoDeDomicilioRepository tipoDeDomicilioRepository;
     private final ElectorInstanciaRepository electorInstanciaRepository;
     private final ElectorCandidaturaRepository electorCandidaturaRepository;
+    private final InstanciaDeProcesoRepository instanciaDeProcesoRepository;
+    private final CandidaturaRepository candidaturaRepository;
+    private final VisualRepository visualRepository;
     
     
     public ElectorService(
@@ -74,7 +88,10 @@ public class ElectorService {
     		TipoDeDomicilioRepository tipoDeDomicilioRepository, 
     		PersonaRepository personaRepository,
     		ElectorInstanciaRepository electorInstanciaRepository,
-    		ElectorCandidaturaRepository electorCandidaturaRepository
+    		ElectorCandidaturaRepository electorCandidaturaRepository, 
+    		InstanciaDeProcesoRepository instanciaDeProcesoRepository, 
+    		CandidaturaRepository candidaturaRepository,
+    		VisualRepository visualRepository
     		) {
         this.electorRepository = electorRepository;
         this.personaDomicilioRepository = personaDomicilioRepository;
@@ -88,6 +105,9 @@ public class ElectorService {
         this.personaRepository = personaRepository;
         this.electorInstanciaRepository = electorInstanciaRepository;
         this.electorCandidaturaRepository = electorCandidaturaRepository;
+        this.instanciaDeProcesoRepository = instanciaDeProcesoRepository;
+        this.candidaturaRepository = candidaturaRepository;
+        this.visualRepository = visualRepository;
     }
     //BUSCAR COMPLETO
     @Transactional
@@ -599,5 +619,144 @@ public class ElectorService {
         }
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    ///INICIA EL PROCESO DE VOTACION, ESTOS SON LOS PROCESOS A LOS QUE TIENES DERECHO DE VOTAR POR TU LUGAR DE UBICACION 
+    
+    @Transactional(readOnly = true)
+    public List<ProcesosAbiertosDTO> obtenerProcesosAbiertosPorElector(Long idElector) {
+        // Verificar si el elector existe
+        Elector elector = electorRepository.findById(idElector)
+                .orElseThrow(() -> new EntityNotFoundException("El elector con ID " + idElector + " no existe."));
+
+        // Buscar el domicilio de tipo 2 (residencia)
+        Optional<PersonaDomicilio> personaDomicilioOpt = personaDomicilioRepository.findByPersonaIdAndTipoDeDomicilioId(
+                elector.getPersona().getId(), 2L);
+
+        if (personaDomicilioOpt.isEmpty()) {
+            throw new IllegalStateException("El elector no tiene un domicilio de tipo residencia registrado.");
+        }
+
+        Domicilio domicilioResidencia = personaDomicilioOpt.get().getDomicilio();
+
+        // Obtener todos los procesos abiertos (fecha actual dentro del rango de fechaHoraDeInicio y fechaHoraDeFin)
+        LocalDateTime now = LocalDateTime.now();
+        List<InstanciaDeProceso> instanciasAbiertas = instanciaDeProcesoRepository.findAllByFechaHoraDeInicioBeforeAndFechaHoraDeFinAfter(now, now);
+
+        // Filtrar por coincidencia de ubicación y verificar si ya existe una relación en ElectorInstancia
+        return instanciasAbiertas.stream()
+                .filter(instancia -> {
+                    ProcesoLugar procesoLugar = instancia.getProcesoLugar();
+
+                    // Verificar entidad federativa
+                    if (procesoLugar.getEntidadFederativa() != null && 
+                            !procesoLugar.getEntidadFederativa().getId().equals(domicilioResidencia.getEntidadFederativa().getId())) {
+                        return false;
+                    }
+
+                    // Verificar municipio
+                    if (procesoLugar.getMunicipio() != null && 
+                            !procesoLugar.getMunicipio().getId().equals(domicilioResidencia.getMunicipio().getId())) {
+                        return false;
+                    }
+
+                    // Verificar localidad
+                    if (procesoLugar.getLocalidad() != null && 
+                            !procesoLugar.getLocalidad().getId().equals(domicilioResidencia.getLocalidad().getId())) {
+                        return false;
+                    }
+
+                    // Verificar si ya existe una relación en la tabla ElectorInstancia
+                    boolean yaRegistrado = electorInstanciaRepository.existsById_IdDeElectorAndId_IdDeInstanciaDeProceso(
+                            idElector, instancia.getId());
+
+                    return !yaRegistrado;
+                })
+                .map(instancia -> new ProcesosAbiertosDTO(
+                        idElector, // Agregar el ID del elector aquí
+                        instancia.getId(),
+                        instancia.getFechaHoraDeInicio(),
+                        instancia.getFechaHoraDeFin(),
+                        instancia.getNivel().getDescripcion(),
+                        instancia.getProceso().getDescripcion(),
+                        instancia.getProcesoLugar().getEntidadFederativa() != null 
+                            ? instancia.getProcesoLugar().getEntidadFederativa().getDescripcion() : "---",
+                        instancia.getProcesoLugar().getMunicipio() != null 
+                            ? instancia.getProcesoLugar().getMunicipio().getDescripcion() : "---",
+                        instancia.getProcesoLugar().getLocalidad() != null 
+                            ? instancia.getProcesoLugar().getLocalidad().getDescripcion() : "---"
+                ))
+                .collect(Collectors.toList());
+    }
+
+    
+    
+    
+    
+    
+    
+
+    //NOS DA LOS CANDIDATOS ENTRE LOS QUE SE PUEDE ELEGIR
+    
+    @Transactional(readOnly = true)
+    public List<CandidaturaProcesoDTO> obtenerCandidaturasDeProceso(Long idDeElector, Long idDeInstanciaDeProceso) {
+        // Verificar si el elector existe
+        Elector elector = electorRepository.findById(idDeElector)
+                .orElseThrow(() -> new EntityNotFoundException("El elector con ID " + idDeElector + " no existe."));
+
+        // Verificar si la instancia de proceso existe
+        InstanciaDeProceso instanciaDeProceso = instanciaDeProcesoRepository.findById(idDeInstanciaDeProceso)
+                .orElseThrow(() -> new EntityNotFoundException("La instancia de proceso con ID " + idDeInstanciaDeProceso + " no existe."));
+
+        // Obtener las candidaturas asociadas a la instancia de proceso
+        List<Candidatura> candidaturas = candidaturaRepository.findByInstanciaDeProcesoId(idDeInstanciaDeProceso);
+
+        // Transformar cada candidatura a DTO
+        return candidaturas.stream().map(candidatura -> {
+            Partido partido = candidatura.getPartido();
+            Persona persona = null;
+
+            // Buscar el ElectorCandidatura relacionado
+            Optional<ElectorCandidatura> electorCandidaturaOpt = electorCandidaturaRepository.findById(
+                    new ElectorCandidaturaId(idDeElector, candidatura.getId()));
+
+            if (electorCandidaturaOpt.isPresent()) {
+                Elector candidatoElector = electorCandidaturaOpt.get().getElector();
+                persona = candidatoElector.getPersona();
+            }
+
+            // Buscar la URL visual
+            Optional<Visual> visualOpt = visualRepository.findByPartidoAndRecursoVigenteIdAndTipoDeVisualId(
+                    partido, 1L, 1L);
+
+            return new CandidaturaProcesoDTO(
+                    idDeElector,
+                    idDeInstanciaDeProceso,
+                    candidatura.getId(),
+                    partido.getDenominacion(),
+                    partido.getSiglas(),
+                    visualOpt.map(Visual::getContenido).orElse("---"), // URL visual o "---" si no existe
+                    persona != null ? persona.getNombre() : "---",
+                    persona != null ? persona.getApellidoPaterno() : "---"
+            );
+        }).collect(Collectors.toList());
+    }
+
+
+
+
+
+
+
+
 
 }
+
+

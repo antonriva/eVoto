@@ -17,5 +17,6 @@ public interface ElectorInstanciaRepository extends JpaRepository<ElectorInstanc
 	
 	boolean existsByElectorId(Long idDeElector);
 
+	   boolean existsById_IdDeElectorAndId_IdDeInstanciaDeProceso(Long idDeElector, Long idDeInstanciaDeProceso);
 
 }

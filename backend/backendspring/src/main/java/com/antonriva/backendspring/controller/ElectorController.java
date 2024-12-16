@@ -21,10 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.antonriva.backendspring.dto.CandidaturaProcesoDTO;
 import com.antonriva.backendspring.dto.DomicilioDTO;
 import com.antonriva.backendspring.dto.ElectorBuscarCompletoDTO;
 import com.antonriva.backendspring.dto.ElectorBuscarDTO;
 import com.antonriva.backendspring.dto.ElectorEditarDTO;
+import com.antonriva.backendspring.dto.ProcesosAbiertosDTO;
 import com.antonriva.backendspring.model.Elector;
 import com.antonriva.backendspring.service.ElectorService;
 
@@ -194,6 +196,9 @@ public class ElectorController {
     }
 
     
+    
+    //ELECTOR CANDIDATOS
+    
     @GetMapping("/buscar/candidatos")
     public ResponseEntity<?> buscarElectorConDetalleEsCandidato(
             @RequestParam(required = false) Long idElector,
@@ -254,5 +259,49 @@ public class ElectorController {
                     .body("Error al buscar electores con detalle de candidaturas: " + e.getMessage());
         }
     }
+    
+    
+    
+    ///procesos
+
+    
+    @GetMapping("/abiertos/{idElector}")
+    public ResponseEntity<?> obtenerProcesosAbiertos(@PathVariable Long idElector) {
+        try {
+            List<ProcesosAbiertosDTO> procesosAbiertos = electorService.obtenerProcesosAbiertosPorElector(idElector);
+            return ResponseEntity.ok(procesosAbiertos);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado: " + e.getMessage());
+        }
+    }
+    
+    @GetMapping("/abiertos/candidatos")
+    public ResponseEntity<?> obtenerCandidaturasDeProceso(
+            @RequestParam Long idDeElector,
+            @RequestParam Long idDeInstanciaDeProceso) {
+        try {
+            List<CandidaturaProcesoDTO> candidaturas = electorService.obtenerCandidaturasDeProceso(idDeElector, idDeInstanciaDeProceso);
+            return ResponseEntity.ok(candidaturas);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado: " + e.getMessage());
+        }
+    }
+
+    
+
+
+
+
+
+
+
+
+
 
 }

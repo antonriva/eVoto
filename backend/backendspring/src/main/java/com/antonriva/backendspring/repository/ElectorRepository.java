@@ -23,5 +23,4 @@ public interface ElectorRepository extends JpaRepository<Elector, Long>, JpaSpec
 	
 	    Optional<Elector> findByPersonaId(Long personaId);
 	    
-
 }

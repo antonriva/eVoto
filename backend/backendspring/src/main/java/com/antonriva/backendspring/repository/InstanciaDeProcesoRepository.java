@@ -1,5 +1,8 @@
 package com.antonriva.backendspring.repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -31,6 +34,9 @@ public interface InstanciaDeProcesoRepository extends JpaRepository<InstanciaDeP
              @Param("nivelId") Long nivelId,
              @Param("procesoId") Long procesoId
      );
+    
+
+    List<InstanciaDeProceso> findAllByFechaHoraDeInicioBeforeAndFechaHoraDeFinAfter(LocalDateTime inicio, LocalDateTime fin);
     
 
 }
