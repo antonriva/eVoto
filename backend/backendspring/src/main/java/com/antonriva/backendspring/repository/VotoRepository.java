@@ -17,7 +17,9 @@ public interface VotoRepository extends JpaRepository<Voto, Long>, JpaSpecificat
 	Long countByInstanciaDeProcesoId(Long instanciaDeProcesoId);
 	
     boolean existsByInstanciaDeProcesoId(Long instanciaDeProcesoId);
-	
+    
+    Long countByCandidatura_IdAndInstanciaDeProceso_Id(Long idDeCandidatura, Long idDeInstanciaDeProceso);
+    
 	
 
 }

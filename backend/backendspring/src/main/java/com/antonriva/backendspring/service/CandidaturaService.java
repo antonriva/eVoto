@@ -69,56 +69,63 @@ public class CandidaturaService {
 		
 	}
 	//Este va a ser desde la vista de candidaturaElector
-    public List<CandidaturaElectorDetalleDTO> getDetalleDeCandidaturaElector(Long electorId) {
-        System.out.println("Buscando relaciones para el elector con ID: " + electorId);
-        List<ElectorCandidatura> relaciones = electorCandidaturaRepository.findByElectorId(electorId);
+	@Transactional(readOnly = true)
+	public List<CandidaturaElectorDetalleDTO> getDetalleDeCandidaturaElector(Long electorId) {
+	    System.out.println("Buscando relaciones para el elector con ID: " + electorId);
+	    List<ElectorCandidatura> relaciones = electorCandidaturaRepository.findByElectorId(electorId);
 
-        if (relaciones.isEmpty()) {
-            System.out.println("No se encontraron relaciones para el elector con ID: " + electorId);
-            throw new IllegalArgumentException("No se encontraron relaciones para el elector con ID: " + electorId);
-        }
+	    if (relaciones.isEmpty()) {
+	        System.out.println("No se encontraron relaciones para el elector con ID: " + electorId);
+	        throw new IllegalArgumentException("No se encontraron relaciones para el elector con ID: " + electorId);
+	    }
 
-        return relaciones.stream().map(relacion -> {
-            System.out.println("Procesando relación: " + relacion);
+	    return relaciones.stream().map(relacion -> {
+	        System.out.println("Procesando relación: " + relacion);
 
-            Candidatura candidatura = relacion.getCandidatura();
-            if (candidatura == null) {
-                System.out.println("La candidatura asociada no se encontró para la relación con ID de elector: " + electorId);
-                throw new IllegalStateException("La candidatura asociada no se encontró para la relación con ID de elector: " + electorId);
-            }
-            System.out.println("Candidatura encontrada: " + candidatura);
+	        Candidatura candidatura = relacion.getCandidatura();
+	        if (candidatura == null) {
+	            System.out.println("La candidatura asociada no se encontró para la relación con ID de elector: " + electorId);
+	            throw new IllegalStateException("La candidatura asociada no se encontró para la relación con ID de elector: " + electorId);
+	        }
+	        System.out.println("Candidatura encontrada: " + candidatura);
 
-            InstanciaDeProceso instanciaDeProceso = candidatura.getInstanciaDeProceso();
-            if (instanciaDeProceso == null) {
-                System.out.println("La instancia de proceso no se encontró para la candidatura con ID: " + candidatura.getId());
-                throw new IllegalStateException("La instancia de proceso no se encontró para la candidatura con ID: " + candidatura.getId());
-            }
-            System.out.println("Instancia de proceso encontrada: " + instanciaDeProceso);
+	        InstanciaDeProceso instanciaDeProceso = candidatura.getInstanciaDeProceso();
+	        if (instanciaDeProceso == null) {
+	            System.out.println("La instancia de proceso no se encontró para la candidatura con ID: " + candidatura.getId());
+	            throw new IllegalStateException("La instancia de proceso no se encontró para la candidatura con ID: " + candidatura.getId());
+	        }
+	        System.out.println("Instancia de proceso encontrada: " + instanciaDeProceso);
 
-            ProcesoLugar procesoLugar = instanciaDeProceso.getProcesoLugar();
-            if (procesoLugar == null) {
-                System.out.println("El proceso lugar no se encontró para la instancia de proceso con ID: " + instanciaDeProceso.getId());
-                throw new IllegalStateException("El proceso lugar no se encontró para la instancia de proceso con ID: " + instanciaDeProceso.getId());
-            }
-            System.out.println("Proceso lugar encontrado: " + procesoLugar);
+	        ProcesoLugar procesoLugar = instanciaDeProceso.getProcesoLugar();
+	        if (procesoLugar == null) {
+	            System.out.println("El proceso lugar no se encontró para la instancia de proceso con ID: " + instanciaDeProceso.getId());
+	            throw new IllegalStateException("El proceso lugar no se encontró para la instancia de proceso con ID: " + instanciaDeProceso.getId());
+	        }
+	        System.out.println("Proceso lugar encontrado: " + procesoLugar);
 
-            return new CandidaturaElectorDetalleDTO(
-                candidatura.getId(),
-                instanciaDeProceso.getId(),
-                instanciaDeProceso.getNivel().getDescripcion(),
-                instanciaDeProceso.getProceso().getDescripcion(),
-                candidatura.getPartido().getDenominacion(),
-                candidatura.getVoto(),
-                relacion.getFechaHoraDeInicio(),
-                relacion.getFechaHoraDeFin(),
-                procesoLugar.getEntidadFederativa() != null ? procesoLugar.getEntidadFederativa().getDescripcion() : null,
-                procesoLugar.getMunicipio() != null ? procesoLugar.getMunicipio().getDescripcion() : null,
-                procesoLugar.getLocalidad() != null ? procesoLugar.getLocalidad().getDescripcion() : null
-            );
-        }).collect(Collectors.toList());
-    }
+	        // Contar los votos para esta candidatura en esta instancia de proceso
+	        Long votosTotales = votoRepository.countByCandidatura_IdAndInstanciaDeProceso_Id(candidatura.getId(), instanciaDeProceso.getId());
+	        System.out.println("Votos totales encontrados para la candidatura ID " + candidatura.getId() + ": " + votosTotales);
 
-    //Este es get desde la vista de instancia
+	        return new CandidaturaElectorDetalleDTO(
+	            candidatura.getId(),
+	            instanciaDeProceso.getId(),
+	            instanciaDeProceso.getNivel().getDescripcion(),
+	            instanciaDeProceso.getProceso().getDescripcion(),
+	            candidatura.getPartido().getDenominacion(),
+	            votosTotales.intValue(), // Actualizar con el conteo de votos
+	            relacion.getFechaHoraDeInicio(),
+	            relacion.getFechaHoraDeFin(),
+	            procesoLugar.getEntidadFederativa() != null ? procesoLugar.getEntidadFederativa().getDescripcion() : null,
+	            procesoLugar.getMunicipio() != null ? procesoLugar.getMunicipio().getDescripcion() : null,
+	            procesoLugar.getLocalidad() != null ? procesoLugar.getLocalidad().getDescripcion() : null
+	        );
+	    }).collect(Collectors.toList());
+	}
+
+
+    //desde la vista de instancia
+    @Transactional(readOnly = true)
     public List<CandidaturaInstanciaDetalleDTO> getDetalleCandidaturaInstancia(Long idDeInstanciaDeProceso) {
         System.out.println("Buscando candidaturas asociadas a la instancia de proceso con ID: " + idDeInstanciaDeProceso);
         List<Candidatura> candidaturas = candidaturaRepository.findByInstanciaDeProcesoId(idDeInstanciaDeProceso);
@@ -130,6 +137,12 @@ public class CandidaturaService {
 
         return candidaturas.stream().map(candidatura -> {
             System.out.println("Procesando candidatura: " + candidatura);
+
+            // Obtener el total de votos para esta candidatura en la instancia de proceso
+            Long totalVotos = votoRepository.countByCandidatura_IdAndInstanciaDeProceso_Id(
+                    candidatura.getId(), idDeInstanciaDeProceso);
+
+            System.out.println("Total de votos para la candidatura con ID " + candidatura.getId() + ": " + totalVotos);
 
             Optional<ElectorCandidatura> electorCandidaturaOpt = electorCandidaturaRepository
                     .findTopByCandidaturaIdOrderByFechaHoraDeInicioAsc(candidatura.getId());
@@ -160,7 +173,7 @@ public class CandidaturaService {
             return new CandidaturaInstanciaDetalleDTO(
                     candidatura.getId(),
                     candidatura.getPartido().getDenominacion(),
-                    candidatura.getVoto(),
+                    totalVotos.intValue(), // Usamos el total de votos calculado
                     electorCandidatura.getFechaHoraDeInicio(),
                     electorCandidatura.getFechaHoraDeFin(),
                     persona.getId(),
@@ -169,9 +182,9 @@ public class CandidaturaService {
                     persona.getApellidoMaterno(),
                     persona.getFechaDeNacimiento(),
                     persona.getFechaDeFin(),
-                    domicilioResidencia.getEntidadFederativa().getDescripcion(),
-                    domicilioResidencia.getMunicipio().getDescripcion(),
-                    domicilioResidencia.getLocalidad().getDescripcion()
+                    domicilioResidencia.getEntidadFederativa() != null ? domicilioResidencia.getEntidadFederativa().getDescripcion() : "---",
+                    domicilioResidencia.getMunicipio() != null ? domicilioResidencia.getMunicipio().getDescripcion() : "---",
+                    domicilioResidencia.getLocalidad() != null ? domicilioResidencia.getLocalidad().getDescripcion() : "---"
             );
         }).collect(Collectors.toList());
     }
