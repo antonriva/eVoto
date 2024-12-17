@@ -54,6 +54,7 @@ public class PartidoController {
             @RequestParam(required = false) Integer diaFin
     ) {
         try {
+        	
             List<PartidoBuscarDetalleDTO> partidos = partidoService.buscarPartidosConDetalles(
                     id,
                     denominacion,

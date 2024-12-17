@@ -7,17 +7,18 @@ import FiltrosProcesos from "../../../../components/colegio/paginaBuscar/Filtros
 const PaginaBuscarInstanciaDeProceso = () => {
   const [instancias, setInstancias] = useState([]);
   const [filtros, setFiltros] = useState({
-    idDeNivel: "",
-    idDeProceso: "",
+    idDeInstanciaDeProceso: "", // Ajustado al nombre esperado
+    idNivel: "", // Ajustado al nombre esperado
+    idProceso: "",
     anioInicio: "",
     mesInicio: "",
     diaInicio: "",
     anioFin: "",
     mesFin: "",
     diaFin: "",
-    idDeEntidadFederativa: "",
-    idDeMunicipio: "",
-    idDeLocalidad: "",
+    idEntidadFederativa: "",
+    idMunicipio: "",
+    idLocalidad: "",
   });
 
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const PaginaBuscarInstanciaDeProceso = () => {
     try {
       const query = new URLSearchParams(formatFilters(params)).toString();
       const response = await fetch(
-        `http://localhost:8080/api/instancia-de-proceso/buscar?${query}`
+        `http://localhost:8080/api/instancia/buscar?${query}`
       );
       if (!response.ok) {
         throw new Error("Error al cargar instancias de proceso.");
@@ -49,6 +50,7 @@ const PaginaBuscarInstanciaDeProceso = () => {
       setError("Error al cargar instancias de proceso. Por favor, inténtalo de nuevo.");
     }
   };
+
 
   // Función para obtener candidaturas asociadas a una instancia
   const fetchCandidaturas = async (idInstancia) => {
@@ -119,6 +121,7 @@ const PaginaBuscarInstanciaDeProceso = () => {
     "Entidad Federativa",
     "Municipio",
     "Localidad",
+    "Voto total",
     "Candidaturas",
     "Acciones",
   ];
@@ -144,14 +147,15 @@ const PaginaBuscarInstanciaDeProceso = () => {
             key={instancia.id}
             idInstancia={instancia.id}
             rowData={[
-              instancia.id,
-              instancia.nivelDescripcion,
-              instancia.procesoDescripcion,
+              instancia.idDeInstanciaDeProceso,
+              instancia.descripcionNivel,
+              instancia.descripcionProceso,
               instancia.fechaHoraDeInicio,
               instancia.fechaHoraDeFin,
-              instancia.entidadFederativaDescripcion,
-              instancia.municipioDescripcion,
-              instancia.localidadDescripcion,
+              instancia.entidadFederativa,
+              instancia.municipio,
+              instancia.localidad,
+              instancia.votoTotal
             ]}
             fetchCandidaturas={() => fetchCandidaturas(instancia.id)}
             colSpan={headers.length}

@@ -80,6 +80,8 @@ const PaginaBuscar = () => {
       }
     };
 
+    
+
 
   // Función para eliminar una persona
 const eliminarPersona = async (id) => {

@@ -27,7 +27,7 @@ const AppColegio = () => {
     const location = useLocation(); // Obtener la ruta actual
   
     // Páginas donde se debe ocultar el menú
-    const hideMenuPages = ['/colegio/sistema','/colegio/proceso'];
+    const hideMenuPages = ['/colegio/sistema','/colegio/proceso','/colegio/sistema/ele','/colegio/sistema/ele/registro','/colegio/sistema/ele/buscar'];
   
     // Usamos useEffect para detectar cambios en la ruta
     useEffect(() => {

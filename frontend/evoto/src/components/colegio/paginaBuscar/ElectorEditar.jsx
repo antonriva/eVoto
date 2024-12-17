@@ -27,6 +27,14 @@ const ElectorEditar = () => {
   const [codigosPostales, setCodigosPostales] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+    
+  
+  
+  // Fetch inicial para cargar los datos del elector
+  useEffect(() => {
+    fetchElectorData();
+    fetchEntidades();
+  }, []);
 
   // Fechas para validaciones
   const today = new Date().toISOString().split("T")[0]; // Fecha actual
@@ -34,11 +42,6 @@ const ElectorEditar = () => {
     .toISOString()
     .split("T")[0]; // Hace 100 años
 
-  // Fetch inicial para cargar los datos del elector
-  useEffect(() => {
-    fetchElectorData();
-    fetchEntidades();
-  }, []);
 
   const fetchElectorData = async () => {
     setLoading(true);
@@ -64,7 +67,7 @@ const ElectorEditar = () => {
       });
       if (data.entidadFederativaId) fetchMunicipios(data.entidadFederativaId);
       if (data.municipioId) fetchLocalidades(data.municipioId);
-      if (data.localidadId) fetchColonias(data.localidadId);
+      if (data.municipioId) fetchColonias(data.municipioId);
       if (data.coloniaId) fetchCodigosPostales(data.coloniaId);
     } catch (error) {
       console.error("Error al cargar datos del elector:", error);
@@ -104,9 +107,9 @@ const ElectorEditar = () => {
     }
   };
 
-  const fetchColonias = async (localidadId) => {
+  const fetchColonias = async (municipioId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/colonia/localidad/${localidadId}`);
+      const response = await fetch(`http://localhost:8080/api/colonia/municipio/${municipioId}`);
       const data = await response.json();
       setColonias(data);
     } catch (error) {
@@ -116,7 +119,7 @@ const ElectorEditar = () => {
 
   const fetchCodigosPostales = async (coloniaId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/codigo-postal/colonia/${coloniaId}`);
+      const response = await fetch(`http://localhost:8080/api/postal/colonia/${coloniaId}`);
       const data = await response.json();
       setCodigosPostales(data);
     } catch (error) {
@@ -133,10 +136,13 @@ const ElectorEditar = () => {
 
     // Cargar datos dependientes
     if (name === "entidadFederativaId") fetchMunicipios(value);
-    if (name === "municipioId") fetchLocalidades(value);
-    if (name === "localidadId") fetchColonias(value);
+    if (name === "municipioId") {
+      fetchLocalidades(value);
+      fetchColonias(value);
+    }
     if (name === "coloniaId") fetchCodigosPostales(value);
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -153,7 +159,7 @@ const ElectorEditar = () => {
         throw new Error(errorMessage);
       }
       alert("Elector actualizado exitosamente.");
-      navigate("/electores");
+      navigate("/colegio/sistema/ele");
     } catch (error) {
       console.error("Error al actualizar elector:", error);
       setError("No se pudo actualizar la información del elector.");
@@ -170,6 +176,90 @@ const ElectorEditar = () => {
         <div>
           <label>ID Elector:</label>
           <input type="text" name="idElector" value={formData.idElector} disabled />
+        </div>
+        <div>
+          <label>Entidad Federativa:</label>
+          <select
+            name="entidadFederativaId"
+            value={formData.entidadFederativaId}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Seleccione Entidad Federativa</option>
+            {Array.isArray(entidades)&&entidades.map((entidad) => (
+              <option key={entidad.id} value={entidad.id}>
+                {entidad.descripcion}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Municipio:</label>
+          <select
+            name="municipioId"
+            value={formData.municipioId}
+            onChange={handleChange}
+            required
+            disabled={!municipios.length}
+          >
+            <option value="">Seleccione Municipio</option>
+            {Array.isArray(municipios)&&municipios.map((municipio) => (
+              <option key={municipio.id} value={municipio.id}>
+                {municipio.descripcion}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Localidad:</label>
+          <select
+            name="localidadId"
+            value={formData.localidadId}
+            onChange={handleChange}
+            required
+            disabled={!localidades.length}
+          >
+            <option value="">Seleccione Localidad</option>
+            {Array.isArray(localidades)&&localidades.map((localidad) => (
+              <option key={localidad.id} value={localidad.id}>
+                {localidad.descripcion}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Colonia:</label>
+          <select
+            name="coloniaId"
+            value={formData.coloniaId}
+            onChange={handleChange}
+            required
+            disabled={!colonias.length}
+          >
+            <option value="">Seleccione Colonia</option>
+            {Array.isArray(colonias)&&colonias.map((colonia) => (
+              <option key={colonia.id} value={colonia.id}>
+                {colonia.descripcion}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Codigo postal:</label>
+          <select
+            name="codigoPostalId"
+            value={formData.codigoPostalId}
+            onChange={handleChange}
+            required
+            disabled={!codigosPostales.length}
+          >
+            <option value="">Seleccione Colonia</option>
+            {Array.isArray(codigosPostales)&&codigosPostales.map((codigoPostal) => (
+              <option key={codigoPostal.id} value={codigoPostal.id}>
+                {codigoPostal.descripcion}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label>Calle:</label>
@@ -215,22 +305,11 @@ const ElectorEditar = () => {
             required
           />
         </div>
-        <div>
-          <label>Fecha de Inicio Elector:</label>
-          <input
-            type="date"
-            name="fechaDeInicioElector"
-            value={formData.fechaDeInicioElector}
-            onChange={handleChange}
-            min={oneHundredYearsAgo}
-            max={today}
-            required
-          />
-        </div>
+
         <button type="submit" disabled={loading}>
           {loading ? "Guardando..." : "Guardar Cambios"}
         </button>
-        <button type="button" onClick={() => navigate("/electores")}>
+        <button type="button" onClick={() => navigate("/colegio/sistema/ele")}>
           Cancelar
         </button>
       </form>

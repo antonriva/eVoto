@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import ModalBuscar from './ModalBuscarPersona';
 
 const ElectorRegistro = () => {
+  const today = new Date().toISOString().split("T")[0];
   const [formData, setFormData] = useState({
-    idPersona: "",
+    idDePersona: "",
     entidadFederativaId: "",
     municipioId: "",
     localidadId: "",
@@ -16,6 +18,14 @@ const ElectorRegistro = () => {
     fechaDeInicioElector: "",
   });
 
+  const [showModal, setShowModal] = useState(false); // Controla la visibilidad del modal
+
+
+  const handleSelectPersona = (id) => {
+    setFormData((prev) => ({ ...prev, idDePersona: id }));
+    setShowModal(false); // Cierra el modal al seleccionar
+  };
+
   const [entidades, setEntidades] = useState([]);
   const [municipios, setMunicipios] = useState([]);
   const [localidades, setLocalidades] = useState([]);
@@ -25,7 +35,7 @@ const ElectorRegistro = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const today = new Date().toISOString().split("T")[0];
+
   const oneHundredYearsAgo = new Date(new Date().getFullYear() - 100, new Date().getMonth(), new Date().getDate())
     .toISOString()
     .split("T")[0];
@@ -46,10 +56,6 @@ const ElectorRegistro = () => {
 
   const fetchMunicipios = async (entidadId) => {
     try {
-      if (!entidadId) {
-        setMunicipios([]);
-        return;
-      }
       const response = await fetch(`http://localhost:8080/api/municipio/entidad/${entidadId}`);
       const data = await response.json();
       setMunicipios(data);
@@ -60,10 +66,6 @@ const ElectorRegistro = () => {
 
   const fetchLocalidades = async (municipioId) => {
     try {
-      if (!municipioId) {
-        setLocalidades([]);
-        return;
-      }
       const response = await fetch(`http://localhost:8080/api/localidad/municipio/${municipioId}`);
       const data = await response.json();
       setLocalidades(data);
@@ -72,13 +74,9 @@ const ElectorRegistro = () => {
     }
   };
 
-  const fetchColonias = async (localidadId) => {
+  const fetchColonias = async (municipioId) => {
     try {
-      if (!localidadId) {
-        setColonias([]);
-        return;
-      }
-      const response = await fetch(`http://localhost:8080/api/colonia/localidad/${localidadId}`);
+      const response = await fetch(`http://localhost:8080/api/colonia/municipio/${municipioId}`);
       const data = await response.json();
       setColonias(data);
     } catch (error) {
@@ -88,16 +86,16 @@ const ElectorRegistro = () => {
 
   const fetchCodigosPostales = async (coloniaId) => {
     try {
-      if (!coloniaId) {
-        setCodigosPostales([]);
-        return;
-      }
-      const response = await fetch(`http://localhost:8080/api/codigo-postal/colonia/${coloniaId}`);
+      const response = await fetch(`http://localhost:8080/api/postal/colonia/${coloniaId}`);
       const data = await response.json();
       setCodigosPostales(data);
     } catch (error) {
       console.error("Error al cargar códigos postales:", error);
     }
+  };
+
+  const handleRegresar = () => {
+    navigate("/colegio/sistema/ele"); // Regresa al menú anterior
   };
 
   const handleChange = (e) => {
@@ -108,32 +106,53 @@ const ElectorRegistro = () => {
       [name]: value,
     }));
 
+    // Cargar datos dependientes
     if (name === "entidadFederativaId") fetchMunicipios(value);
-    if (name === "municipioId") fetchLocalidades(value);
-    if (name === "localidadId") fetchColonias(value);
+    if (name === "municipioId") {
+      fetchLocalidades(value);
+      fetchColonias(value);
+    }
     if (name === "coloniaId") fetchCodigosPostales(value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    if (!formData.idDePersona || isNaN(formData.idDePersona)) {
+      alert("Debe seleccionar un ID de Persona válido.");
+      return;
+    }
+  
     setLoading(true);
     setError("");
-
+  
+    // Extraer parámetros de la solicitud
+    const { idDePersona, fechaDeInicioElector, ...domicilioDTO } = formData;
+  
     try {
-      const response = await fetch("http://localhost:8080/api/elector/registrar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+      const queryParams = new URLSearchParams({
+        idDePersona: idDePersona,
+        fechaDeInicioElector: fechaDeInicioElector || new Date().toISOString().split("T")[0], // Fecha por defecto
       });
-
+  
+      const response = await fetch(
+        `http://localhost:8080/api/elector/registrar?${queryParams.toString()}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(domicilioDTO), // Solo el objeto DomicilioDTO en el cuerpo
+        }
+      );
+  
       if (!response.ok) {
         const errorMessage = await response.text();
         throw new Error(errorMessage);
       }
-
+  
       alert("Elector registrado exitosamente.");
-      navigate("/electores");
+      navigate("/colegio/sistema/ele");
     } catch (error) {
+      alert(`${error}`);
       console.error("Error al registrar elector:", error);
       setError("Error al registrar el elector. Intente nuevamente.");
     } finally {
@@ -144,19 +163,111 @@ const ElectorRegistro = () => {
   return (
     <div>
       <h1>Registro de Elector</h1>
+      <button onClick={handleRegresar} style={{ marginBottom: "20px" }}>
+  Regresar
+</button>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
-        <div>
+      <div>
           <label>Persona ID:</label>
           <input
             type="text"
-            name="idPersona"
-            value={formData.idPersona}
-            onChange={handleChange}
+            name="idDePersona"
+            value={formData.idDePersona}
+            onChange={(e) => setFormData({ ...formData, idDePersona: e.target.value })}
             required
             pattern="^[0-9]+$"
             title="El ID de la persona debe ser un número válido."
+            disabled
           />
+          <button type="button" onClick={() => setShowModal(true)}>
+            Buscar
+          </button>
+        </div>
+
+        <div>
+          <label>Entidad Federativa:</label>
+          <select
+            name="entidadFederativaId"
+            value={formData.entidadFederativaId}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Seleccione Entidad Federativa</option>
+            {Array.isArray(entidades)&&entidades.map((entidad) => (
+              <option key={entidad.id} value={entidad.id}>
+                {entidad.descripcion}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Municipio:</label>
+          <select
+            name="municipioId"
+            value={formData.municipioId}
+            onChange={handleChange}
+            required
+            disabled={!municipios.length}
+          >
+            <option value="">Seleccione Municipio</option>
+            {Array.isArray(municipios)&&municipios.map((municipio) => (
+              <option key={municipio.id} value={municipio.id}>
+                {municipio.descripcion}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Localidad:</label>
+          <select
+            name="localidadId"
+            value={formData.localidadId}
+            onChange={handleChange}
+            required
+            disabled={!localidades.length}
+          >
+            <option value="">Seleccione Localidad</option>
+            {Array.isArray(localidades)&&localidades.map((localidad) => (
+              <option key={localidad.id} value={localidad.id}>
+                {localidad.descripcion}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Colonia:</label>
+          <select
+            name="coloniaId"
+            value={formData.coloniaId}
+            onChange={handleChange}
+            required
+            disabled={!colonias.length}
+          >
+            <option value="">Seleccione Colonia</option>
+            {Array.isArray(colonias)&&colonias.map((colonia) => (
+              <option key={colonia.id} value={colonia.id}>
+                {colonia.descripcion}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Codigo postal:</label>
+          <select
+            name="codigoPostalId"
+            value={formData.codigoPostalId}
+            onChange={handleChange}
+            required
+            disabled={!codigosPostales.length}
+          >
+            <option value="">Seleccione Colonia</option>
+            {Array.isArray(codigosPostales)&&codigosPostales.map((codigoPostal) => (
+              <option key={codigoPostal.id} value={codigoPostal.id}>
+                {codigoPostal.descripcion}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label>Calle:</label>
@@ -203,24 +314,36 @@ const ElectorRegistro = () => {
           />
         </div>
         <div>
-          <label>Fecha de Inicio Elector:</label>
+          <label>Fecha de Registro:</label>
           <input
             type="date"
             name="fechaDeInicioElector"
-            value={formData.fechaDeInicioElector}
+            value={today}
             onChange={handleChange}
             min={oneHundredYearsAgo}
             max={today}
+            disabled
             required
           />
         </div>
         <button type="submit" disabled={loading}>
           {loading ? "Registrando..." : "Registrar"}
         </button>
-        <button type="button" onClick={() => navigate("/electores")}>
+        <button type="button" onClick={() => navigate("/colegio/sistema/ele")}>
           Cancelar
         </button>
       </form>
+
+            {/* Modal */}
+            {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Buscar Persona</h2>
+            <ModalBuscar onSelect={handleSelectPersona} /> {/* Componente de búsqueda */}
+            <button onClick={() => setShowModal(false)}>Cerrar</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

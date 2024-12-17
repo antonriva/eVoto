@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Table from "../../../../components/civil/paginaBuscar/Table";
-import ExpandableRow from "../../../../components/colegio/paginaBuscar/ExpandableRow";
+import ExpandableRow from "../../../../components/civil/paginaBuscar/ExpandableRow";
 import FiltrosPersonas from "../../../../components/colegio/paginaBuscar/FiltrosElectores";
 
 const PaginaBuscarElectores = () => {
@@ -35,9 +35,20 @@ const PaginaBuscarElectores = () => {
     );
   };
 
+  const sanitizeData = (data) => {
+    return Object.keys(data).reduce((result, key) => {
+      if (data[key] !== null && data[key] !== undefined && data[key] !== "") {
+        result[key] = data[key];
+      }
+      return result;
+    }, {});
+  };
+  
   const fetchElectores = async (params = {}) => {
     try {
-      const query = new URLSearchParams(formatFilters(params)).toString();
+    const sanitizedParams = sanitizeData(params);
+    const query = new URLSearchParams(formatFilters(sanitizedParams)).toString();
+
       const response = await fetch(`http://localhost:8080/api/elector/buscar?${query}`);
       if (!response.ok) {
         throw new Error("Error al cargar electores.");
@@ -52,6 +63,8 @@ const PaginaBuscarElectores = () => {
         fechaDeFin: elector.fechaDeFin || "---",
       }));
 
+
+
       setElectores(formattedData);
       setError("");
     } catch (error) {
@@ -60,8 +73,10 @@ const PaginaBuscarElectores = () => {
     }
   };
 
+  
+
   const handleRegresar = () => {
-    navigate(-1); // Regresa al menú anterior
+    navigate("/colegio/sistema/ele"); // Regresa al menú anterior
   };
 
   useEffect(() => {
@@ -78,6 +93,20 @@ const PaginaBuscarElectores = () => {
     } catch (error) {
       console.error("Error al cargar candidaturas:", error);
       return [];
+    }
+  };
+
+  // Función para obtener domicilios de una persona
+  const fetchDomicilios = async (idPersona) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/persona/${idPersona}/detalles-domicilios`);
+      if (!response.ok) {
+        throw new Error(`Error al obtener domicilios para persona con ID ${idPersona}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error al cargar domicilios:", error);
+      return []; // Retorna un arreglo vacío en caso de error
     }
   };
 
@@ -120,7 +149,7 @@ const PaginaBuscarElectores = () => {
     "Apellido Materno",
     "Fecha de Nacimiento",
     "Fecha de Fin",
-    "Candidaturas",
+    "Domicilios",
     "Acciones",
   ];
 
@@ -142,25 +171,26 @@ const PaginaBuscarElectores = () => {
       />
 
       {/* Tabla de Electores */}
-      <Table
-        headers={headers}
-        data={electores}
-        renderRow={(elector) => (
-          <ExpandableRow
-            key={elector.idElector}
-            idElector={elector.idElector}
-            rowData={[
-              elector.idElector,
-              elector.nombre,
-              elector.apellidoPaterno,
-              elector.apellidoMaterno,
-              elector.fechaDeNacimiento,
-              elector.fechaDeFin,
-            ]}
-            fetchCandidaturas={() => fetchCandidaturas(elector.idElector)}
+            <Table
+  headers={headers}
+  data={electores}
+  renderRow={(elector) => (
+    <ExpandableRow
+      key={elector.idElector} // Usamos el identificador único de la fila
+      idElector={elector.idElector}
+      idPersona={elector.id} // Mapeamos el "id" recibido del backend como idPersona
+      rowData={[
+        elector.idElector,
+        elector.nombre,
+        elector.apellidoPaterno,
+        elector.apellidoMaterno,
+        elector.fechaDeNacimiento,
+        elector.fechaDeFin,
+      ]}
+      fetchDomicilios={() => fetchDomicilios(elector.id)} // Pasamos "id" directamente
             colSpan={headers.length}
-            onEdit={(id) => editarElector(id)}
-            onDelete={(id) => eliminarElector(id)}
+            onEdit={() => editarElector(elector.idElector)}
+            onDelete={() => eliminarElector(elector.idElector)}
           />
         )}
       />

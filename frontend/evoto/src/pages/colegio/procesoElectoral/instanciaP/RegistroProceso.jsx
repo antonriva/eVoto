@@ -7,8 +7,8 @@ const RegistroProceso = () => {
     idDeProceso: "",
     fechaHoraDeInicio: "",
     fechaHoraDeFin: "",
-    ganadoresNum: "",
-    idDeEntidadFederativa: "",
+    ganadoresNum: 1,
+    idDeEntidad: "",
     idDeMunicipio: "",
     idDeLocalidad: "",
   });
@@ -30,7 +30,7 @@ const RegistroProceso = () => {
 
   const fetchEntidades = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/entidades");
+      const response = await fetch("http://localhost:8080/api/entidad-federativa");
       const data = await response.json();
       setEntidades(data);
     } catch (error) {
@@ -40,11 +40,7 @@ const RegistroProceso = () => {
 
   const fetchMunicipios = async (entidadId) => {
     try {
-      if (!entidadId) {
-        setMunicipios([]);
-        return;
-      }
-      const response = await fetch(`http://localhost:8080/api/municipios/${entidadId}`);
+      const response = await fetch(`http://localhost:8080/api/municipio/entidad/${entidadId}`);
       const data = await response.json();
       setMunicipios(data);
     } catch (error) {
@@ -54,11 +50,7 @@ const RegistroProceso = () => {
 
   const fetchLocalidades = async (municipioId) => {
     try {
-      if (!municipioId) {
-        setLocalidades([]);
-        return;
-      }
-      const response = await fetch(`http://localhost:8080/api/localidades/${municipioId}`);
+      const response = await fetch(`http://localhost:8080/api/localidad/municipio/${municipioId}`);
       const data = await response.json();
       setLocalidades(data);
     } catch (error) {
@@ -94,7 +86,7 @@ const RegistroProceso = () => {
       [name]: value,
     }));
 
-    if (name === "idDeEntidadFederativa") {
+    if (name === "idDeEntidad") {
       setFormData((prevData) => ({
         ...prevData,
         idDeMunicipio: "",
@@ -118,7 +110,7 @@ const RegistroProceso = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/instancia-proceso/registrar", {
+      const response = await fetch("http://localhost:8080/api/instancia/crear", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -129,7 +121,7 @@ const RegistroProceso = () => {
       }
 
       alert("Proceso registrado exitosamente.");
-      navigate("/procesos");
+      navigate("/colegio/proceso");
     } catch (error) {
       console.error("Error al registrar proceso:", error);
       setError("Error al registrar el proceso. Intente nuevamente.");
@@ -167,7 +159,7 @@ const RegistroProceso = () => {
             onChange={handleChange}
             required
           >
-            <option value="">Seleccione Proceso</option>
+            <option value="">Seleccione el tipo de proceso</option>
             {procesos.map((proceso) => (
               <option key={proceso.id} value={proceso.id}>
                 {proceso.descripcion}
@@ -196,25 +188,15 @@ const RegistroProceso = () => {
           />
         </div>
         <div>
-          <label>Número de Ganadores:</label>
-          <input
-            type="number"
-            name="ganadoresNum"
-            value={formData.ganadoresNum}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
           <label>Entidad Federativa:</label>
           <select
-            name="idDeEntidadFederativa"
-            value={formData.idDeEntidadFederativa}
+            name="idDeEntidad"
+            value={formData.idDeEntidad}
             onChange={handleChange}
             required
           >
             <option value="">Seleccione Entidad Federativa</option>
-            {entidades.map((entidad) => (
+            {Array.isArray(entidades)&&entidades.map((entidad) => (
               <option key={entidad.id} value={entidad.id}>
                 {entidad.descripcion}
               </option>
@@ -228,10 +210,9 @@ const RegistroProceso = () => {
             value={formData.idDeMunicipio}
             onChange={handleChange}
             disabled={!municipios.length}
-            required
           >
             <option value="">Seleccione Municipio</option>
-            {municipios.map((municipio) => (
+            {Array.isArray(municipios)&&municipios.map((municipio) => (
               <option key={municipio.id} value={municipio.id}>
                 {municipio.descripcion}
               </option>
@@ -245,10 +226,9 @@ const RegistroProceso = () => {
             value={formData.idDeLocalidad}
             onChange={handleChange}
             disabled={!localidades.length}
-            required
           >
             <option value="">Seleccione Localidad</option>
-            {localidades.map((localidad) => (
+            {Array.isArray(localidades)&&localidades.map((localidad) => (
               <option key={localidad.id} value={localidad.id}>
                 {localidad.descripcion}
               </option>
@@ -258,7 +238,7 @@ const RegistroProceso = () => {
         <button type="submit" disabled={loading}>
           {loading ? "Registrando..." : "Registrar"}
         </button>
-        <button type="button" onClick={() => navigate("/procesos")}>
+        <button type="button" onClick={() => navigate("/colegio/proceso")}>
           Cancelar
         </button>
       </form>

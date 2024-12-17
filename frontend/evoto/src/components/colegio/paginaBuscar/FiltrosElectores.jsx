@@ -9,7 +9,6 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
   // Cargar datos iniciales
   useEffect(() => {
     fetchEntidades();
-    fetchTiposDeDomicilio();
   }, []);
 
   const fetchEntidades = async () => {
@@ -53,15 +52,6 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
 
 
 
-  const fetchTiposDeDomicilio = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/api/tipoDeDomicilio");
-      const data = await response.json();
-      setTiposDeDomicilio(data);
-    } catch (error) {
-      console.error("Error al cargar tipos de domicilio:", error);
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -91,7 +81,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
         <input
           type="text"
           name="idElector"
-          value={filtros.idElector || ""}
+          value={filtros.idElector || null}
           onChange={handleChange}
           pattern="^\d*$" // Solo números
           title="El ID solo puede contener números."
@@ -134,7 +124,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
         <label>Año de Nacimiento:</label>
         <select
           name="anioNacimiento"
-          value={filtros.anioNacimiento || ""}
+          value={filtros.anioNacimiento || null}
           onChange={handleChange}
         >
           <option value="">Seleccione</option>
@@ -152,7 +142,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
         <label>Mes de Nacimiento:</label>
         <select
           name="mesNacimiento"
-          value={filtros.mesNacimiento || ""}
+          value={filtros.mesNacimiento || null}
           onChange={handleChange}
         >
           <option value="">Seleccione</option>
@@ -167,7 +157,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
         <label>Día de Nacimiento:</label>
         <select
           name="diaNacimiento"
-          value={filtros.diaNacimiento || ""}
+          value={filtros.diaNacimiento || null}
           onChange={handleChange}
         >
           <option value="">Seleccione</option>
@@ -198,7 +188,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
         <label>Municipio:</label>
         <select
           name="municipio"
-          value={filtros.municipio || ""}
+          value={filtros.municipio || null}
           onChange={handleChange}
           disabled={!municipios.length}
         >
@@ -214,7 +204,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
         <label>Localidad:</label>
         <select
           name="localidad"
-          value={filtros.localidad || ""}
+          value={filtros.localidad || null}
           onChange={handleChange}
           disabled={!localidades.length}
         >
@@ -226,21 +216,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
           ))}
         </select>
       </div>
-      <div>
-        <label>Tipos de Domicilio:</label>
-        <select
-          name="tipoDeDomicilio"
-          value={filtros.tipoDeDomicilio || ""}
-          onChange={handleChange}
-        >
-          <option value="">Seleccione Tipo de Domicilio</option>
-          {Array.isArray(tiposDeDomicilio)&&tiposDeDomicilio.map((tipo) => (
-            <option key={tipo.id} value={tipo.id}>
-              {tipo.descripcion}
-            </option>
-          ))}
-        </select>
-      </div>
+
       <button type="submit">Buscar</button>
     </form>
   );

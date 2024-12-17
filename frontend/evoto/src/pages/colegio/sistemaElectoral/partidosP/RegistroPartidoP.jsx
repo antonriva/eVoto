@@ -97,17 +97,7 @@ const RegistroPartidoP = () => {
             required
           />
         </div>
-        <div>
-          <label>Fecha de Fin:</label>
-          <input
-            type="date"
-            name="fechaDeFin"
-            value={formData.fechaDeFin}
-            onChange={handleChange}
-            min={formData.fechaDeInicio || oneHundredYearsAgo}
-            max={today}
-          />
-        </div>
+      
         <button type="submit" disabled={loading}>
           {loading ? "Registrando..." : "Registrar"}
         </button>

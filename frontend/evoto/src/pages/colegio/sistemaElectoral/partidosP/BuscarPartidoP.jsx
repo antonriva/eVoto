@@ -144,6 +144,7 @@ const handleRegresar = () => {
   // Manejo de cambio en los filtros
   const handleChange = (e) => {
     const { name, value } = e.target;
+    const newValue = value === "" ? null : value; // Convertir cadenas vacías a null
     setFiltros((prevFiltros) => ({
       ...prevFiltros,
       [name]: value,
@@ -181,7 +182,7 @@ const handleRegresar = () => {
           <input
             type="text"
             name="id"
-            value={filtros.id}
+            value={filtros.id || ""}
             onChange={handleChange}
           pattern="^\d*$" // Solo números
           title="El ID solo puede contener números."
@@ -192,7 +193,7 @@ const handleRegresar = () => {
           <input
             type="text"
             name="denominacion"
-            value={filtros.denominacion}
+            value={filtros.denominacion || ""}
             onChange={handleChange}
             pattern="^[a-zA-Z]+( [a-zA-Z]+)*$" // Letras mayúsculas y minúsculas, con espacios intermedios
             title="La denominación debe contener solo letras (mayúsculas o minúsculas) y espacios intermedios, sin números ni caracteres especiales."
@@ -204,7 +205,7 @@ const handleRegresar = () => {
             type="text"
             name="siglas"
             value={filtros.siglas}
-            onChange={handleChange}
+            onChange={handleChange || ""}
             pattern="^[a-zA-Z]*$" // Letras mayúsculas y minúsculas, con espacios intermedios
             title="La denominación debe contener solo letras (mayúsculas o minúsculas) y espacios intermedios, sin números ni caracteres especiales."
           />
