@@ -26,8 +26,8 @@ const VotanteApp = () => {
 
         <Routes>
   <Route path="ingreso" element={<BuscarVotanteP />} />
-  <Route path="ingreso/procesos-abiertos/:idElector" element={<ConsultaPag />} />
-  <Route path="ingreso/candidatos" element={<EleccionPag />} />
+  <Route path="ingreso/inicioVotante/:idDeElector" element={<ConsultaPag />} />
+  <Route path="ingreso/inicioVotante/:id/detalleProceso/:idDeElector/:idDeInstanciaDeProceso" element={<EleccionPag />} />
 </Routes>
 
 

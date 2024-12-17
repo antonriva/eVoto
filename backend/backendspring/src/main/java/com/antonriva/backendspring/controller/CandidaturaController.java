@@ -88,7 +88,7 @@ public class CandidaturaController {
             }
 
             Long idCandidatura = candidaturaService.crearCandidatura(idDeProcesoElectoral, idDePartido);
-            return ResponseEntity.ok("Candidatura creada exitosamente con ID: " + idCandidatura);
+            return ResponseEntity.ok(idCandidatura);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {

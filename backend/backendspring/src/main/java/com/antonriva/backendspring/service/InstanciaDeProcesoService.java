@@ -220,6 +220,7 @@ public class InstanciaDeProcesoService {
         if (existeInstancia) {
             throw new IllegalArgumentException("Ya existe una instancia de proceso con los valores proporcionados.");
         }
+        
 
         // Crear el ProcesoLugar
         ProcesoLugar procesoLugar = new ProcesoLugar();
@@ -230,22 +231,31 @@ public class InstanciaDeProcesoService {
             procesoLugar.setNivel(nivel);
         }
         
+     // Obtener y asignar Entidad Federativa
         if (dto.getIdDeEntidadFederativa() != null) {
-            EntidadFederativa entidadFederativa = entidadFederativaRepository.findById(dto.getIdDeEntidadFederativa())
-                    .orElseThrow(() -> new EntityNotFoundException("La entidad federativa con ID " + dto.getIdDeEntidadFederativa() + " no existe."));
-            procesoLugar.setEntidadFederativa(entidadFederativa);
+            procesoLugar.setEntidadFederativa(
+                entidadFederativaRepository.findById(dto.getIdDeEntidadFederativa())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                        "La entidad federativa con ID " + dto.getIdDeEntidadFederativa() + " no existe."))
+            );
         }
 
+        // Obtener y asignar Municipio
         if (dto.getIdDeMunicipio() != null) {
-            Municipio municipio = municipioRepository.findById(dto.getIdDeMunicipio())
-                    .orElseThrow(() -> new EntityNotFoundException("El municipio con ID " + dto.getIdDeMunicipio() + " no existe."));
-            procesoLugar.setMunicipio(municipio);
+            procesoLugar.setMunicipio(
+                municipioRepository.findById(dto.getIdDeMunicipio())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                        "El municipio con ID " + dto.getIdDeMunicipio() + " no existe."))
+            );
         }
 
+        // Obtener y asignar Localidad
         if (dto.getIdDeLocalidad() != null) {
-            Localidad localidad = localidadRepository.findById(dto.getIdDeLocalidad())
-                    .orElseThrow(() -> new EntityNotFoundException("La localidad con ID " + dto.getIdDeLocalidad() + " no existe."));
-            procesoLugar.setLocalidad(localidad);
+            procesoLugar.setLocalidad(
+                localidadRepository.findById(dto.getIdDeLocalidad())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                        "La localidad con ID " + dto.getIdDeLocalidad() + " no existe."))
+            );
         }
 
         ProcesoLugar procesoLugarGuardado = procesoLugarRepository.save(procesoLugar);

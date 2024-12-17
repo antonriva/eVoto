@@ -17,6 +17,7 @@ public class InstanciaEditarDTO {
 	private Long idDeLocalidad;
 	
 	
+	
 	public InstanciaEditarDTO(Long idDeNivel, Long idDeProceso, LocalDateTime fechaHoraDeInicio,
 			LocalDateTime fechaHoraDeFin, Integer ganadoresNum, Long idDeEntidadFederativa, Long idDeMunicipio,
 			Long idDeLocalidad) {

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.antonriva.backendspring.dto.PartidoBuscarDetalleDTO;
 import com.antonriva.backendspring.dto.PartidoEditarDTO;
 import com.antonriva.backendspring.dto.PartidoRegistrarDTO;
+import com.antonriva.backendspring.model.EntidadFederativa;
 import com.antonriva.backendspring.model.Partido;
 import com.antonriva.backendspring.service.PartidoService;
 
@@ -37,6 +38,11 @@ public class PartidoController {
     public PartidoController(PartidoService partidoService) {
     	this.partidoService = partidoService;
     	
+    }
+    @GetMapping("/buscar/todo")
+    public ResponseEntity<List<Partido>> obtenerTodosLosPartidos() {
+        List<Partido> partidos = partidoService.obtenerTodosLosPartidos();
+        return ResponseEntity.ok(partidos);
     }
 
     

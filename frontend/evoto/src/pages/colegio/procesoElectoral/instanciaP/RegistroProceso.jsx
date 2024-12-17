@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import TimerRedirect from "../../../../components/externos/TimerRefresher";
+
 
 const RegistroProceso = () => {
   const [formData, setFormData] = useState({
@@ -8,7 +10,7 @@ const RegistroProceso = () => {
     fechaHoraDeInicio: "",
     fechaHoraDeFin: "",
     ganadoresNum: 1,
-    idDeEntidad: "",
+    idDeEntidadFederativa: "",
     idDeMunicipio: "",
     idDeLocalidad: "",
   });
@@ -25,6 +27,7 @@ const RegistroProceso = () => {
   useEffect(() => {
     fetchEntidades();
     fetchNiveles();
+    fetchProcesos();
   }, []);
 
   const fetchEntidades = async () => {
@@ -67,9 +70,9 @@ const RegistroProceso = () => {
     }
   };
 
-  const fetchProcesos = async (nivelId) => {
+  const fetchProcesos = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/procesos/nivel/${nivelId}`);
+      const response = await fetch(`http://localhost:8080/api/procesos`);
       const data = await response.json();
       setProcesos(data);
     } catch (error) {
@@ -77,43 +80,28 @@ const RegistroProceso = () => {
     }
   };
 
+  const today = new Date().toISOString().slice(0, 16); // Fecha y hora actual en formato "YYYY-MM-DDTHH:MM"
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
+      ...(name === "idDeEntidad" && { idDeMunicipio: "", idDeLocalidad: "" }),
+      ...(name === "idDeMunicipio" && { idDeLocalidad: "" }),
     }));
-
-    if (name === "idDeEntidad") {
-      setFormData((prevData) => ({
-        ...prevData,
-        idDeMunicipio: "",
-        idDeLocalidad: "",
-      }));
-      fetchMunicipios(value);
-    }
-    
-
-    if (name === "idDeMunicipio") {
-      setFormData((prevData) => ({
-        ...prevData,
-        idDeLocalidad: "",
-      }));
-      fetchLocalidades(value);
-    }
-
-    if (name === "idDeNivel") {
-      setFormData((prevData) => ({
-        ...prevData,
-        idDeProceso: "",
-      }));
-      fetchProcesos(value);
-    }
+  
+    if (name === "idDeEntidad") fetchMunicipios(value);
+    if (name === "idDeMunicipio") fetchLocalidades(value);
   };
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Datos a enviar:", formData);
     setLoading(true);
     setError("");
 
@@ -145,6 +133,7 @@ const RegistroProceso = () => {
   return (
     <div>
       <h1>Registro de Proceso</h1>
+      <TimerRedirect rutaDestino ="/colegio/proceso"/>
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <button onClick={handleRegresar} style={{ marginBottom: "20px" }}>
@@ -187,30 +176,40 @@ const RegistroProceso = () => {
           </select>
         </div>
         <div>
-          <label>Fecha y Hora de Inicio:</label>
-          <input
-            type="datetime-local"
-            name="fechaHoraDeInicio"
-            value={formData.fechaHoraDeInicio}
-            onChange={handleChange}
-            required
-          />
-        </div>
         <div>
-          <label>Fecha y Hora de Fin:</label>
-          <input
-            type="datetime-local"
-            name="fechaHoraDeFin"
-            value={formData.fechaHoraDeFin}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
+  {/* Fecha y Hora de Inicio */}
+  <div>
+    <label>Fecha y Hora de Inicio:</label>
+    <input
+      type="datetime-local"
+      name="fechaHoraDeInicio"
+      value={formData.fechaHoraDeInicio}
+      onChange={handleChange}
+      //min={today} // Restringe a fechas no anteriores al día de hoy
+      required
+    />
+  </div>
+
+  {/* Fecha y Hora de Fin */}
+  <div>
+    <label>Fecha y Hora de Fin:</label>
+    <input
+      type="datetime-local"
+      name="fechaHoraDeFin"
+      value={formData.fechaHoraDeFin}
+      onChange={handleChange}
+      min={formData.fechaHoraDeInicio || today} // Restringe a después de la fecha de inicio
+      required
+      disabled={!formData.fechaHoraDeInicio} // Desactiva hasta que se seleccione Fecha de Inicio
+    />
+  </div>
+</div>
+    </div>
+    <div>
           <label>Entidad Federativa:</label>
           <select
-            name="idDeEntidad"
-            value={formData.idDeEntidad}
+            name="idDeEntidadFederativa"
+            value={formData.idDeEntidadFederativa}
             onChange={handleChange}
           >
             <option value="">Seleccione Entidad Federativa</option>

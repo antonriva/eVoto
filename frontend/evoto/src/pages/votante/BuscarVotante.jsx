@@ -2,61 +2,65 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ModalBuscarElector from "../../components/colegio/proceso/paginaBuscar/ModalBuscarElector";
 
-const BuscarVotante = () => {
-  const [formData, setFormData] = useState({
-    idElector: "",
-  });
+const RegistroCandidaturaYElector = () => {
 
-  const [showModal, setShowModal] = useState(false); // Controla la visibilidad del modal
+  
+  const [idDeElector, setIdDeElector] = useState(""); // Estado para almacenar el ID del elector
+  const [showModalElector, setShowModalElector] = useState(false); // Controla la apertura del modal
   const navigate = useNavigate();
 
-  // Maneja la selección del elector desde el modal
+  // Función para manejar la selección del elector desde el modal
   const handleSelectElector = (id) => {
-    setFormData({ idElector: id });
-    setShowModal(false); // Cierra el modal
+    setIdDeElector(id); // Almacena el ID del elector seleccionado
+    setShowModalElector(false); // Cierra el modal
   };
 
-  // Envía al usuario a la página de procesos abiertos
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!formData.idElector || isNaN(formData.idElector)) {
-      alert("Debe seleccionar un ID de Elector válido.");
+  // Función para navegar a la siguiente página pasando el ID del elector
+  const handleNavigateToInicioVotante = () => {
+    if (!idDeElector) {
+      alert("Debe seleccionar un elector antes de continuar.");
       return;
     }
+    console.log("ID ENVIADO:", idDeElector);
+    navigate(`inicioVotante/${idDeElector}`); // Navega a la nueva página con el ID
+  };
 
-    navigate(`/procesos-abiertos/${formData.idElector}`);
+  const enviarVotante = (id) => {
+    navigate(`inicioVotante/${id}`);
   };
 
   return (
     <div>
-      <h1>Búsqueda de Votante</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>ID de Elector:</label>
-          <input
-            type="text"
-            value={formData.idElector}
-            readOnly
-            placeholder="Seleccione un elector"
-          />
-          <button type="button" onClick={() => setShowModal(true)}>
-            Buscar Elector
-          </button>
-        </div>
-        <button type="submit">Ver Procesos Abiertos</button>
-        <button type="button" onClick={() => navigate("/")}>
-          Cancelar
+      <h1>Seleccionar Elector</h1>
+
+      {/* Campo para mostrar el ID del elector */}
+      <div>
+        <label>ID de Elector:</label>
+        <input
+          type="text"
+          value={idDeElector}
+          readOnly
+          placeholder="Seleccione un elector"
+        />
+        <button type="button" onClick={() => setShowModalElector(true)}>
+          Buscar Elector
         </button>
-      </form>
+      </div>
+
+      {/* Botón para ir a la siguiente página */}
+      <div style={{ marginTop: "20px" }}>
+        <button onClick={() => enviarVotante(idDeElector)}>
+          Continuar a Inicio Votante
+        </button>
+      </div>
 
       {/* Modal para buscar electores */}
-      {showModal && (
+      {showModalElector && (
         <div className="modal">
           <div className="modal-content">
             <h2>Buscar Elector</h2>
             <ModalBuscarElector onSelect={handleSelectElector} />
-            <button onClick={() => setShowModal(false)}>Cerrar</button>
+            <button onClick={() => setShowModalElector(false)}>Cerrar</button>
           </div>
         </div>
       )}
@@ -64,4 +68,4 @@ const BuscarVotante = () => {
   );
 };
 
-export default BuscarVotante;
+export default RegistroCandidaturaYElector;

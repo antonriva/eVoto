@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.antonriva.backendspring.dto.PartidoBuscarDetalleDTO;
 import com.antonriva.backendspring.dto.PartidoEditarDTO;
 import com.antonriva.backendspring.dto.PartidoRegistrarDTO;
+import com.antonriva.backendspring.model.EntidadFederativa;
 import com.antonriva.backendspring.model.Partido;
 import com.antonriva.backendspring.model.Visual;
 import com.antonriva.backendspring.repository.CandidaturaRepository;
@@ -38,6 +39,13 @@ public class PartidoService {
     	this.visualRepository = visualRepository;
     	this.candidaturaRepository = candidaturaRepository;
     	
+    	
+    	
+    }
+    
+    
+    public List<Partido> obtenerTodosLosPartidos() {
+        return partidoRepository.findAll();
     }
 //BUSCAR CON DETALLE, NOS REGRESA URL DEL LOGO
     @Transactional

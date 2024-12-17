@@ -279,6 +279,7 @@ public class ElectorController {
         }
     }
     
+    
     @GetMapping("/abiertos/candidatos")
     public ResponseEntity<?> obtenerCandidaturasDeProceso(
             @RequestParam Long idDeElector,

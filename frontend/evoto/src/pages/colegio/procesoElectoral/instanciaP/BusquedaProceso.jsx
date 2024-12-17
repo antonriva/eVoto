@@ -116,7 +116,7 @@ const fetchInstancias = async (params = {}) => {
     if (confirmar) {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/instancia/${id}`,
+          `http://localhost:8080/api/instancia/eliminar/${id}`,
           {
             method: "DELETE",
           }
@@ -146,6 +146,10 @@ const fetchInstancias = async (params = {}) => {
 
   const editarInstancia = (id) => {
     navigate(`editar/${id}`);
+  };
+
+  const agregarInstancia = (id ) => {
+    navigate(`agregar/${id}`);
   };
 
   const headers = [
@@ -209,6 +213,7 @@ const fetchInstancias = async (params = {}) => {
 
             onEdit={(id) => editarInstancia(id)}
             onDelete={(id) => eliminarInstancia(id)}
+            onAdd={(id) => agregarInstancia(id)}
           />
         )}
       />

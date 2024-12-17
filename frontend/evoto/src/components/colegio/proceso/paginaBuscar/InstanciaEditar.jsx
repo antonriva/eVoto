@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import TimerRedirect from "../../../../components/externos/TimerRefresher";
 
 const InstanciaEditar = () => {
   const { id } = useParams(); // Obtiene el ID de la instancia desde la URL
@@ -19,6 +20,8 @@ const InstanciaEditar = () => {
   const [entidades, setEntidades] = useState([]);
   const [municipios, setMunicipios] = useState([]);
   const [localidades, setLocalidades] = useState([]);
+  const [niveles, setNiveles] = useState([]);
+  const [procesos, setProcesos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -26,12 +29,14 @@ const InstanciaEditar = () => {
   useEffect(() => {
     fetchInstanciaData();
     fetchEntidades();
+    fetchProcesos();
+    fetchNiveles();
   }, []);
 
   const fetchInstanciaData = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8080/api/instancia/${id}`);
+      const response = await fetch(`http://localhost:8080/api/instancia/editar/${id}`);
       if (!response.ok) {
         throw new Error("Error al obtener los datos de la instancia.");
       }
@@ -68,9 +73,15 @@ const InstanciaEditar = () => {
 
   const fetchMunicipios = async (entidadId) => {
     try {
+      if (!entidadId) {
+        setMunicipios([]);
+        setLocalidades([]);
+        return;
+      }
       const response = await fetch(`http://localhost:8080/api/municipio/entidad/${entidadId}`);
       const data = await response.json();
       setMunicipios(data);
+      setLocalidades([]);
     } catch (error) {
       console.error("Error al cargar municipios:", error);
     }
@@ -78,11 +89,35 @@ const InstanciaEditar = () => {
 
   const fetchLocalidades = async (municipioId) => {
     try {
+      if (!municipioId) {
+        setLocalidades([]);
+        return;
+      }
       const response = await fetch(`http://localhost:8080/api/localidad/municipio/${municipioId}`);
       const data = await response.json();
       setLocalidades(data);
     } catch (error) {
       console.error("Error al cargar localidades:", error);
+    }
+  };
+
+  const fetchNiveles = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/niveles");
+      const data = await response.json();
+      setNiveles(data);
+    } catch (error) {
+      console.error("Error al cargar niveles:", error);
+    }
+  };
+
+  const fetchProcesos = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/procesos`);
+      const data = await response.json();
+      setProcesos(data);
+    } catch (error) {
+      console.error("Error al cargar procesos:", error);
     }
   };
 
@@ -103,7 +138,7 @@ const InstanciaEditar = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch(`http://localhost:8080/api/instancia/${id}/editar`, {
+      const response = await fetch(`http://localhost:8080/api/instancia/editar/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -113,7 +148,7 @@ const InstanciaEditar = () => {
         throw new Error(errorMessage);
       }
       alert("Instancia actualizada exitosamente.");
-      navigate("/procesos");
+      navigate("/colegio/proceso");
     } catch (error) {
       console.error("Error al actualizar instancia:", error);
       setError("No se pudo actualizar la información de la instancia.");
@@ -124,29 +159,42 @@ const InstanciaEditar = () => {
 
   return (
     <div>
+      <TimerRedirect rutaDestino ="/colegio/proceso"/>
       <h1>Editar Instancia</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>ID de Nivel:</label>
-          <input
-            type="number"
+      <div>
+          <label>Nivel:</label>
+          <select
             name="idDeNivel"
             value={formData.idDeNivel}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Seleccione Nivel</option>
+            {Array.isArray(niveles)&&niveles.map((nivel) => (
+              <option key={nivel.id} value={nivel.id}>
+                {nivel.descripcion}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
-          <label>ID de Proceso:</label>
-          <input
-            type="number"
-            name="idDeProceso"
-            value={formData.idDeProceso}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <label>Proceso:</label>
+        <select
+          name="idDeProceso"
+          value={formData.idDeProceso }
+          onChange={handleChange}
+          disabled={!procesos.length}
+        >
+          <option value="">Seleccione Proceso</option>
+          {Array.isArray(procesos)&&procesos.map((proceso) => (
+            <option key={proceso.id} value={proceso.id}>
+              {proceso.descripcion}
+            </option>
+          ))}
+        </select>
+      </div>
         <div>
           <label>Fecha/Hora de Inicio:</label>
           <input
@@ -167,16 +215,6 @@ const InstanciaEditar = () => {
           />
         </div>
         <div>
-          <label>Número de Ganadores:</label>
-          <input
-            type="number"
-            name="ganadoresNum"
-            value={formData.ganadoresNum}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
           <label>Entidad Federativa:</label>
           <select
             name="idDeEntidadFederativa"
@@ -184,8 +222,8 @@ const InstanciaEditar = () => {
             onChange={handleChange}
             required
           >
-            <option value="">Seleccione Entidad</option>
-            {entidades.map((entidad) => (
+            <option value="">Seleccione Entidad Federativa</option>
+            {Array.isArray(entidades)&&entidades.map((entidad) => (
               <option key={entidad.id} value={entidad.id}>
                 {entidad.descripcion}
               </option>
@@ -227,7 +265,7 @@ const InstanciaEditar = () => {
         <button type="submit" disabled={loading}>
           {loading ? "Guardando..." : "Guardar Cambios"}
         </button>
-        <button type="button" onClick={() => navigate("/procesos")}>
+        <button type="button" onClick={() => navigate("/colegio/proceso")}>
           Cancelar
         </button>
       </form>

@@ -6,10 +6,10 @@ const ExpandableRow = ({
   rowData,
   fetchCandidaturas,
   colSpan,
-  onEliminarElector,
   onEliminarCandidatura,
   onEdit,
-  onDelete
+  onDelete,
+  onAdd
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -90,7 +90,7 @@ const eliminarCandidatura = async (id) => {
           <button onClick={toggleExpand}>
             {isExpanded ? "Contraer" : "Expandir"}
           </button>
-          <button onClick={() =>navigate(`registro/${idInstancia}`)}>
+          <button onClick={() => onAdd(idInstancia)}>
            Agregar
           </button>
         </td>

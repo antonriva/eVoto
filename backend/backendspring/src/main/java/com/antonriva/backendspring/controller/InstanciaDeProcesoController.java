@@ -106,6 +106,7 @@ public class InstanciaDeProcesoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado: " + e.getMessage());
         }
     }
+    
 
     //ELIMINAR 
     

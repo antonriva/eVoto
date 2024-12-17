@@ -22,7 +22,6 @@ import ProcesoP from './procesoElectoral/ProcesoP'
 import RegistroProcesoP from './procesoElectoral/instanciaP/RegistroProceso'
 import BusquedaProcesoP from './procesoElectoral/instanciaP/BusquedaProceso'
 import EditarProcesoP from '../../components/colegio/proceso/paginaBuscar/InstanciaEditar'
-import AgregarElector from '../../components/colegio/proceso/paginaBuscar/AgregarElector'
 import RegistroCandidatura from '../../components/colegio/proceso/paginaBuscar/RegistroAsignacion'
 
 const AppColegio = () => {
@@ -64,7 +63,6 @@ const AppColegio = () => {
             <li><Link to="about" onClick={() => setMenuVisible(true)}>Acerca del Colegio Electoral</Link></li>
             <li><Link to="sistema" onClick={() => handleMenuToggle("sistema")}>Sistema electoral</Link></li>
             <li><Link to="proceso" onClick={() => handleMenuToggle("proceso")}>Proceso Electoral</Link></li>
-            <li><Link to="resultados" onClick={() => setMenuVisible(true)}>Resultados</Link></li>
           </ul>
         </nav>
       )}
@@ -97,13 +95,12 @@ const AppColegio = () => {
           <Route path="proceso/registro" element={<RegistroProcesoP/>}/>
           <Route path="proceso/buscar" element={<BusquedaProcesoP/>}/>
           <Route path="proceso/buscar/editar/:id" element={<EditarProcesoP/>}/>
-          <Route path="proceso/buscar/agregar/:id" element={<AgregarElector/>}/>
-          <Route path="proceso/buscar/registro/:id" element={<RegistroCandidatura/>}/>
+          <Route path="proceso/buscar/agregar/:id" element={<RegistroCandidatura/>}/>
           
 
           {/* Instancia */}
 
-          {/* Candidatura */}
+          {/* Votante */}
 
       </Routes>
     </div>

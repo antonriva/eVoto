@@ -15,29 +15,20 @@ VALUES (4, 'Localidad');
 
 -----
 
-INSERT INTO Proceso (ID, IDDENIVEL, DESCRIPCION) 
-VALUES (1, 1, 'Presidencia');
+INSERT INTO Proceso (ID, DESCRIPCION) 
+VALUES (1, 'Presidencia');
 
-INSERT INTO Proceso (ID, IDDENIVEL, DESCRIPCION) 
-VALUES (2, 1, 'Cámara de Diputados');
+INSERT INTO Proceso (ID, DESCRIPCION) 
+VALUES (2, 'Cámara de Diputados');
 
-INSERT INTO Proceso (ID, IDDENIVEL, DESCRIPCION) 
-VALUES (3, 1, 'Cámara de Senadores');
+INSERT INTO Proceso (ID, DESCRIPCION) 
+VALUES (3, 'Cámara de Senadores');
 
-INSERT INTO Proceso (ID, IDDENIVEL, DESCRIPCION) 
-VALUES (4, 2, 'Gobernatura');
+INSERT INTO Proceso (ID, DESCRIPCION) 
+VALUES (4, 'Gobernatura'); 
 
-INSERT INTO Proceso (ID, IDDENIVEL, DESCRIPCION) 
-VALUES (5, 2, 'Cámara de Diputados');
-
-INSERT INTO Proceso (ID, IDDENIVEL, DESCRIPCION) 
-VALUES (6, 2, 'Cámara de Senadores');
-
-INSERT INTO Proceso (ID, IDDENIVEL, DESCRIPCION) 
-VALUES (7, 3, 'Presidencia');
-
-INSERT INTO Proceso (ID, IDDENIVEL, DESCRIPCION) 
-VALUES (8, 4, 'Delegado');
+INSERT INTO Proceso (ID, DESCRIPCION) 
+VALUES (5, 'Delegado');
 
 COMMIT;
 

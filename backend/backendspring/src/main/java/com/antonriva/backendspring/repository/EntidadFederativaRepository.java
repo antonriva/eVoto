@@ -10,5 +10,6 @@ import jakarta.transaction.Transactional;
 @Transactional
 @EnableTransactionManagement
 public interface EntidadFederativaRepository extends JpaRepository<EntidadFederativa, Long>,  JpaSpecificationExecutor<EntidadFederativa> {
+	 EntidadFederativa findById(long id); // Devuelve directamente la entidad
 
 }

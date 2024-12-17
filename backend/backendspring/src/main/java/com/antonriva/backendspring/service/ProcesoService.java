@@ -42,9 +42,5 @@ public class ProcesoService {
                 .orElseThrow(() -> new IllegalArgumentException("Proceso no encontrado con el ID: " + id));
     }
 
-    @Transactional
-    public List<Proceso> obtenerMunicipiosPorNivelId(Long nivelId) {
-        return procesoRepository.findByNivel_Id(nivelId);
-    }
 
 }

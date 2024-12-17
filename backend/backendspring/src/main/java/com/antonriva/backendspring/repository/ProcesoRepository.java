@@ -18,8 +18,4 @@ import jakarta.transaction.Transactional;
 @EnableTransactionManagement
 public interface ProcesoRepository extends JpaRepository<Proceso, Long>, JpaSpecificationExecutor<Proceso> {
 	
-    // Buscar municipios por ID de entidad federativa
-    List<Proceso> findByNivel_Id(Long Nivel);
-
-
 }

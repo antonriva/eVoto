@@ -23,10 +23,6 @@ public class Proceso {
 	@Column(name="descripcion", nullable=false)
     private String descripcion;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "iddenivel", nullable=false)
-	@JsonIgnore
-    private Nivel nivel;
 
 	public Proceso() {
 		

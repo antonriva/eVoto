@@ -1,43 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ModalBuscarInstancia from "./ModalBuscarInstancia";
-import ModalBuscarPartido from "./ModalBuscarPartido";
 import ModalBuscarElector from "./ModalBuscarElector";
+import { useParams } from "react-router-dom";
 
 const RegistroCandidaturaYElector = () => {
   const today = new Date().toISOString().split("T")[0];
+  const { id } = useParams(); // Obtiene el ID de la instancia desde la URL
 
   const [formData, setFormData] = useState({
     idDeProcesoElectoral: "",
     idDePartido: "",
-    idElector: "",
+    idDeElector: "",
     fechaDeInicio: today,
     fechaDeFin: "",
   });
 
-  const [showModalInstancia, setShowModalInstancia] = useState(false);
-  const [showModalPartido, setShowModalPartido] = useState(false);
   const [showModalElector, setShowModalElector] = useState(false);
   const [error, setError] = useState("");
+  const [partidos, setPartidos] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Función para seleccionar instancia desde el modal
-  const handleSelectInstancia = (id) => {
-    setFormData((prev) => ({ ...prev, idDeProcesoElectoral: id }));
-    setShowModalInstancia(false);
+  const fetchPartidos = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/partido/buscar/todo");
+      const data = await response.json();
+      setPartidos(data);
+    } catch (error) {
+      console.error("Error al cargar partidos:", error);
+    }
   };
 
-  // Función para seleccionar partido desde el modal
-  const handleSelectPartido = (id) => {
-    setFormData((prev) => ({ ...prev, idDePartido: id }));
-    setShowModalPartido(false);
-  };
+  useEffect(() => {
+    fetchPartidos();
+  }, []);
+
+    // Asigna automáticamente idInstancia al estado
+    useEffect(() => {
+      if (id) {
+        setFormData((prev) => ({
+          ...prev,
+          idDeProcesoElectoral: id,
+        }));
+      }
+    }, [id]);
 
   // Función para seleccionar elector desde el modal
   const handleSelectElector = (id) => {
-    setFormData((prev) => ({ ...prev, idElector: id }));
+    setFormData((prev) => ({ ...prev, idDeElector: id }));
     setShowModalElector(false);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
   };
 
   // Función principal para registrar candidatura y luego asignar elector
@@ -46,7 +67,7 @@ const RegistroCandidaturaYElector = () => {
     setLoading(true);
     setError("");
 
-    if (!formData.idDeProcesoElectoral || !formData.idDePartido || !formData.idElector) {
+    if (!formData.idDeProcesoElectoral || !formData.idDePartido || !formData.idDeElector) {
       setError("Debe seleccionar instancia, partido y elector.");
       setLoading(false);
       return;
@@ -59,6 +80,10 @@ const RegistroCandidaturaYElector = () => {
         idDePartido: formData.idDePartido,
       });
 
+
+
+      
+
       const responseCandidatura = await fetch(
         `http://localhost:8080/api/candidatura/base?${queryParams.toString()}`,
         { method: "POST" }
@@ -69,40 +94,47 @@ const RegistroCandidaturaYElector = () => {
         throw new Error(`Error al crear candidatura: ${errorMessage}`);
       }
 
-      const candidaturaId = await responseCandidatura.text(); // Devuelve el ID de la candidatura
-      alert(`Candidatura creada exitosamente con ID: ${candidaturaId}`);
+;
+      const candidaturaId = await responseCandidatura.text();
+      console.log("Candidatura ID recibido del servidor:", candidaturaId)
+// Validar que los IDs no sean null, undefined o vacíos
+if (!candidaturaId || isNaN(Number(candidaturaId))) {
+  throw new Error("El ID de la candidatura es inválido.");
+}
 
-      // Paso 2: Asignar elector a la candidatura
-      const asignarElectorData = {
-        idElector: formData.idElector,
-        fechaDeInicio: formData.fechaDeInicio,
-        fechaDeFin: formData.fechaDeFin,
-        idCandidatura: candidaturaId, // ID de la candidatura creada
-      };
+if (!formData.idDeElector || isNaN(Number(formData.idDeElector))) {
+  throw new Error("El ID del elector es inválido.");
+}
 
-      const responseElector = await fetch(
-        "http://localhost:8080/api/elector/asignar",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(asignarElectorData),
-        }
-      );
+const relacionElectorCandidaturaParams = new URLSearchParams({
+  idDeCandidatura: candidaturaId.toString(),   // Asegurar que sea string numérico
+  idDeElector: formData.idDeElector.toString(),
+  fechaHoraInicio: formData.fechaDeInicio || "", // Valores por defecto si están vacíos
+  fechaHoraFin: formData.fechaDeFin || "",
+}).toString();
 
-      if (!responseElector.ok) {
-        const errorMessage = await responseElector.text();
-        throw new Error(`Error al asignar elector: ${errorMessage}`);
-      }
+const responseElector = await fetch(
+  `http://localhost:8080/api/candidatura/relacion?${relacionElectorCandidaturaParams}`, // Parámetros en la URL
+  {
+    method: "POST",
+  }
+);
 
-      alert("Elector asignado correctamente a la candidatura.");
-      navigate("/candidaturas");
-    } catch (error) {
-      console.error(error);
-      setError(error.message);
-    } finally {
-      setLoading(false);
+    if (!responseElector.ok) {
+      const errorMessage = await responseElector.text();
+      throw new Error(`Error al asignar elector: ${errorMessage}`);
     }
-  };
+
+    alert("Elector asignado correctamente a la candidatura.");
+    navigate("/"); // Redireccionar al finalizar
+  } catch (error) {
+    console.error(error);
+    setError(error.message);
+  } finally {
+    setLoading(false);
+  }
+};
+  
 
   return (
     <div>
@@ -110,32 +142,23 @@ const RegistroCandidaturaYElector = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <form onSubmit={handleSubmit}>
-        {/* Instancia */}
-        <div>
-          <label>Instancia de Proceso:</label>
-          <input
-            type="text"
-            value={formData.idDeProcesoElectoral}
-            readOnly
-            placeholder="Seleccione una instancia"
-          />
-          <button type="button" onClick={() => setShowModalInstancia(true)}>
-            Buscar Instancia
-          </button>
-        </div>
 
         {/* Partido */}
         <div>
-          <label>Partido Político:</label>
-          <input
-            type="text"
+          <label>Partido:</label>
+          <select
+            name="idDePartido"
             value={formData.idDePartido}
-            readOnly
-            placeholder="Seleccione un partido"
-          />
-          <button type="button" onClick={() => setShowModalPartido(true)}>
-            Buscar Partido
-          </button>
+            onChange={handleChange}
+            required
+          >
+            <option value="">Seleccione el partido</option>
+            {Array.isArray(partidos)&&partidos.map((partido) => (
+              <option key={partido.id} value={partido.id}>
+                {partido.denominacion}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Elector */}
@@ -143,7 +166,7 @@ const RegistroCandidaturaYElector = () => {
           <label>ID de Elector:</label>
           <input
             type="text"
-            value={formData.idElector}
+            value={formData.idDeElector}
             readOnly
             placeholder="Seleccione un elector"
           />
@@ -183,26 +206,6 @@ const RegistroCandidaturaYElector = () => {
         </button>
       </form>
 
-      {/* Modales */}
-      {showModalInstancia && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Buscar Instancia de Proceso</h2>
-            <ModalBuscarInstancia onSelect={handleSelectInstancia} />
-            <button onClick={() => setShowModalInstancia(false)}>Cerrar</button>
-          </div>
-        </div>
-      )}
-
-      {showModalPartido && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Buscar Partido Político</h2>
-            <ModalBuscarPartido onSelect={handleSelectPartido} />
-            <button onClick={() => setShowModalPartido(false)}>Cerrar</button>
-          </div>
-        </div>
-      )}
 
       {showModalElector && (
         <div className="modal">

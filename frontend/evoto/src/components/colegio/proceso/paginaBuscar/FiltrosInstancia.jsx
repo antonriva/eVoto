@@ -66,7 +66,7 @@ const FiltrosInstancia = ({ filtros, setFiltros, onBuscar }) => {
 
   const fetchProcesos = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/procesos");
+      const response = await fetch(`http://localhost:8080/api/procesos`);
       const data = await response.json();
       setProcesos(data);
     } catch (error) {
@@ -84,6 +84,7 @@ const FiltrosInstancia = ({ filtros, setFiltros, onBuscar }) => {
     }));
 
     // Actualizar dependencias dinámicas
+
     if (name === "idEntidadFederativa") {
       fetchMunicipios(newValue);
     } else if (name === "idMunicipio") {
@@ -103,7 +104,7 @@ const FiltrosInstancia = ({ filtros, setFiltros, onBuscar }) => {
         <input
           type="text"
           name="idDeInstanciaDeProceso"
-          value={filtros.idDeInstanciaDeProceso || null}
+          value={filtros.idDeInstanciaDeProceso || ""}
           onChange={handleChange}
           pattern="^\d*$" // Solo números
           title="El ID solo puede contener números."
@@ -113,7 +114,7 @@ const FiltrosInstancia = ({ filtros, setFiltros, onBuscar }) => {
         <label>Nivel:</label>
         <select
           name="idNivel"
-          value={filtros.idNivel || null}
+          value={filtros.idNivel || ""}
           onChange={handleChange}
           disabled={!niveles.length}
         >
@@ -129,7 +130,7 @@ const FiltrosInstancia = ({ filtros, setFiltros, onBuscar }) => {
         <label>Proceso:</label>
         <select
           name="idProceso"
-          value={filtros.idProceso || null}
+          value={filtros.idProceso || ""}
           onChange={handleChange}
           disabled={!procesos.length}
         >
@@ -145,7 +146,7 @@ const FiltrosInstancia = ({ filtros, setFiltros, onBuscar }) => {
         <label>Año de Inicio:</label>
         <select
           name="anioInicio"
-          value={filtros.anioInicio || null}
+          value={filtros.anioInicio || ""}
           onChange={handleChange}
         >
           <option value="">Seleccione</option>
@@ -163,7 +164,7 @@ const FiltrosInstancia = ({ filtros, setFiltros, onBuscar }) => {
         <label>Mes de Inicio:</label>
         <select
           name="mesInicio"
-          value={filtros.mesInicio || null}
+          value={filtros.mesInicio || ""}
           onChange={handleChange}
         >
           <option value="">Seleccione</option>
@@ -178,7 +179,7 @@ const FiltrosInstancia = ({ filtros, setFiltros, onBuscar }) => {
         <label>Día de Inicio:</label>
         <select
           name="diaInicio"
-          value={filtros.diaInicio || null}
+          value={filtros.diaInicio || ""}
           onChange={handleChange}
         >
           <option value="">Seleccione</option>
@@ -209,7 +210,7 @@ const FiltrosInstancia = ({ filtros, setFiltros, onBuscar }) => {
         <label>Municipio:</label>
         <select
           name="idMunicipio"
-          value={filtros.idMunicipio || null}
+          value={filtros.idMunicipio || ""}
           onChange={handleChange}
           disabled={!municipios.length}
         >
@@ -225,7 +226,7 @@ const FiltrosInstancia = ({ filtros, setFiltros, onBuscar }) => {
         <label>Localidad:</label>
         <select
           name="idLocalidad"
-          value={filtros.idLocalidad || null}
+          value={filtros.idLocalidad || ""}
           onChange={handleChange}
           disabled={!localidades.length}
         >

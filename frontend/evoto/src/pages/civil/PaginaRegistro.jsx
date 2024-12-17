@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+
+
 const PaginaRegistro = () => {
   const [formData, setFormData] = useState({
     nombre: "",
@@ -105,6 +107,7 @@ const PaginaRegistro = () => {
   return (
     <div>
       <h1>Registro de Persona</h1>
+      
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <div>

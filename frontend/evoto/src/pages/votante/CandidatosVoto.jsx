@@ -1,144 +1,157 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-const CandidatosDisponibles = () => {
-  const { idElector, idInstanciaDeProceso } = useParams(); // Recupera los parámetros desde la URL
-  const [candidatos, setCandidatos] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+const MostrarCandidatos = () => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const { idDeElector,idDeInstanciaDeProceso} = useParams();
+  // Recupera parámetros desde la navegación
 
-  // Fetch para cargar los candidatos disponibles
+
+  const [candidatos, setCandidatos] = useState([]); // Almacena los datos de candidatos
+  const [candidaturaSeleccionada, setCandidaturaSeleccionada] = useState(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Fetch para obtener candidatos desde el backend
+  console.log("ID del Elector recibido desde la URL:", idDeElector);
+  console.log("ID del Elector recibido desde la URL:", idDeInstanciaDeProceso);
   useEffect(() => {
-    fetchCandidatos();
-  }, [idElector, idInstanciaDeProceso]);
-
-  const fetchCandidatos = async () => {
-    setLoading(true);
-    setError("");
-
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/proceso/candidatos/${idElector}/${idInstanciaDeProceso}`
-      );
-
-      if (!response.ok) {
-        throw new Error(await response.text());
+    const fetchCandidatos = async () => {
+      if (!idDeElector || !idDeInstanciaDeProceso) {
+        setError("Faltan parámetros necesarios para mostrar candidatos.");
+        return;
       }
 
-      const data = await response.json();
-      setCandidatos(data);
-    } catch (error) {
-      console.error("Error al cargar candidatos:", error);
-      setError("Error al cargar los candidatos. Intente nuevamente.");
-    } finally {
-      setLoading(false);
+      setLoading(true);
+      setError("");
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/elector/abiertos/candidatos?idDeElector=${idDeElector}&idDeInstanciaDeProceso=${idDeInstanciaDeProceso}`
+        );
+        if (!response.ok) {
+          throw new Error("Error al obtener la lista de candidatos.");
+        }
+
+        const data = await response.json();
+        setCandidatos(data); // Guarda la lista de candidatos en el estado
+      } catch (error) {
+        console.error(error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCandidatos();
+  }, [idDeElector, idDeInstanciaDeProceso]);
+
+  // Función para registrar el voto
+  const handleRegistrarVoto = async () => {
+    if (!candidaturaSeleccionada) {
+      alert("Debe seleccionar una candidatura para votar.");
+      return;
     }
-  };
 
-  // Maneja el voto por un candidato
-  const handleVotar = async (idDeCandidatura) => {
-    const confirmar = window.confirm("¿Está seguro de que desea votar por este candidato?");
-    if (!confirmar) return;
-
-    setLoading(true);
     try {
+      // Construir los query params correctamente
       const queryParams = new URLSearchParams({
-        idDeElector: idElector,
-        idDeInstanciaDeProceso: idInstanciaDeProceso,
-        idDeCandidatura: idDeCandidatura,
+        idDeElector: idDeElector,
+        idDeInstanciaDeProceso: idDeInstanciaDeProceso,
+        idDeCandidatura: candidaturaSeleccionada,
       }).toString();
-
+    
+      // Hacer la petición POST con los parámetros en la URL
       const response = await fetch(
-        `http://localhost:8080/api/voto/registrar?${queryParams}`,
+        `http://localhost:8080/api/voto/registrar?${queryParams}`, 
         {
           method: "POST",
         }
       );
+    
 
       if (!response.ok) {
         const errorMessage = await response.text();
-        throw new Error(errorMessage);
+        throw new Error(`Error al registrar voto: ${errorMessage}`);
       }
 
-      alert("Voto registrado exitosamente.");
-      navigate("/"); // Redirige al root
+      alert("¡Voto registrado correctamente!");
+      navigate("/"); // Redirigir a una página de confirmación o inicio
     } catch (error) {
-      console.error("Error al registrar el voto:", error);
-      alert(`Error: ${error.message}`);
-    } finally {
-      setLoading(false);
+      console.error(error);
+      setError(error.message);
     }
   };
 
   return (
     <div>
-      <h1>Candidatos Disponibles para Votar</h1>
+      <h1>Lista de Candidatos</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {loading ? (
-        <p>Cargando candidatos...</p>
+        <p>Cargando...</p>
       ) : (
-        <div style={styles.gridContainer}>
-          {candidatos.length > 0 ? (
-            candidatos.map((candidato) => (
-              <div key={candidato.idCandidatura} style={styles.card}>
-                <img
-                  src={candidato.urlVisual || "https://via.placeholder.com/150"}
-                  alt="Logo del partido"
-                  style={styles.image}
-                />
-                <h2>{candidato.denominacionPartido}</h2>
-                <p>
-                  <strong>Candidato:</strong> {candidato.nombre} {candidato.apellidoPaterno}
-                </p>
-                <button
-                  onClick={() => handleVotar(candidato.idCandidatura)}
-                  style={styles.button}
-                >
-                  Votar
-                </button>
-              </div>
-            ))
-          ) : (
-            <p>No hay candidatos disponibles en este proceso.</p>
-          )}
+        <div>
+          {/* Tabla de candidatos */}
+          <table border="1" style={{ width: "100%", marginTop: "10px" }}>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Partido</th>
+                <th>Siglas</th>
+                <th>Imagen</th>
+                <th>Seleccionar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {candidatos.length > 0 ? (
+                candidatos.map((candidato) => (
+                  <tr key={candidato.idCandidatura}>
+                    <td>{candidato.nombre}</td>
+                    <td>{candidato.apellidoPaterno}</td>
+                    <td>{candidato.denominacionPartido}</td>
+                    <td>{candidato.siglas}</td>
+                    <td>
+                      <img
+                        src={candidato.visualUrl}
+                        alt="Logo del Partido"
+                        style={{ width: "100px", height: "100px" }}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="radio"
+                        name="candidaturaSeleccionada"
+                        value={candidato.idCandidatura}
+                        onChange={() =>
+                          setCandidaturaSeleccionada(candidato.idCandidatura)
+                        }
+                      />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: "center" }}>
+                    No hay candidatos disponibles.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+
+          {/* Botón para registrar el voto */}
+          <button
+            onClick={handleRegistrarVoto}
+            style={{ marginTop: "20px", padding: "10px 20px" }}
+          >
+            Registrar Voto
+          </button>
         </div>
       )}
     </div>
   );
 };
 
-// Estilos en línea
-const styles = {
-  gridContainer: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-    gap: "20px",
-    marginTop: "20px",
-  },
-  card: {
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    padding: "16px",
-    textAlign: "center",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-  },
-  image: {
-    width: "100%",
-    height: "150px",
-    objectFit: "cover",
-    marginBottom: "10px",
-    borderRadius: "8px",
-  },
-  button: {
-    backgroundColor: "#28a745",
-    color: "#fff",
-    border: "none",
-    padding: "10px 16px",
-    borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "16px",
-  },
-};
-
-export default CandidatosDisponibles;
+export default MostrarCandidatos;

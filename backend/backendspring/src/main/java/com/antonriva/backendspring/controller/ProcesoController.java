@@ -35,12 +35,5 @@ public class ProcesoController {
         return procesoService.obtenerProcesoPorId(id);
     }
     
-    // Buscar municipios por ID de entidad federativa
-    @GetMapping("/nivel/{nivelId}")
-    public ResponseEntity<List<Proceso>> obtenerMunicipiosPorNivelId(@PathVariable Long nivelId) {
-        List<Proceso> procesos = procesoService.obtenerMunicipiosPorNivelId(nivelId);
-        return ResponseEntity.ok(procesos);
-    }
-
 
 }
