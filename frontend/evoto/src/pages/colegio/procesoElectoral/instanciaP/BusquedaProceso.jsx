@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Table from "../../../../components/civil/paginaBuscar/Table";
-import ExpandableRow from "../../../../components/../components/colegio/paginaBuscar/ExpandableRow";
-import FiltrosProcesos from "../../../../components/colegio/paginaBuscar/FiltrosElectores";
+import ExpandableRow from "../../../../components/colegio/proceso/paginaBuscar/InstanciaExpandable";
+import FiltrosProcesos from "../../../../components/colegio/proceso/paginaBuscar/FiltrosInstancia"
 
 const PaginaBuscarInstanciaDeProceso = () => {
   const [instancias, setInstancias] = useState([]);
@@ -31,32 +31,62 @@ const PaginaBuscarInstanciaDeProceso = () => {
     );
   };
 
-  // Función para obtener instancias con filtros
-  const fetchInstancias = async (params = {}) => {
-    try {
-      const query = new URLSearchParams(formatFilters(params)).toString();
-      const response = await fetch(
-        `http://localhost:8080/api/instancia/buscar?${query}`
-      );
-      if (!response.ok) {
-        throw new Error("Error al cargar instancias de proceso.");
+  const sanitizeData = (data) => {
+    return Object.keys(data).reduce((result, key) => {
+      if (data[key] !== null && data[key] !== undefined && data[key] !== "") {
+        result[key] = data[key];
       }
-      const data = await response.json();
-
-      setInstancias(data);
-      setError(""); // Limpia el mensaje de error si la carga es exitosa
-    } catch (error) {
-      console.error("Error al cargar instancias de proceso:", error);
-      setError("Error al cargar instancias de proceso. Por favor, inténtalo de nuevo.");
-    }
+      return result;
+    }, {});
   };
+  
+
+  ////////////////VISUALIZACION
+
+// Función para obtener instancias con filtros
+const fetchInstancias = async (params = {}) => {
+  try {
+    // Sanitiza los parámetros antes de enviar la petición
+    const sanitizedParams = sanitizeData(params);
+
+    // Formatea los parámetros (elimina valores vacíos o inválidos)
+    const query = new URLSearchParams(formatFilters(sanitizedParams)).toString();
+
+    // Realiza la solicitud al backend
+    const response = await fetch(
+      `http://localhost:8080/api/instancia/buscar?${query}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Error al cargar instancias de proceso.");
+    }
+
+    // Convierte la respuesta en JSON
+    const data = await response.json();
+
+    // Opcional: Formateo adicional si necesitas estandarizar campos vacíos
+    const formattedData = data.map((instancia) => ({
+      ...instancia,
+      fechaDeInicio: instancia.fechaDeInicio || "---",
+      fechaDeFin: instancia.fechaDeFin || "---",
+      descripcion: instancia.descripcion || "Sin descripción",
+    }));
+
+    // Actualiza el estado con las instancias obtenidas
+    setInstancias(formattedData);
+    setError(""); // Limpia cualquier error previo si la carga es exitosa
+  } catch (error) {
+    console.error("Error al cargar instancias de proceso:", error);
+    setError("Error al cargar instancias de proceso. Por favor, inténtalo de nuevo.");
+  }
+};
 
 
   // Función para obtener candidaturas asociadas a una instancia
-  const fetchCandidaturas = async (idInstancia) => {
+  const fetchCandidaturas = async (idDeInstanciaDeProceso) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/instancia-de-proceso/${idInstancia}/candidaturas`
+        `http://localhost:8080/api/candidatura/${idDeInstanciaDeProceso}`
       );
       if (!response.ok) {
         throw new Error(`Error al obtener candidaturas para instancia con ID ${idInstancia}`);
@@ -73,6 +103,11 @@ const PaginaBuscarInstanciaDeProceso = () => {
     fetchInstancias();
   }, []);
 
+
+
+
+  ///////////////METODOS MULTIPLES
+
   // Función para eliminar una instancia de proceso
   const eliminarInstancia = async (id) => {
     const confirmar = window.confirm(
@@ -81,7 +116,7 @@ const PaginaBuscarInstanciaDeProceso = () => {
     if (confirmar) {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/instancia-de-proceso/${id}`,
+          `http://localhost:8080/api/instancia/${id}`,
           {
             method: "DELETE",
           }
@@ -108,6 +143,7 @@ const PaginaBuscarInstanciaDeProceso = () => {
   };
 
   // Función para redirigir a la página de edición
+
   const editarInstancia = (id) => {
     navigate(`editar/${id}`);
   };
@@ -126,11 +162,22 @@ const PaginaBuscarInstanciaDeProceso = () => {
     "Acciones",
   ];
 
+
+
+  const handleRegresar = () => {
+    navigate("/colegio/proceso"); // Regresa al menú anterior
+  };
   return (
     <div>
       <h1>Catálogo de Instancias de Proceso</h1>
 
       {error && <p style={{ color: "red" }}>{error}</p>} {/* Muestra el error al usuario */}
+
+      <button onClick={handleRegresar} style={{ marginBottom: "20px" }}>
+        Regresar
+      </button>
+
+      
       {/* Formulario de Filtros */}
       <FiltrosProcesos
         filtros={filtros}
@@ -144,8 +191,8 @@ const PaginaBuscarInstanciaDeProceso = () => {
         data={instancias}
         renderRow={(instancia) => (
           <ExpandableRow
-            key={instancia.id}
-            idInstancia={instancia.id}
+            key={instancia.idDeInstanciaDeProceso}
+            idInstancia={instancia.idDeInstanciaDeProceso}
             rowData={[
               instancia.idDeInstanciaDeProceso,
               instancia.descripcionNivel,
@@ -157,8 +204,9 @@ const PaginaBuscarInstanciaDeProceso = () => {
               instancia.localidad,
               instancia.votoTotal
             ]}
-            fetchCandidaturas={() => fetchCandidaturas(instancia.id)}
+            fetchCandidaturas={() => fetchCandidaturas(instancia.idDeInstanciaDeProceso)}
             colSpan={headers.length}
+
             onEdit={(id) => editarInstancia(id)}
             onDelete={(id) => eliminarInstancia(id)}
           />

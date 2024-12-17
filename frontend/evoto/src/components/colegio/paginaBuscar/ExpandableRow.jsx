@@ -22,6 +22,8 @@ const ExpandableRow = ({ idElector, rowData, fetchCandidaturas, colSpan, onEdit,
     }
   };
 
+  
+
   return (
     <>
       <tr>

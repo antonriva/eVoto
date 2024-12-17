@@ -1,8 +1,10 @@
 import { Routes, Route, Link } from "react-router-dom";
 
-const InicioVotantePag = () => <h1>¡Hola, bienvenido a la sección de votantes!</h1>;
-const ConsultaPag = () => <h1>Consulta de registro de votante</h1>;
-const EleccionPag = () => <h1>Realiza tu elección aquí</h1>;
+import BuscarVotanteP from "./BuscarVotante"
+import ConsultaPag from "./ProcesosAbiertos"
+import EleccionPag from "./CandidatosVoto"
+
+
 
 const VotanteApp = () => {
   return (
@@ -14,24 +16,21 @@ const VotanteApp = () => {
             <Link to="/">Regresar al Menú Principal</Link>
           </li>
           <li>
-            <Link to="/votante">Inicio del Votante</Link>
-          </li>
-          <li>
-            <Link to="/votante/consulta">Consulta de Registro</Link>
-          </li>
-          <li>
-            <Link to="/votante/eleccion">Realizar Elección</Link>
+            <Link to="ingreso">Ingreso</Link>
           </li>
         </ul>
       </nav>
 
       {/* Rutas internas del módulo Votante */}
       <main>
+
         <Routes>
-          <Route path="/votante" element={<InicioVotantePag />} />
-          <Route path="/votante/consulta" element={<ConsultaPag />} />
-          <Route path="/votante/eleccion" element={<EleccionPag />} />
-        </Routes>
+  <Route path="ingreso" element={<BuscarVotanteP />} />
+  <Route path="ingreso/procesos-abiertos/:idElector" element={<ConsultaPag />} />
+  <Route path="ingreso/candidatos" element={<EleccionPag />} />
+</Routes>
+
+
       </main>
     </div>
   );

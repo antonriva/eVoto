@@ -2,12 +2,14 @@ package com.antonriva.backendspring.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.antonriva.backendspring.model.Municipio;
 import com.antonriva.backendspring.model.Proceso;
 import com.antonriva.backendspring.service.ProcesoService;
 
@@ -31,6 +33,13 @@ public class ProcesoController {
     @GetMapping("/{id}")
     public Proceso obtenerProcesoPorId(@PathVariable Long id) {
         return procesoService.obtenerProcesoPorId(id);
+    }
+    
+    // Buscar municipios por ID de entidad federativa
+    @GetMapping("/nivel/{nivelId}")
+    public ResponseEntity<List<Proceso>> obtenerMunicipiosPorNivelId(@PathVariable Long nivelId) {
+        List<Proceso> procesos = procesoService.obtenerMunicipiosPorNivelId(nivelId);
+        return ResponseEntity.ok(procesos);
     }
 
 

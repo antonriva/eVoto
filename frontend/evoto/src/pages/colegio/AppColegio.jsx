@@ -21,13 +21,17 @@ import RegistroElectorP from './sistemaElectoral/electoresP/ElectorRegistro';
 import ProcesoP from './procesoElectoral/ProcesoP'
 import RegistroProcesoP from './procesoElectoral/instanciaP/RegistroProceso'
 import BusquedaProcesoP from './procesoElectoral/instanciaP/BusquedaProceso'
+import EditarProcesoP from '../../components/colegio/proceso/paginaBuscar/InstanciaEditar'
+import AgregarElector from '../../components/colegio/proceso/paginaBuscar/AgregarElector'
+import RegistroCandidatura from '../../components/colegio/proceso/paginaBuscar/RegistroAsignacion'
 
 const AppColegio = () => {
     const [menuVisible, setMenuVisible] = useState(true); // Estado para mostrar/ocultar el menú
     const location = useLocation(); // Obtener la ruta actual
   
     // Páginas donde se debe ocultar el menú
-    const hideMenuPages = ['/colegio/sistema','/colegio/proceso','/colegio/sistema/ele','/colegio/sistema/ele/registro','/colegio/sistema/ele/buscar'];
+    const hideMenuPages = ['/colegio/sistema','/colegio/proceso','/colegio/sistema/ele','/colegio/sistema/ele/registro','/colegio/sistema/ele/buscar'
+      ,'/colegio/proceso/buscar','/colegio/proceso/registro'];
   
     // Usamos useEffect para detectar cambios en la ruta
     useEffect(() => {
@@ -92,6 +96,10 @@ const AppColegio = () => {
           <Route path="proceso" element={<ProcesoP/>}/>
           <Route path="proceso/registro" element={<RegistroProcesoP/>}/>
           <Route path="proceso/buscar" element={<BusquedaProcesoP/>}/>
+          <Route path="proceso/buscar/editar/:id" element={<EditarProcesoP/>}/>
+          <Route path="proceso/buscar/agregar/:id" element={<AgregarElector/>}/>
+          <Route path="proceso/buscar/registro/:id" element={<RegistroCandidatura/>}/>
+          
 
           {/* Instancia */}
 

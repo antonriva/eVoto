@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.antonriva.backendspring.model.Municipio;
 import com.antonriva.backendspring.model.Proceso;
 import com.antonriva.backendspring.repository.ProcesoRepository;
 
@@ -41,5 +42,9 @@ public class ProcesoService {
                 .orElseThrow(() -> new IllegalArgumentException("Proceso no encontrado con el ID: " + id));
     }
 
+    @Transactional
+    public List<Proceso> obtenerMunicipiosPorNivelId(Long nivelId) {
+        return procesoRepository.findByNivel_Id(nivelId);
+    }
 
 }
