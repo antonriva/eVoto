@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Table from "../../components/civil/paginaBuscar/Table";
 import ExpandableRow from "../../components/civil/paginaBuscar/ExpandableRow";
 import FiltrosPersonas from "../../components/civil/paginaBuscar/FiltrosPersonas";
+import TimerRedirect from "../../components/externos/TimerRefresher";
 
 const PaginaBuscar = () => {
   const [personas, setPersonas] = useState([]);
@@ -132,6 +133,7 @@ const eliminarPersona = async (id) => {
   return (
     <div>
       <h1>Catálogo de Personas</h1>
+      <TimerRedirect/>
 
       {error && <p style={{ color: "red" }}>{error}</p>} {/* Muestra el error al usuario */}
       {/* Formulario de Filtros */}

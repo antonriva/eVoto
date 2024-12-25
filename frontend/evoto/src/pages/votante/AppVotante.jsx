@@ -9,9 +9,11 @@ import EleccionPag from "./CandidatosVoto"
 const VotanteApp = () => {
   return (
     <div>
+      <h1>Sistema para realizar voto electronico a traves de clave de elector</h1>
       {/* Barra de navegación del votante */}
       <nav>
         <ul>
+
           <li>
             <Link to="/">Regresar al Menú Principal</Link>
           </li>

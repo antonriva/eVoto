@@ -3,7 +3,7 @@ import React from "react"
 const  About = () => {
     return(
         <div>
-            Pagina del registro civil
+            <h1>Pagina del registro civil, tiene como funcion la visualizacion y el registro de personas</h1>
         </div>
     )
 }

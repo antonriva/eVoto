@@ -12,7 +12,7 @@ public class CandidaturaProcesoDTO {
     private String denominacionPartido;//ESTA DESCRIPCION SE ENCUENTRA EN LA TABLA DE Partido, candidatura tiene un id asociado a esta tabla
 	private String siglas;// SE ENCUENTRA EN LA TABLA DE Partido, candidatura tiene un id asociado a esta tabla
 	
-	//TABLA VISUAL
+	//TABLA VISUAL	
     private String visualUrl;// SE ENCUENTRA EN LA TABLA VISUAL, QUE DEBE TENER ASOCIADOS EL ID DE PARTIDO, VAMOS A ELEGIR EL ATRIBUTO CONTENIDO DEL VISUAL QUE COINCIDA CON EL ID DE PARTIDO Y QUE TENGA IDDERECURSOVIGENTE IGUAL A 1 Y IDDETIPODEVISUAL IGUAL A 1
     								
     

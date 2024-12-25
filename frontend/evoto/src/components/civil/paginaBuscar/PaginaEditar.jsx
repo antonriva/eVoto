@@ -112,12 +112,14 @@ const PaginaEditar = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+      
       if (!response.ok) {
         const errorMessage = await response.text();
         throw new Error(errorMessage);
       }
-      alert("Persona actualizada exitosamente.");
+      alert("Persona actualizada exitosamente con los siguientes datos");
       navigate("/civil"); // Redirige a la página principal
+      alert(JSON.stringify(formData))
     } catch (error) {
       console.error("Error al actualizar persona:", error);
       setError("No se pudo actualizar la información de la persona.");

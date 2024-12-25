@@ -9,10 +9,12 @@ const AppCivil = () => {
   return (
     <div style={{ backgroundColor: "#f0f4c3", minHeight: "100vh", padding: "20px" }}>
       <h1>Registro Civil</h1>
+      <div>
+            <h1>Pagina del registro civil, tiene como funcion la visualizacion y el registro de personas</h1>
+        </div>
       <nav>
         <ul>
           <li><Link to="/">Regresar al Menú Principal</Link></li>
-          <li><Link to="about">Inicio</Link></li>
           <li><Link to="buscar">Buscar Personas</Link></li>
           <li><Link to="registro">Registrar Persona</Link></li>
         </ul>

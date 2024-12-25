@@ -55,6 +55,12 @@ const AppColegio = () => {
   return (
       <div style={{ backgroundColor: "#add8e6", minHeight: "100vh", padding: "20px" }}>
       <h1>Colegio Electoral</h1>
+      <div>
+            <h1>
+            Sistema de registro de candidatos, electores y gestion del voto. Como funcion el almacenamiento 
+            de electores, partidos, candidatos y administracion del voto.
+            </h1> 
+        </div>
       {/* Solo mostrar el menú si no estamos en una de las páginas de proceso electoral */}
       {menuVisible && !hideMenuPages.includes(location.pathname) && (
         <nav>
