@@ -7,25 +7,49 @@ import PaginaEditar from "../../components/civil/paginaBuscar/PaginaEditar";
 
 const AppCivil = () => {
   return (
-    <div style={{ backgroundColor: "#f0f4c3", minHeight: "100vh", padding: "20px" }}>
-      <h1>Registro Civil</h1>
-      <div>
-            <h1>Pagina del registro civil, tiene como funcion la visualizacion y el registro de personas</h1>
-        </div>
-      <nav>
-        <ul>
-          <li><Link to="/">Regresar al Menú Principal</Link></li>
-          <li><Link to="buscar">Buscar Personas</Link></li>
-          <li><Link to="registro">Registrar Persona</Link></li>
-        </ul>
-      </nav>
+    <div style={{ backgroundColor: "#f8f9fa", minHeight: "100vh", padding: "20px" }}>
+      {/* Header */}
+      <header className="mb-4 text-center">
+        <h1 className="display-4 text-primary">Registro Civil</h1>
+        <p className="lead">
+          Plataforma para la visualización, registro y edición de personas.
+        </p>
+      </header>
 
-      <Routes>
-        <Route path="about" element={<AboutCiv />} />
-        <Route path="buscar" element={<PaginaBuscar />} />
-        <Route path="registro" element={<PaginaRegistro />} />
-        <Route path="buscar/editar/:id" element={<PaginaEditar />} />
-      </Routes>
+      {/* Navigation */}
+      <div className="container">
+        <div className="row justify-content-center mb-4">
+          <div className="col-md-4">
+            <Link to="buscar" className="btn btn-outline-primary btn-block mb-2">
+              Buscar Personas
+            </Link>
+          </div>
+          <div className="col-md-4">
+            <Link to="registro" className="btn btn-outline-success btn-block mb-2">
+              Registrar Persona
+            </Link>
+          </div>
+          <div className="col-md-4">
+            <Link to="/" className="btn btn-outline-secondary btn-block mb-2">
+              Regresar al Menú Principal
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Routes Section */}
+      <div className="container">
+        <div className="card shadow-sm">
+          <div className="card-body">
+            <Routes>
+              <Route path="about" element={<AboutCiv />} />
+              <Route path="buscar" element={<PaginaBuscar />} />
+              <Route path="registro" element={<PaginaRegistro />} />
+              <Route path="buscar/editar/:id" element={<PaginaEditar />} />
+            </Routes>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

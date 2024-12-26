@@ -13,6 +13,19 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.custom-navbar {
+  background-color: #611232; /* Color personalizado */
+}
+
+.navbar-brand {
+  display: inline-block;
+}
+
+.navbar-brand img {
+  width: 8rem; /* Ajusta el tamaño del logo */
+  cursor: pointer; /* Asegura un puntero claro al pasar el mouse */
+}
+
 a {
   font-weight: 500;
   color: #646cff;

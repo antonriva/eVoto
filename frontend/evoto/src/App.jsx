@@ -6,11 +6,13 @@ import AppCivil from "./pages/civil/AppCivil";
 import AppColegio from "./pages/colegio/AppColegio";
 import AppVotante from "./pages/votante/AppVotante";
 
+// Import Bootstrap CSS globally
+import "bootstrap/dist/css/bootstrap.min.css";
+
 const App = () => {
   return (
     <Router>
       <Routes>
-        {/* Ruta principal con diseño base */}
         <Route path="/" element={<MainLayout />}>
           <Route path="/civil/*" element={<AppCivil />} />
           <Route path="/colegio/*" element={<AppColegio />} />
