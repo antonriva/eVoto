@@ -1,27 +1,26 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 const CivilLayout = () => {
   return (
     <div>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Regresar al Menú Principal</Link>
-          </li>
-          <li>
-            <Link to="/civil">Inicio del Registro Civil</Link>
-          </li>
-          <li>
-            <Link to="/civil/registro">Registrar Persona</Link>
-          </li>
-          <li>
-            <Link to="/civil/consulta">Consultar Personas</Link>
-          </li>
-        </ul>
+      {/* Barra de navegación específica para civil */}
+      <nav
+        className="navbar"
+        style={{
+          backgroundColor: "#FFC107", // Color mostaza
+          padding: "10px",
+        }}
+      >
+        <div className="container-fluid">
+          <span style={{ fontWeight: "bold", fontSize: "1.2rem", color: "#000" }}>
+            Sistema de Registro Civil
+          </span>
+        </div>
       </nav>
-      <main>
+      {/* Contenido de la página */}
+      <div>
         <Outlet />
-      </main>
+      </div>
     </div>
   );
 };

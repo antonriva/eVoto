@@ -4,10 +4,12 @@ import AboutCiv from "./AboutCiv";
 import PaginaBuscar from "./PaginaBuscar";
 import PaginaRegistro from "./PaginaRegistro";
 import PaginaEditar from "../../components/civil/paginaBuscar/PaginaEditar";
+import CivilLayout from "../../layouts/CivilLayout";
 
 const AppCivil = () => {
   return (
     <div style={{ backgroundColor: "#f8f9fa", minHeight: "100vh", padding: "20px" }}>
+      <CivilLayout/>
       {/* Header */}
       <header className="mb-4 text-center">
         <h1 className="display-4 text-primary">Registro Civil</h1>

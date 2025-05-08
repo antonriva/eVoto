@@ -6,7 +6,7 @@ const Footer = () => {
           color: "white", // Texto blanco
           padding: "20px",
           marginLeft: "-1%",
-          marginRight: "-1%"
+          marginRight: "-0.6%"
         }}
       >
         <div className="container">

@@ -13,9 +13,9 @@ const MainLayout = () => {
     backgroundColor: "#611232", // Color de fondo de la barra
     height: "60px", // Altura de la barra personalizada
     marginLeft: "-1%",
-    marginRight: "-1%",
+    marginRight: "-0.6%",
   }}
->
+  >
   <div className="container-fluid d-flex align-items-center">
     {/* Logo del Gobierno de México */}
     <Link
@@ -31,7 +31,7 @@ const MainLayout = () => {
     zIndex: 10, // Asegura que esté frente a otros elementos
     marginLeft: "12.45rem", // Mover el logo hacia la derecha
   }}
->
+  >
   <img
     src="https://framework-gb.cdn.gob.mx/gobmx/img/logo_blanco.svg"
     alt="Logo Gobierno de México"
@@ -74,7 +74,7 @@ const MainLayout = () => {
             <ul
               className="navbar-nav"
               style={{
-                marginLeft: "73%", // Adjust this value to move all items to the left
+                marginLeft: "68%", // Adjust this value to move all items to the left
               }}
             >
               <li className="nav-item">
@@ -138,7 +138,7 @@ const MainLayout = () => {
           src="https://framework-gb.cdn.gob.mx/landing/img/gmx-04.jpg"
           alt="Main Banner"
           style={{
-            width: "110%", // Full width
+            width: "100%", // Full width
             height: "auto", // Maintain proportions
           }}
         />
