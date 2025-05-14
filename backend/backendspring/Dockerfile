@@ -8,8 +8,7 @@ RUN mvn -q -DskipTest package
 
 #Runtime stage
 FROM eclipse-temurin:17-jre
-RUN addgroup --system spring 
- && adduser --system spring --ingroup spring
+RUN addgroup --system spring && adduser --system spring --ingroup spring
 USER spring:spring
 
 WORKDIR /opt/app

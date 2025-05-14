@@ -29,7 +29,6 @@ import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/api/partido")
-@CrossOrigin(origins="http://localhost:5173")
 public class PartidoController {
 
     

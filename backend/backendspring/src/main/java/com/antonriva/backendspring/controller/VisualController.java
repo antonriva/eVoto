@@ -16,7 +16,6 @@ import jakarta.persistence.EntityNotFoundException;
 
 @RequestMapping("/api/visual")
 @RestController
-@CrossOrigin(origins="http://localhost:5173")
 public class VisualController {
 	
 	private final VisualService visualService;

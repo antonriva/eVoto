@@ -54,7 +54,7 @@ const ModalBuscarElector = ({ onSelect }) => {
       const sanitizedParams = sanitizeData(params);
       const query = new URLSearchParams(formatFilters(sanitizedParams)).toString();
 
-      const response = await fetch(`http://localhost:8080/api/elector/buscar?${query}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/elector/buscar?${query}`);
       if (!response.ok) {
         throw new Error("Error al cargar electores.");
       }

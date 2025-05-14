@@ -16,7 +16,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/domicilio")
-@CrossOrigin(origins = "http://localhost:5173")
 public class DomicilioController {
 	
 }

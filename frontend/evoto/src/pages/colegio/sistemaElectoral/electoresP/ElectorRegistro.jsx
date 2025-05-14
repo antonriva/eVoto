@@ -46,7 +46,7 @@ const ElectorRegistro = () => {
 
   const fetchEntidades = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/entidad-federativa");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/entidad-federativa`);
       const data = await response.json();
       setEntidades(data);
     } catch (error) {
@@ -56,7 +56,7 @@ const ElectorRegistro = () => {
 
   const fetchMunicipios = async (entidadId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/municipio/entidad/${entidadId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/municipio/entidad/${entidadId}`);
       const data = await response.json();
       setMunicipios(data);
     } catch (error) {
@@ -66,7 +66,7 @@ const ElectorRegistro = () => {
 
   const fetchLocalidades = async (municipioId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/localidad/municipio/${municipioId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/localidad/municipio/${municipioId}`);
       const data = await response.json();
       setLocalidades(data);
     } catch (error) {
@@ -76,7 +76,7 @@ const ElectorRegistro = () => {
 
   const fetchColonias = async (municipioId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/colonia/municipio/${municipioId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/colonia/municipio/${municipioId}`);
       const data = await response.json();
       setColonias(data);
     } catch (error) {
@@ -86,7 +86,7 @@ const ElectorRegistro = () => {
 
   const fetchCodigosPostales = async (coloniaId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/postal/colonia/${coloniaId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/postal/colonia/${coloniaId}`);
       const data = await response.json();
       setCodigosPostales(data);
     } catch (error) {
@@ -136,7 +136,7 @@ const ElectorRegistro = () => {
       });
   
       const response = await fetch(
-        `http://localhost:8080/api/elector/registrar?${queryParams.toString()}`,
+        `${import.meta.env.VITE_API_URL}/elector/registrar?${queryParams.toString()}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

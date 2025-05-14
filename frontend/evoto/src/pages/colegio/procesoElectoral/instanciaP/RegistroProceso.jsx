@@ -32,7 +32,7 @@ const RegistroProceso = () => {
 
   const fetchEntidades = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/entidad-federativa");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/entidad-federativa`);
       const data = await response.json();
       setEntidades(data);
     } catch (error) {
@@ -42,7 +42,7 @@ const RegistroProceso = () => {
 
   const fetchMunicipios = async (entidadId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/municipio/entidad/${entidadId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/municipio/entidad/${entidadId}`);
       const data = await response.json();
       setMunicipios(data);
     } catch (error) {
@@ -52,7 +52,7 @@ const RegistroProceso = () => {
 
   const fetchLocalidades = async (municipioId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/localidad/municipio/${municipioId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/localidad/municipio/${municipioId}`);
       const data = await response.json();
       setLocalidades(data);
     } catch (error) {
@@ -62,7 +62,7 @@ const RegistroProceso = () => {
 
   const fetchNiveles = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/niveles");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/niveles`);
       const data = await response.json();
       setNiveles(data);
     } catch (error) {
@@ -72,7 +72,7 @@ const RegistroProceso = () => {
 
   const fetchProcesos = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/procesos`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/procesos`);
       const data = await response.json();
       setProcesos(data);
     } catch (error) {
@@ -106,7 +106,7 @@ const RegistroProceso = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/instancia/crear", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/instancia/crear`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

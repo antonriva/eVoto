@@ -14,7 +14,6 @@ import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/api/voto")
-@CrossOrigin(origins="http://localhost:5173")
 public class VotoController {
 	
 	

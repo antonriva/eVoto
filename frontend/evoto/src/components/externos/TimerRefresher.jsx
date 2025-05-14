@@ -26,7 +26,7 @@ const TimerRedirect = ({ rutaDestino = "/" }) => {
   // Función para refrescar la conexión
   const refrescarConexion = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/conexion/refrescar", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/conexion/refrescar`, {
         method: "GET",
       });
 

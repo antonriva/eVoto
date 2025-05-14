@@ -15,7 +15,6 @@ import com.antonriva.backendspring.service.ProcesoService;
 
 @RequestMapping("/api/procesos")
 @RestController
-@CrossOrigin(origins="http://localhost:5173")
 public class ProcesoController {
 	
 

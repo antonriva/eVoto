@@ -23,7 +23,7 @@ const RegistroCandidaturaYElector = () => {
 
   const fetchPartidos = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/partido/buscar/todo");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/partido/buscar/todo`);
       const data = await response.json();
       setPartidos(data);
     } catch (error) {
@@ -85,7 +85,7 @@ const RegistroCandidaturaYElector = () => {
       
 
       const responseCandidatura = await fetch(
-        `http://localhost:8080/api/candidatura/base?${queryParams.toString()}`,
+        `${import.meta.env.VITE_API_URL}/candidatura/base?${queryParams.toString()}`,
         { method: "POST" }
       );
 
@@ -114,7 +114,7 @@ const relacionElectorCandidaturaParams = new URLSearchParams({
 }).toString();
 
 const responseElector = await fetch(
-  `http://localhost:8080/api/candidatura/relacion?${relacionElectorCandidaturaParams}`, // Parámetros en la URL
+  `${import.meta.env.VITE_API_URL}/candidatura/relacion?${relacionElectorCandidaturaParams}`, // Parámetros en la URL
   {
     method: "POST",
   }

@@ -12,7 +12,6 @@ import com.antonriva.backendspring.service.NivelService;
 
 @RequestMapping("/api/niveles")
 @RestController
-@CrossOrigin(origins="http://localhost:5173")
 public class NivelController {
 
     private final NivelService nivelService;

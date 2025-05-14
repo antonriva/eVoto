@@ -49,7 +49,7 @@ const PaginaBuscarElectores = () => {
     const sanitizedParams = sanitizeData(params);
     const query = new URLSearchParams(formatFilters(sanitizedParams)).toString();
 
-      const response = await fetch(`http://localhost:8080/api/elector/buscar?${query}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/elector/buscar?${query}`);
       if (!response.ok) {
         throw new Error("Error al cargar electores.");
       }
@@ -85,7 +85,7 @@ const PaginaBuscarElectores = () => {
 
   const fetchCandidaturas = async (idElector) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/candidatura/elector/${idElector}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/candidatura/elector/${idElector}`);
       if (!response.ok) {
         throw new Error(`Error al obtener candidaturas para el elector con ID ${idElector}`);
       }
@@ -99,7 +99,7 @@ const PaginaBuscarElectores = () => {
   // Función para obtener domicilios de una persona
   const fetchDomicilios = async (idPersona) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/persona/${idPersona}/detalles-domicilios`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/${idPersona}/detalles-domicilios`);
       if (!response.ok) {
         throw new Error(`Error al obtener domicilios para persona con ID ${idPersona}`);
       }
@@ -114,7 +114,7 @@ const PaginaBuscarElectores = () => {
     const confirmar = window.confirm("¿Estás seguro de que deseas eliminar este elector?");
     if (confirmar) {
       try {
-        const response = await fetch(`http://localhost:8080/api/elector/${idElector}`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/elector/${idElector}`, {
           method: "DELETE",
         });
 

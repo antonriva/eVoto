@@ -13,7 +13,6 @@ import java.sql.SQLException;
 
 @RestController
 @RequestMapping("/api/conexion")
-@CrossOrigin(origins="http://localhost:5173")
 public class ConexionController {
 
     private final DataSource dataSource;

@@ -13,7 +13,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
 
   const fetchEntidades = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/entidad-federativa");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/entidad-federativa`);
       const data = await response.json();
       setEntidades(data);
     } catch (error) {
@@ -27,7 +27,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
         setMunicipios([]);
         return;
       }
-      const response = await fetch(`http://localhost:8080/api/municipio/entidad/${entidadId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/municipio/entidad/${entidadId}`);
       const data = await response.json();
       setMunicipios(data);
       setLocalidades([]);
@@ -42,7 +42,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
         setLocalidades([]);
         return;
       }
-      const response = await fetch(`http://localhost:8080/api/localidad/municipio/${municipioId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/localidad/municipio/${municipioId}`);
       const data = await response.json();
       setLocalidades(data);
     } catch (error) {

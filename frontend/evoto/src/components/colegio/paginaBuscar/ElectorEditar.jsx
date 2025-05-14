@@ -46,7 +46,7 @@ const ElectorEditar = () => {
   const fetchElectorData = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8080/api/elector/${id}/editar`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/elector/${id}/editar`);
       if (!response.ok) {
         throw new Error("Error al obtener los datos del elector.");
       }
@@ -79,7 +79,7 @@ const ElectorEditar = () => {
 
   const fetchEntidades = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/entidad-federativa");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/entidad-federativa`);
       const data = await response.json();
       setEntidades(data);
     } catch (error) {
@@ -89,7 +89,7 @@ const ElectorEditar = () => {
 
   const fetchMunicipios = async (entidadId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/municipio/entidad/${entidadId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/municipio/entidad/${entidadId}`);
       const data = await response.json();
       setMunicipios(data);
     } catch (error) {
@@ -99,7 +99,7 @@ const ElectorEditar = () => {
 
   const fetchLocalidades = async (municipioId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/localidad/municipio/${municipioId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/localidad/municipio/${municipioId}`);
       const data = await response.json();
       setLocalidades(data);
     } catch (error) {
@@ -109,7 +109,7 @@ const ElectorEditar = () => {
 
   const fetchColonias = async (municipioId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/colonia/municipio/${municipioId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/colonia/municipio/${municipioId}`);
       const data = await response.json();
       setColonias(data);
     } catch (error) {
@@ -119,7 +119,7 @@ const ElectorEditar = () => {
 
   const fetchCodigosPostales = async (coloniaId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/postal/colonia/${coloniaId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/postal/colonia/${coloniaId}`);
       const data = await response.json();
       setCodigosPostales(data);
     } catch (error) {
@@ -149,7 +149,7 @@ const ElectorEditar = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch(`http://localhost:8080/api/elector/${id}/editar`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/elector/${id}/editar`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

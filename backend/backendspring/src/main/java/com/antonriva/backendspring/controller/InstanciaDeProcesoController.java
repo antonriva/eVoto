@@ -24,7 +24,6 @@ import jakarta.persistence.EntityNotFoundException;
 
 @RequestMapping("/api/instancia")
 @RestController
-@CrossOrigin(origins="http://localhost:5173")
 public class InstanciaDeProcesoController {
 	
 

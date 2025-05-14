@@ -54,7 +54,7 @@ const fetchInstancias = async (params = {}) => {
 
     // Realiza la solicitud al backend
     const response = await fetch(
-      `http://localhost:8080/api/instancia/buscar?${query}`
+      `${import.meta.env.VITE_API_URL}/instancia/buscar?${query}`
     );
 
     if (!response.ok) {
@@ -86,7 +86,7 @@ const fetchInstancias = async (params = {}) => {
   const fetchCandidaturas = async (idDeInstanciaDeProceso) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/candidatura/${idDeInstanciaDeProceso}`
+        `${import.meta.env.VITE_API_URL}/candidatura/${idDeInstanciaDeProceso}`
       );
       if (!response.ok) {
         throw new Error(`Error al obtener candidaturas para instancia con ID ${idInstancia}`);
@@ -116,7 +116,7 @@ const fetchInstancias = async (params = {}) => {
     if (confirmar) {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/instancia/eliminar/${id}`,
+          `${import.meta.env.VITE_API_URL}/instancia/eliminar/${id}`,
           {
             method: "DELETE",
           }

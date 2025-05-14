@@ -1,0 +1,65 @@
+#############################################################################
+#  evoto-backend.yaml  – Deployment + Service
+##############################################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evoto-app
+  labels:
+    app: evoto-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: evoto-app
+  template:
+    metadata:
+      labels:
+        app: evoto-app
+    spec:
+      imagePullSecrets:
+        - name: evoto-oke-secret            # ← must already exist
+      containers:
+        - name: evoto-app 
+          image: phx.ocir.io/axg13uinfm0l/e-repo/evoto-app:0.4.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-creds
+                  key: url
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-creds
+                  key: user
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-creds
+                  key: pass
+            - name: APP_FRONTEND_ORIGIN 
+              value: "http://141.148.155.137"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: evoto-app-svc
+  labels:
+    app: evoto-app
+spec:
+  selector:
+    app: evoto-app
+  type: LoadBalancer               # OCI creates the external LB + IP
+  loadBalancerIP: 129.153.126.65 
+  ports:
+    - port: 80                     # LB port
+      targetPort: 8080             # container port
+      protocol: TCP
+      name: http
+

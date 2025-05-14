@@ -35,7 +35,7 @@ const PaginaBuscar = ({ onSelect }) => {
   const fetchPersonas = async (params = {}) => {
     try {
       const query = new URLSearchParams(formatFilters(params)).toString();
-      const response = await fetch(`http://localhost:8080/api/persona/buscar?${query}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/buscar?${query}`);
       if (!response.ok) {
         throw new Error("Error al cargar personas.");
       }

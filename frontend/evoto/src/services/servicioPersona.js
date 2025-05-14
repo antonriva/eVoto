@@ -1,7 +1,7 @@
-import axios from "axios";
+import axios from "axios"
 
 // Base URL for the backend
-const BASE_URL = "http://localhost:8080/api/persona";
+const BASE_URL = `${import.meta.env.VITE_API_URL}/persona`; 
 
 // Axios instance with default configurations
 const axiosInstance = axios.create({

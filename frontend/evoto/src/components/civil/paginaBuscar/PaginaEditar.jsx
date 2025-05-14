@@ -31,7 +31,7 @@ const PaginaEditar = () => {
   const fetchPersonaData = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8080/api/persona/${id}/editar`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/${id}/editar`);
       if (!response.ok) {
         throw new Error("Error al obtener los datos de la persona.");
       }
@@ -59,7 +59,7 @@ const PaginaEditar = () => {
 
   const fetchEntidades = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/entidad-federativa");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/entidad-federativa`);
       const data = await response.json();
       setEntidades(data);
     } catch (error) {
@@ -69,7 +69,7 @@ const PaginaEditar = () => {
 
   const fetchMunicipios = async (entidadId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/municipio/entidad/${entidadId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/municipio/entidad/${entidadId}`);
       const data = await response.json();
       setMunicipios(data);
     } catch (error) {
@@ -107,7 +107,7 @@ const PaginaEditar = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch(`http://localhost:8080/api/persona/${id}/editar`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/${id}/editar`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

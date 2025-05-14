@@ -41,7 +41,7 @@ const PaginaBuscar = () => {
   const fetchPersonas = async (params = {}) => {
     try {
       const query = new URLSearchParams(formatFilters(params)).toString();
-      const response = await fetch(`http://localhost:8080/api/persona/buscar?${query}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/buscar?${query}`);
       if (!response.ok) {
         throw new Error("Error al cargar personas.");
       }
@@ -70,7 +70,7 @@ const PaginaBuscar = () => {
     // Función para obtener domicilios de una persona
     const fetchDomicilios = async (idPersona) => {
       try {
-        const response = await fetch(`http://localhost:8080/api/persona/${idPersona}/detalles-domicilios`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/${idPersona}/detalles-domicilios`);
         if (!response.ok) {
           throw new Error(`Error al obtener domicilios para persona con ID ${idPersona}`);
         }
@@ -89,7 +89,7 @@ const eliminarPersona = async (id) => {
   const confirmar = window.confirm("¿Estás seguro de que deseas eliminar esta persona?");
   if (confirmar) {
     try {
-      const response = await fetch(`http://localhost:8080/api/persona/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/${id}`, {
         method: "DELETE",
       });
 

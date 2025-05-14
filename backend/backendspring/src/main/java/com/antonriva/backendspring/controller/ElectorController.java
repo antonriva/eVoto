@@ -34,7 +34,6 @@ import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/api/elector")
-@CrossOrigin(origins="http://localhost:5173")
 public class ElectorController {
 
     private final ElectorService electorService;

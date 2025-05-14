@@ -24,7 +24,6 @@ import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/api/candidatura")
-@CrossOrigin(origins="http://localhost:5173")
 public class CandidaturaController {
 	
 	

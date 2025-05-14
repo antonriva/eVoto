@@ -15,7 +15,6 @@ import com.antonriva.backendspring.service.PostalService;
 
 @RestController
 @RequestMapping("/api/postal")
-@CrossOrigin(origins="http://localhost:5173")
 public class PostalController {
 	
     private final PostalService postalService;

@@ -15,7 +15,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/colonia")
-@CrossOrigin(origins="http://localhost:5173")
 public class ColoniaController {
 	
     private final ColoniaService coloniaService;

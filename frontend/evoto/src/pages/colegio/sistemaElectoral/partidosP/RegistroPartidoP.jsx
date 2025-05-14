@@ -33,7 +33,7 @@ const RegistroPartidoP = () => {
     setError("");
   
     try {
-      const response = await fetch("http://localhost:8080/api/partido/registrar", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/partido/registrar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

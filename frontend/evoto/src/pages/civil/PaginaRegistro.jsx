@@ -32,7 +32,7 @@ const PaginaRegistro = () => {
 
   const fetchEntidades = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/entidad-federativa");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/entidad-federativa`);
       const data = await response.json();
       setEntidades(data);
     } catch (error) {
@@ -46,7 +46,7 @@ const PaginaRegistro = () => {
         setMunicipios([]);
         return;
       }
-      const response = await fetch(`http://localhost:8080/api/municipio/entidad/${entidadId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/municipio/entidad/${entidadId}`);
       const data = await response.json();
       setMunicipios(data);
     } catch (error) {
@@ -73,7 +73,7 @@ const PaginaRegistro = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/persona/registrar", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/persona/registrar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -82,7 +82,7 @@ const PaginaRegistro = () => {
       if (response.status === 409) {
         const errorMessage = await response.text();
         if (window.confirm(`${errorMessage}\n¿Desea continuar?`)) {
-          await fetch("http://localhost:8080/api/persona/registrar?confirmar=true", {
+          await fetch(`${import.meta.env.VITE_API_URL}/persona/registrar?confirmar=true`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData),

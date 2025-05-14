@@ -32,7 +32,7 @@ const EditarPartido = () => {
   const fetchPartidoData = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8080/api/partido/${id}/editar`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/partido/${id}/editar`);
       if (!response.ok) {
         throw new Error("Error al obtener los datos del partido.");
       }
@@ -64,7 +64,7 @@ const EditarPartido = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch(`http://localhost:8080/api/partido/${id}/editar`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/partido/${id}/editar`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

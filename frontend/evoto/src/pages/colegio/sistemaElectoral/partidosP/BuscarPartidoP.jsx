@@ -23,7 +23,7 @@ const BuscarPartido = () => {
   const fetchPartidos = async (params = {}) => {
     try {
       const query = new URLSearchParams(params).toString();
-      const response = await fetch(`http://localhost:8080/api/partido/buscar?${query}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/partido/buscar?${query}`);
       if (!response.ok) {
         throw new Error("Error al cargar partidos.");
       }
@@ -45,7 +45,7 @@ const eliminarPartido = async (id) => {
   const confirmar = window.confirm("¿Estás seguro de que deseas eliminar este partido?");
   if (confirmar) {
     try {
-      const response = await fetch(`http://localhost:8080/api/partido/${id}/eliminar`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/partido/${id}/eliminar`, {
         method: "DELETE",
       });
 

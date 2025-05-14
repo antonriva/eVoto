@@ -36,7 +36,7 @@ const InstanciaEditar = () => {
   const fetchInstanciaData = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8080/api/instancia/editar/${id}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/instancia/editar/${id}`);
       if (!response.ok) {
         throw new Error("Error al obtener los datos de la instancia.");
       }
@@ -63,7 +63,7 @@ const InstanciaEditar = () => {
 
   const fetchEntidades = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/entidad-federativa");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/entidad-federativa`);
       const data = await response.json();
       setEntidades(data);
     } catch (error) {
@@ -78,7 +78,7 @@ const InstanciaEditar = () => {
         setLocalidades([]);
         return;
       }
-      const response = await fetch(`http://localhost:8080/api/municipio/entidad/${entidadId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/municipio/entidad/${entidadId}`);
       const data = await response.json();
       setMunicipios(data);
       setLocalidades([]);
@@ -93,7 +93,7 @@ const InstanciaEditar = () => {
         setLocalidades([]);
         return;
       }
-      const response = await fetch(`http://localhost:8080/api/localidad/municipio/${municipioId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/localidad/municipio/${municipioId}`);
       const data = await response.json();
       setLocalidades(data);
     } catch (error) {
@@ -103,7 +103,7 @@ const InstanciaEditar = () => {
 
   const fetchNiveles = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/niveles");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/niveles`);
       const data = await response.json();
       setNiveles(data);
     } catch (error) {
@@ -113,7 +113,7 @@ const InstanciaEditar = () => {
 
   const fetchProcesos = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/procesos`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/procesos`);
       const data = await response.json();
       setProcesos(data);
     } catch (error) {
@@ -138,7 +138,7 @@ const InstanciaEditar = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch(`http://localhost:8080/api/instancia/editar/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/instancia/editar/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

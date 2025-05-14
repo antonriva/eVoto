@@ -1,0 +1,46 @@
+##############################################################################
+#  evoto-frontend – Vite-built static site served by NGINX
+##############################################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evoto-frontend
+  labels:
+    app: evoto-frontend
+spec:
+  replicas: 1                         # scale later if needed
+  selector:
+    matchLabels:
+      app: evoto-frontend
+  template:
+    metadata:
+      labels:
+        app: evoto-frontend
+    spec:
+      imagePullSecrets:               # secret you created earlier
+        - name: evoto-oke-secret
+      containers:
+        - name: fe
+          image: phx.ocir.io/axg13uinfm0l/e-repo/fe-app:0.5.0 
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          # no probes needed for static NGINX, but you can add HTTP 200 probe
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: evoto-frontend-svc
+  labels:
+    app: evoto-frontend
+spec:
+  selector:
+    app: evoto-frontend
+  type: LoadBalancer                  # OCI will create a public LB & IP
+  loadBalancerIP: 141.148.155.137
+  ports:
+    - port: 80                        # external LB port
+      targetPort: 80                  # container port
+      protocol: TCP
+      name: http
+

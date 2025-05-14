@@ -15,7 +15,6 @@ import com.antonriva.backendspring.service.LocalidadService;
 
 @RestController
 @RequestMapping("/api/localidad")
-@CrossOrigin(origins="http://localhost:5173")
 public class LocalidadController {
 
     private final LocalidadService localidadService;
