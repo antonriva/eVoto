@@ -73,7 +73,7 @@ const PaginaRegistro = () => {
     setError("");
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/persona/registrar`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/registrar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
