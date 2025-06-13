@@ -1,6 +1,7 @@
 #############################################################################
 #  evoto-backend.yaml  – Deployment + Service
 ##############################################################################
+#This is for the deployment inside OKE in Oracle CLI   
 apiVersion: apps/v1
 kind: Deployment
 metadata:
