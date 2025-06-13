@@ -62,7 +62,7 @@ const RegistroProceso = () => {
 
   const fetchNiveles = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/niveles`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/niveles`);
       const data = await response.json();
       setNiveles(data);
     } catch (error) {
@@ -72,7 +72,7 @@ const RegistroProceso = () => {
 
   const fetchProcesos = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/procesos`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/procesos`);
       const data = await response.json();
       setProcesos(data);
     } catch (error) {

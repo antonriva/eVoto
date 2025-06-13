@@ -19,7 +19,7 @@ const InicioVotante = () => {
       setError("");
       try {
         const response = await fetch(
-          `http://localhost:8080/api/elector/abiertos/${idDeElector}` // Endpoint correcto con el ID del elector
+          `${import.meta.env.VITE_API_URL}/elector/abiertos/${idDeElector}` // Endpoint correcto con el ID del elector
         );
         if (!response.ok) {
           throw new Error("Error al obtener los procesos abiertos.");

@@ -28,7 +28,7 @@ const MostrarCandidatos = () => {
       setError("");
       try {
         const response = await fetch(
-          `http://localhost:8080/api/elector/abiertos/candidatos?idDeElector=${idDeElector}&idDeInstanciaDeProceso=${idDeInstanciaDeProceso}`
+          `${import.meta.env.VITE_API_URL}/elector/abiertos/candidatos?idDeElector=${idDeElector}&idDeInstanciaDeProceso=${idDeInstanciaDeProceso}`
         );
         if (!response.ok) {
           throw new Error("Error al obtener la lista de candidatos.");
@@ -64,7 +64,7 @@ const MostrarCandidatos = () => {
     
       // Hacer la petición POST con los parámetros en la URL
       const response = await fetch(
-        `http://localhost:8080/api/voto/registrar?${queryParams}`, 
+        `${import.meta.env.VITE_API_URL}/voto/registrar?${queryParams}`, 
         {
           method: "POST",
         }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ModalBuscar from './ModalBuscarPersona';
+import { Modal, Button} from 'react-bootstrap';
 
 const ElectorRegistro = () => {
   const today = new Date().toISOString().split("T")[0];
@@ -21,9 +22,15 @@ const ElectorRegistro = () => {
   const [showModal, setShowModal] = useState(false); // Controla la visibilidad del modal
 
 
+
   const handleSelectPersona = (id) => {
     setFormData((prev) => ({ ...prev, idDePersona: id }));
     setShowModal(false); // Cierra el modal al seleccionar
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    console.log("Modal cerrado");
   };
 
   const [entidades, setEntidades] = useState([]);
@@ -180,9 +187,10 @@ const ElectorRegistro = () => {
             title="El ID de la persona debe ser un número válido."
             disabled
           />
-          <button type="button" onClick={() => setShowModal(true)}>
-            Buscar
-          </button>
+      {/* Button to open the modal */}
+      <button variant="primary" onClick={() => setShowModal(true)}>
+        Buscar Persona
+      </button>
         </div>
 
         <div>
@@ -334,16 +342,20 @@ const ElectorRegistro = () => {
         </button>
       </form>
 
-            {/* Modal */}
-            {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Buscar Persona</h2>
-            <ModalBuscar onSelect={handleSelectPersona} /> {/* Componente de búsqueda */}
-            <button onClick={() => setShowModal(false)}>Cerrar</button>
-          </div>
-        </div>
-      )}
+      <Modal show={showModal} onHide={handleCloseModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Buscar Persona</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ModalBuscar onSelect={handleSelectPersona} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      
     </div>
   );
 };

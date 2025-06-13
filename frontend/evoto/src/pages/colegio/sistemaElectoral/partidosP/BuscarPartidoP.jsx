@@ -117,7 +117,7 @@ const handleRegresar = () => {
         try {
           setLoading(true);
           setError("");
-          const response = await fetch("http://localhost:8080/api/visual/registrar", {
+          const response = await fetch(`${import.meta.env.VITE_API_URL}/visual/registrar`, {
             method: "POST",
             body: formData,
           });

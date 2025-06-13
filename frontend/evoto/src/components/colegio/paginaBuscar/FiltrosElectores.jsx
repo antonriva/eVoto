@@ -18,6 +18,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
       setEntidades(data);
     } catch (error) {
       console.error("Error al cargar entidades federativas:", error);
+      setEntidades([]); // Fallback to an empty array on error
     }
   };
 
@@ -81,9 +82,9 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
         <input
           type="text"
           name="idElector"
-          value={filtros.idElector || null}
+          value={filtros.idElector || ""} // Use an empty string as fallback
           onChange={handleChange}
-          pattern="^\d*$" // Solo números
+          pattern="^\d*$" // Only numbers
           title="El ID solo puede contener números."
         />
       </div>
@@ -124,7 +125,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
         <label>Año de Nacimiento:</label>
         <select
           name="anioNacimiento"
-          value={filtros.anioNacimiento || null}
+          value={filtros.anioNacimiento || ""} // Use an empty string as fallback
           onChange={handleChange}
         >
           <option value="">Seleccione</option>
@@ -142,7 +143,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
         <label>Mes de Nacimiento:</label>
         <select
           name="mesNacimiento"
-          value={filtros.mesNacimiento || null}
+          value={filtros.mesNacimiento || ""}
           onChange={handleChange}
         >
           <option value="">Seleccione</option>
@@ -157,7 +158,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
         <label>Día de Nacimiento:</label>
         <select
           name="diaNacimiento"
-          value={filtros.diaNacimiento || null}
+          value={filtros.diaNacimiento || ""}
           onChange={handleChange}
         >
           <option value="">Seleccione</option>
@@ -188,7 +189,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
         <label>Municipio:</label>
         <select
           name="municipio"
-          value={filtros.municipio || null}
+          value={filtros.municipio || ""}
           onChange={handleChange}
           disabled={!municipios.length}
         >
@@ -204,7 +205,7 @@ const FiltrosPersonas = ({ filtros, setFiltros, onBuscar }) => {
         <label>Localidad:</label>
         <select
           name="localidad"
-          value={filtros.localidad || null}
+          value={filtros.localidad || ""}
           onChange={handleChange}
           disabled={!localidades.length}
         >
