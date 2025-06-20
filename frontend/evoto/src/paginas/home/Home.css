@@ -1,40 +1,4 @@
-.navbar-custom {
-    background-color: #611232; /* Color de fondo de la barra */
-    height: 60px; /* Altura de la barra personalizada */
-    margin-left: -1%;
-    margin-right: -0.6%;
-  }
-
-.navbar-brand-custom {
-  display: flex; /* Contenedor flexible */
-  align-items: center; /* Centra verticalmente el logo */
-  justify-content: flex-start; /* Ajusta el logo a la posición inicial */
-  width: auto; /* El ancho se adapta al contenido */
-  height: 100%; /* Altura completa del contenedor de la barra */
-  position: relative; /* Evita conflictos con otros elementos */
-  z-index: 10; /* Asegura que esté frente a otros elementos */
-  margin-left: 12.45rem; /* Mover el logo hacia la derecha */
-}
-
-.navbar-logo {
-  width: 8rem; /* Tamaño personalizado del logo */
-  height: auto; /* Mantiene las proporciones del logo */
-  pointer-events: none; /* Evita que el logo bloquee clics */
-}
-
-.navbar-nav-custom {
-  margin-left: 68%; /* Adjust this value to move all items to the left */
-}
-
-.nav-link-custom {
-  color: white; /* Color blanco sólido */
-  text-decoration: none; /* Eliminar subrayado */
-}
-
-.nav-link-custom:hover {
-  text-decoration: underline; /* (Optional) Add underline on hover */
-}
-
+/* Image Section */
 .image-section {
   width: 100%; /* Full width */
   height: auto; /* Auto-adjust height */
@@ -52,6 +16,7 @@
   height: auto; /* Maintain proportions */
 }
 
+/* Card Styles */
 .card-custom {
   border: 1px solid #ddd; /* Borde similar */
   border-radius: 8px; /* Bordes redondeados */
@@ -65,7 +30,6 @@
   width: 200px; /* Tamaño reducido para ajustarse al diseño */
   height: 120px; /* Mantener proporciones */
 }
-
 
 .card-title-custom {
   font-weight: bold;
