@@ -1,6 +1,6 @@
 import { Outlet, useLocation } from "react-router-dom";
-import Footer from "../shared/components/Footer/Footer"; // Importa el pie de página
-import AppNavbar from "../shared/components/Navbar/AppNavbar"; // Import the new AppNavbar component
+import Footer from "../shared/components/footer/Footer"; // Importa el pie de página
+import AppNavbar from "../shared/components/navbar/AppNavbar"; // Import the new AppNavbar component
 import { getActiveSubNavbar } from "./SubnavbarConfig"; // Import the logic for subnavbars
 
 const AppLayout = () => {

@@ -1,120 +1,58 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import Table from "../../components/civil/paginaBuscar/Table";
-import ExpandableRow from "../../components/civil/paginaBuscar/ExpandableRow";
-import FiltrosPersonas from "../../components/civil/paginaBuscar/FiltrosPersonas";
-import TimerRedirect from "../../components/externos/TimerRefresher";
+import Table from "../../../shared/components/table/Table";
+import ExpandableRow from "../components/identidadExpandableRow/IdentidadExpandableRow";
+import GenericFilterForm from "../../../shared/components/filterForm/FilterForm";
+import { createPersonasFilterConfig } from "../config/personasFilterConfig";
+import TimerRedirect from "../../../components/externos/TimerRefresher";
+import { useBuscarPersonas } from "../hooks/useBuscarPersonas";
 
 const PaginaBuscar = () => {
-  const [personas, setPersonas] = useState([]);
-  const [filtros, setFiltros] = useState({
-    id: "",
-    nombre: "",
-    apellidoPaterno: "",
-    apellidoMaterno: "",
-    anioNacimiento: "",
-    mesNacimiento: "",
-    diaNacimiento: "",
-    anioFin: "",
-    mesFin: "",
-    diaFin: "",
-    entidadFederativa: "",
-    municipio: "",
-    localidad: "",
-    colonia: "",
-    codigoPostal: "",
-    tipoDeDomicilio: ""
-  });
-
   const navigate = useNavigate();
+  const {
+    personas,
+    setPersonas,
+    filtros,
+    setFiltros,
+    fetchPersonas,
+    error,
+  } = useBuscarPersonas();
 
-  // Función para formatear los filtros, eliminando valores vacíos
-  const formatFilters = (filters) => {
-    return Object.fromEntries(
-      Object.entries(filters).filter(([_, value]) => value !== "")
-    );
-  };
-
-  const [error, setError] = useState("");
-
-  // Función para obtener personas con filtros
-  const fetchPersonas = async (params = {}) => {
+  const fetchDomicilios = async (id) => {
     try {
-      const query = new URLSearchParams(formatFilters(params)).toString();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/buscar?${query}`);
-      if (!response.ok) {
-        throw new Error("Error al cargar personas.");
-      }
-      const data = await response.json();
-
-      // Transformar datos si es necesario (fechas en formato LocalDate)
-      const formattedData = data.map((persona) => ({
-        ...persona,
-        fechaDeNacimiento: persona.fechaDeNacimiento || "---",
-        fechaDeFin: persona.fechaDeFin || "---",
-      }));
-
-      setPersonas(formattedData);
-      setError(""); // Limpia el mensaje de error si la carga es exitosa
-    } catch (error) {
-      console.error("Error al cargar personas:", error);
-      setError("Error al cargar personas. Por favor, inténtalo de nuevo."); // Actualiza el mensaje
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/persona/${id}/detalles-domicilios`);
+      if (!res.ok) throw new Error(`Error al obtener domicilios para ID ${id}`);
+      return await res.json();
+    } catch (err) {
+      console.error(err);
+      return [];
     }
   };
 
-  // Carga inicial sin filtros
-  useEffect(() => {
-    fetchPersonas();
-  }, []);
+  const eliminarPersona = async (id) => {
+    const confirmar = window.confirm("¿Estás seguro de que deseas eliminar esta persona?");
+    if (!confirmar) return;
 
-    // Función para obtener domicilios de una persona
-    const fetchDomicilios = async (idPersona) => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/${idPersona}/detalles-domicilios`);
-        if (!response.ok) {
-          throw new Error(`Error al obtener domicilios para persona con ID ${idPersona}`);
-        }
-        return await response.json();
-      } catch (error) {
-        console.error("Error al cargar domicilios:", error);
-        return []; // Retorna un arreglo vacío en caso de error
-      }
-    };
-
-    
-
-
-  // Función para eliminar una persona
-const eliminarPersona = async (id) => {
-  const confirmar = window.confirm("¿Estás seguro de que deseas eliminar esta persona?");
-  if (confirmar) {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/persona/${id}`, {
         method: "DELETE",
       });
 
-      if (response.ok) {
+      if (res.ok) {
         alert("Persona eliminada correctamente.");
-        setPersonas((prev) => prev.filter((persona) => persona.id !== id));
+        setPersonas(prev => prev.filter(p => p.id !== id));
       } else {
-        const errorMessage = await response.text();
-        if (response.status === 404) {
-          alert(`Error: La persona con ID ${id} no existe.`);
-        } else if (response.status === 409) {
-          alert(`Error: ${errorMessage}`);
-        } else {
-          alert(`Error inesperado al eliminar la persona: ${errorMessage}`);
-        }
+        const msg = await res.text();
+        if (res.status === 404) alert(`No existe la persona con ID ${id}.`);
+        else if (res.status === 409) alert(`Error: ${msg}`);
+        else alert(`Error inesperado: ${msg}`);
       }
-    } catch (error) {
-      console.error(`Error al eliminar persona con ID ${id}:`, error);
-      alert("Error inesperado al eliminar la persona. Por favor, inténtelo nuevamente.");
+    } catch (err) {
+      console.error(err);
+      alert("Error al eliminar. Inténtalo nuevamente.");
     }
-  }
-};
+  };
 
-
-  // Función para redirigir a la página de edición
   const editarPersona = (id) => {
     navigate(`editar/${id}`);
   };
@@ -133,36 +71,40 @@ const eliminarPersona = async (id) => {
   return (
     <div>
       <h1>Catálogo de Personas</h1>
-      <TimerRedirect/>
+      <TimerRedirect />
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {error && <p style={{ color: "red" }}>{error}</p>} {/* Muestra el error al usuario */}
-      {/* Formulario de Filtros */}
-      <FiltrosPersonas
-        filtros={filtros}
-        setFiltros={setFiltros}
-        onBuscar={() => fetchPersonas(filtros)}
+      <GenericFilterForm
+        config={{
+          ...createPersonasFilterConfig,
+          onSearch: (vals) => {
+            setFiltros(vals);
+            fetchPersonas(vals);
+          }
+        }}
+        values={filtros}
+        setValues={setFiltros}
       />
 
-      {/* Tabla de Personas */}
       <Table
         headers={headers}
         data={personas}
-        renderRow={(persona) => (
+        renderRow={(p) => (
           <ExpandableRow
-            key={persona.id}
-            idPersona={persona.id}
+            key={p.id}
+            idPersona={p.id}
             rowData={[
-              persona.id,
-              persona.nombre,
-              persona.apellidoPaterno,
-              persona.apellidoMaterno,
-              persona.fechaDeNacimiento, // Mostrar la fecha de nacimiento directamente
-              persona.fechaDeFin, // Mostrar la fecha de fin directamente
+              p.id,
+              p.nombre,
+              p.apellidoPaterno,
+              p.apellidoMaterno,
+              p.fechaDeNacimiento,
+              p.fechaDeFin
             ]}
-            fetchDomicilios={() => fetchDomicilios(persona.id)}
+            fetchDomicilios={() => fetchDomicilios(p.id)}
             colSpan={headers.length}
-            onEdit={(id) => editarPersona(id)}
-            onDelete={(id) => eliminarPersona(id)}
+            onEdit={editarPersona}
+            onDelete={eliminarPersona}
           />
         )}
       />

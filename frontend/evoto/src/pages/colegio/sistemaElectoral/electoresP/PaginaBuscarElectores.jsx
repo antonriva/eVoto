@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Table from "../../../../components/civil/paginaBuscar/Table";
-import ExpandableRow from "../../../../components/civil/paginaBuscar/ExpandableRow";
+import Table from "../../../../shared/components/table/Table";
+import ExpandableRow from "../../../../shared/components/expandableRow/ExpandableRow";
 import FiltrosPersonas from "../../../../components/colegio/paginaBuscar/FiltrosElectores";
 
 const PaginaBuscarElectores = () => {

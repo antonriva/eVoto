@@ -1,103 +1,78 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Table from "../../../../components/civil/paginaBuscar/Table";
-import FiltrosPersonas from "../../../../components/civil/paginaBuscar/FiltrosPersonas";
+// src/modules/identidad/pages/ModalBuscarPersona.jsx
+import React from "react";
+import Table from "../../../../shared/components/table/Table";
+import GenericFilterForm from "../../../../shared/components/filterForm/FilterForm";
+import { useBuscarPersonas } from "../../../../modules/identidad/hooks/useBuscarPersonas";
+import { createPersonasFilterConfig } from "../../../../modules/identidad/config/personasFilterConfig";
 
-const PaginaBuscar = ({ onSelect }) => {
-    const [personas, setPersonas] = useState([]);
-    const [error, setError] = useState([]);
-    const [filtros, setFiltros] = useState({
-        id: "",
-        nombre: "",
-        apellidoPaterno: "",
-        apellidoMaterno: "",
-        anioNacimiento: "",
-        mesNacimiento: "",
-        diaNacimiento: "",
-        anioFin: "",
-        mesFin: "",
-        diaFin: "",
-        entidadFederativa: "",
-        municipio: "",
-        localidad: "",
-        colonia: "",
-        codigoPostal: "",
-        tipoDeDomicilio: ""
-    });
-  
-      // Función para formatear los filtros, eliminando valores vacíos
-  const formatFilters = (filters) => {
-    return Object.fromEntries(
-      Object.entries(filters).filter(([_, value]) => value !== "")
-    );
-  };
-  // Función para obtener personas con filtros
-  const fetchPersonas = async (params = {}) => {
-    try {
-      const query = new URLSearchParams(formatFilters(params)).toString();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/buscar?${query}`);
-      if (!response.ok) {
-        throw new Error("Error al cargar personas.");
-      }
-      const data = await response.json();
+const ModalBuscarPersona = ({ onSelect }) => {
+  const {
+    personas,
+    filtros,
+    setFiltros,
+    fetchPersonas,
+    error,
+  } = useBuscarPersonas({
+    id: "",
+    nombre: "",
+    apellidoPaterno: "",
+    apellidoMaterno: "",
+    anioNacimiento: "",
+    mesNacimiento: "",
+    diaNacimiento: "",
+    anioFin: "",
+    mesFin: "",
+    diaFin: "",
+    entidadFederativa: "",
+    municipio: "",
+    localidad: "",
+    colonia: "",
+    codigoPostal: "",
+    tipoDeDomicilio: ""
+  });
 
-      // Transformar datos si es necesario (fechas en formato LocalDate)
-      const formattedData = data.map((persona) => ({
-        ...persona,
-        fechaDeNacimiento: persona.fechaDeNacimiento || "---",
-        fechaDeFin: persona.fechaDeFin || "---",
-      }));
+  const headers = [
+    "ID",
+    "Nombre",
+    "Apellido Paterno",
+    "Apellido Materno",
+    "Acciones"
+  ];
 
-      setPersonas(formattedData);
-      setError(""); // Limpia el mensaje de error si la carga es exitosa
-    } catch (error) {
-      console.error("Error al cargar personas:", error);
-      setError("Error al cargar personas. Por favor, inténtalo de nuevo."); // Actualiza el mensaje
-    }
-  };
+  return (
+    <div>
+      <h1>Catálogo de Personas</h1>
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
-  
-    useEffect(() => {
-      fetchPersonas();
-    }, []);
+      <GenericFilterForm
+        config={{
+          ...createPersonasFilterConfig,
+          onSearch: (vals) => {
+            setFiltros(vals);
+            fetchPersonas(vals);
+          }
+        }}
+        values={filtros}
+        setValues={setFiltros}
+      />
 
-    const headers = [
-        "ID",
-        "Nombre",
-        "Apellido Paterno",
-        "Apellido Materno",
-        "Acciones"
-      ];
-  
-    return (
-      <div>
-        <h1>Catálogo de Personas</h1>
+      <Table
+        headers={headers}
+        data={personas}
+        renderRow={(p) => (
+          <tr key={p.id}>
+            <td>{p.id}</td>
+            <td>{p.nombre}</td>
+            <td>{p.apellidoPaterno}</td>
+            <td>{p.apellidoMaterno}</td>
+            <td>
+              <button onClick={() => onSelect(p.id)}>Seleccionar</button>
+            </td>
+          </tr>
+        )}
+      />
+    </div>
+  );
+};
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
-
-        <FiltrosPersonas
-          filtros={filtros}
-          setFiltros={setFiltros}
-          onBuscar={() => fetchPersonas(filtros)}
-        />
-        <Table
-            headers={headers}
-            data={personas}
-            renderRow={(persona) => (
-              <tr key={persona.id}>
-                <td>{persona.id}</td>
-                <td>{persona.nombre}</td>
-                <td>{persona.apellidoPaterno}</td>
-                <td>{persona.apellidoMaterno}</td>
-                <td>
-                  <button onClick={() => onSelect(persona.id)}>Seleccionar</button>
-                </td>
-              </tr>
-            )}
-        />
-      </div>
-    );
-  };
-  
-  export default PaginaBuscar;
-  
+export default ModalBuscarPersona;

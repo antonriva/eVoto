@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Table from "../../../../components/civil/paginaBuscar/Table"
+import Table from "../../../../shared/components/table/Table"
 
 const BuscarPartido = () => {
   const [partidos, setPartidos] = useState([]);
