@@ -1,15 +1,9 @@
 import React from "react";
-import { Routes, Route, Link } from "react-router-dom";
-import AboutCiv from "./AboutCiv";
-import PaginaBuscar from "./PaginaBuscar";
-import PaginaRegistro from "./PaginaRegistro";
-import PaginaEditar from "../../components/civil/paginaBuscar/PaginaEditar";
-import CivilLayout from "../../layouts/CivilLayout";
+import { Link } from "react-router-dom";
 
-const AppCivil = () => {
+const Inicio = () => {
   return (
     <div style={{ backgroundColor: "#f8f9fa", minHeight: "100vh", padding: "20px" }}>
-      <CivilLayout/>
       {/* Header */}
       <header className="mb-4 text-center">
         <h1 className="display-4 text-primary">Registro Civil</h1>
@@ -38,22 +32,8 @@ const AppCivil = () => {
           </div>
         </div>
       </div>
-
-      {/* Routes Section */}
-      <div className="container">
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <Routes>
-              <Route path="about" element={<AboutCiv />} />
-              <Route path="buscar" element={<PaginaBuscar />} />
-              <Route path="registro" element={<PaginaRegistro />} />
-              <Route path="buscar/editar/:id" element={<PaginaEditar />} />
-            </Routes>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
 
-export default AppCivil;
+export default Inicio;

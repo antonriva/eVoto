@@ -1,0 +1,21 @@
+/* Footer styles */
+.footer {
+  background-color: #611232; /* Fondo burdeos */
+  color: white; /* Texto blanco */
+  padding: 20px;
+  margin-left: -1%;
+  margin-right: -0.6%;
+}
+
+.footer-logo {
+  width: 150px;
+  height: auto;
+}
+
+.footer-info {
+  font-size: 0.9rem;
+}
+
+.footer-small {
+  margin-top: 1rem; /* Adjust spacing for small text */
+}
