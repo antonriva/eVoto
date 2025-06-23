@@ -20,9 +20,9 @@ const Home = () => {
           <div className="col-md-4">
             <div className="card shadow-sm card-custom">
               <div className="card-body card-body-custom">
-                <div className="card-icon-wrapper-online">
+                <div className="card-icon-wrapper">
                   <img
-                    src="https://www.gob.mx/cms/uploads/image/file/487050/01_Identidad_dorado_2.png"
+                    src="/visuales/Persona.png"
                     alt="Registro Civil"
                     className="card-icon"
                   />

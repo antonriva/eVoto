@@ -34,69 +34,12 @@
   .nav-link-custom:hover {
     text-decoration: underline; /* (Optional) Add underline on hover */
   }
-  
-  .image-section {
-    width: 100%; /* Full width */
-    height: auto; /* Auto-adjust height */
-    text-align: center; /* Center the content */
-    background-image: url('path/to/your/image.png'); /* Background image */
-    background-size: cover; /* Cover the area */
-    background-repeat: no-repeat; /* Avoid repeating */
-    background-position: center; /* Center the image */
+
+  .subnavbar{
+    background-color: #A97E29; /* Color de fondo de la barra */
+    color: white;
+    height: 60px; /* Altura de la barra personalizada */
     margin-left: -1%;
-    margin-right: -1%;
-  }
-  
-  .image-banner {
-    width: 100%; /* Full width */
-    height: auto; /* Maintain proportions */
-  }
-  
-  .card-custom {
-    border: 1px solid #ddd; /* Borde similar */
-    border-radius: 8px; /* Bordes redondeados */
-  }
-  
-  .card-body-custom {
-    text-align: center; /* Centrar el contenido */
-  }
-  
-  .card-icon {
-    width: 200px; /* Tamaño reducido para ajustarse al diseño */
-    height: 120px; /* Mantener proporciones */
-  }
-  
-  
-  .card-title-custom {
-    font-weight: bold;
-    color: #343a40; /* Color negro suave */
-    font-size: 1.3rem; /* Tamaño de letra del título */
-    line-height: 2; /* Espaciado entre líneas */
-    margin-top: -10px; /* Agregar espacio superior */
-  }
-  
-  .card-title-custom a {
-    text-decoration: none; /* Eliminar subrayado */
-    color: #343a40; /* Color negro suave */
-  }
-  
-  .card-title-custom a:hover {
-    text-decoration: underline; /* Subrayado al pasar el cursor */
-  }
-  
-  .card-options {
-    padding: 0;
-    margin: 0;
-    color: #6c757d; /* Color gris claro */
-    font-size: 1rem; /* Tamaño de letra más pequeño */
-    line-height: 2; /* Espaciado entre líneas */
-  }
-  
-  .card-options a {
-    text-decoration: none; /* Eliminar subrayado */
-    color: #6c757d; /* Color gris claro */
-  }
-  
-  .card-options a:hover {
-    text-decoration: underline; /* Subrayado al pasar el cursor */
+    margin-right: -0.6%;
+    padding: 0.5rem;
   }

@@ -1,15 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import "../../../../shared/components/navbar/AppNavbar.css"; // Import styles
 
-const CivilNavbar = () => (
+const IdentidadNavbar = () => (
   <nav
-    className="navbar"
-    style={{ backgroundColor: "#336699", color: "white", padding: "0.5rem" }}
+    className="subnavbar"
   >
     <div className="container-fluid">
-      <span className="navbar-text">Civil: Registro y Búsqueda</span>
+      <span className="navbar-text">REGISTRO CIVIL</span>
     </div>
   </nav>
 );
 
-export default CivilNavbar;
+export default IdentidadNavbar;

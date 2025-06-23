@@ -1,16 +1,30 @@
 import React from "react";
+import Breadcrumbs from "../../../shared/components/breadcrumbs/Breadcrumbs";
 import { Link } from "react-router-dom";
 
+
+
 const Inicio = () => {
+
+  const breadcrumbItems = [
+    { label: "Inicio", to: "/" },
+    { label: "Registro civil" }
+  ];
+
   return (
     <div>
-      {/* Header */}
-      <header className="mb-4 text-center">
-        <h1 className="display-4 text-primary">Registro Civil</h1>
-        <p className="lead">
-          Plataforma para la visualización, registro y edición de personas.
-        </p>
-      </header>
+      <div className="container mt-3">
+      {/* Breadcrumb */}
+        <Breadcrumbs items={breadcrumbItems} />
+
+        {/* Header */}
+        <header className="mb-4 ">
+          <h1 className="display-4 fw-bold text-dark">Registro civil</h1>
+          <p className="lead">
+            Plataforma para la visualización, registro y edición de personas
+          </p>
+        </header>
+      </div>
       
 
       {/* Navigation */}
