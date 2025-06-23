@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Table from "../../../../shared/components/table/Table";
-import ExpandableRow from "../../../../components/colegio/proceso/paginaBuscar/InstanciaExpandable";
-import FiltrosProcesos from "../../../../components/colegio/proceso/paginaBuscar/FiltrosInstancia"
+import ExpandableRow from "../../components/ExpandableRow";
+import FiltrosProcesos from "../../components/FiltrosInstancia"
 
 const PaginaBuscarInstanciaDeProceso = () => {
   const [instancias, setInstancias] = useState([]);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Table from "../../../../shared/components/table/Table";
 import ExpandableRow from "../../../../shared/components/expandableRow/ExpandableRow";
-import FiltrosPersonas from "../../../../components/colegio/paginaBuscar/FiltrosElectores";
+import FiltrosPersonas from "../../components/FiltrosElectores";
 
 const PaginaBuscarElectores = () => {
   const [electores, setElectores] = useState([]);

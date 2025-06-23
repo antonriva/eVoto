@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import TimerRedirect from "../../../../components/externos/TimerRefresher";
+import TimerRedirect from "../../../../shared/components/timerRefresher/TimerRefresher";
 
 const InstanciaEditar = () => {
   const { id } = useParams(); // Obtiene el ID de la instancia desde la URL

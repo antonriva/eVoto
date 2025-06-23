@@ -4,7 +4,7 @@ import Table from "../../../shared/components/table/Table";
 import ExpandableRow from "../components/identidadExpandableRow/IdentidadExpandableRow";
 import GenericFilterForm from "../../../shared/components/filterForm/FilterForm";
 import { createPersonasFilterConfig } from "../config/personasFilterConfig";
-import TimerRedirect from "../../../components/externos/TimerRefresher";
+import TimerRedirect from "../../../shared/components/timerRefresher/TimerRefresher";
 import { useBuscarPersonas } from "../hooks/useBuscarPersonas";
 
 const PaginaBuscar = () => {

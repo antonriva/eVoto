@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import FiltrosPersonas from "../../paginaBuscar/FiltrosElectores";
+import FiltrosPersonas from "./FiltrosElectores";
 
 
 const ModalBuscarElector = ({ onSelect }) => {

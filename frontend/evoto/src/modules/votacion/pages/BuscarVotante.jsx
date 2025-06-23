@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ModalBuscarElector from "../../components/colegio/proceso/paginaBuscar/ModalBuscarElector";
+import ModalBuscarElector from "../../admin/components/ModalBuscarElector";
 
 const RegistroCandidaturaYElector = () => {
 

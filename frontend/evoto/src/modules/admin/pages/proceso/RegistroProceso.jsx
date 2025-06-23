@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import TimerRedirect from "../../../../components/externos/TimerRefresher";
+import TimerRedirect from "../../../../shared/components/timerRefresher/TimerRefresher";
 
 
 const RegistroProceso = () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ModalBuscarElector from "./ModalBuscarElector";
+import ModalBuscarElector from "../../components/ModalBuscarElector";
 import { useParams } from "react-router-dom";
 
 const RegistroCandidaturaYElector = () => {

@@ -1,11 +1,11 @@
 import { Routes, Route } from "react-router-dom";
 import AppLayout from "../shared/layouts/AppLayout";
-import Home from "../paginas/home/Home"; // Import the Home component
+import Home from "../pages/home/Home"; // Import the Home component
 
 // Páginas de cada aplicación
 import AppIdentidad from "../modules/identidad/index"; // Import the AppCivil component
 import AppAdmin from "../modules/admin/index"
-import AppVotante from "../pages/votante/AppVotante";
+import AppVotante from "../modules/votacion/pages/AppVotante";
 
 const AppRoutes = () => {
   return (
