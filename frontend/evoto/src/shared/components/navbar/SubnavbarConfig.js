@@ -1,10 +1,10 @@
-import CivilNavbar from "../rComponents/CivilNavbar"; // Import CivilNavbar
+import IdentidadNavbar from "../../../modules/identidad/components/identidadSubNavbar/IdentidadNavbar"; // Import CivilNavbar
 //import ColegioNavbar from "../rComponents/ColegioNavbar"; // Import ColegioNavbar
 //import VotanteNavbar from "../rComponents/VotanteNavbar"; // Import VotanteNavbar
 
 // Mapping object for subnav bars
 export const subnavbarMap = {
-  "/civil": CivilNavbar,
+  "/civil": IdentidadNavbar,
 //  "/colegio": ColegioNavbar,
  // "/votante": VotanteNavbar,
 };

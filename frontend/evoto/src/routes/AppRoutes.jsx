@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import AppLayout from "../layouts/AppLayout";
+import AppLayout from "../shared/layouts/AppLayout";
 import Home from "../paginas/home/Home"; // Import the Home component
 
 // Páginas de cada aplicación

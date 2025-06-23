@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ModalBuscar from './ModalBuscarPersona';
+import ModalBuscar from '../../../../modules/identidad/components/modalBuscarPersona/ModalBuscarPersona';
 import { Modal, Button} from 'react-bootstrap';
 
 const ElectorRegistro = () => {

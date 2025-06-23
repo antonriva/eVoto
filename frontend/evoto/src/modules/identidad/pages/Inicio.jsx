@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Inicio = () => {
   return (
-    <div style={{ backgroundColor: "#f8f9fa", minHeight: "100vh", padding: "20px" }}>
+    <div>
       {/* Header */}
       <header className="mb-4 text-center">
         <h1 className="display-4 text-primary">Registro Civil</h1>
