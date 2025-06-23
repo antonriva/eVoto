@@ -1,6 +1,7 @@
 import React from "react";
 import Breadcrumbs from "../../../shared/components/breadcrumbs/Breadcrumbs";
-import { Link } from "react-router-dom";
+import CardLink from "../../../shared/components/cardLink/CardLink";
+import "../../../shared/layouts/AppLayout.css"; // Import global styles
 
 
 
@@ -13,7 +14,7 @@ const Inicio = () => {
 
   return (
     <div>
-      <div className="container mt-3">
+      <div className="app-layout-container">
       {/* Breadcrumb */}
         <Breadcrumbs items={breadcrumbItems} />
 
@@ -21,33 +22,33 @@ const Inicio = () => {
         <header className="mb-4 ">
           <h1 className="display-4 fw-bold text-dark">Registro civil</h1>
           <p className="lead">
-            Plataforma para la visualización, registro y edición de personas
+            Plataforma para la búsqueda, registro y edición de personas
           </p>
         </header>
       </div>
       
 
       {/* Navigation */}
-      <div className="container">
-        <div className="row justify-content-center mb-4">
-        <div className="col-md-4">
-            <Link to="/" className="btn btn-outline-secondary btn-block mb-2">
-              Menú Principal
-            </Link>
+
+      <div className="card-wrapper">
+          <div className="card-column">
+            <CardLink
+              to="buscar"
+              icon="🔍"
+              title="67"
+              subtitle="Buscar persona"
+            />
           </div>
-          <div className="col-md-4">
-            <Link to="buscar" className="btn btn-outline-primary btn-block mb-2">
-              Buscar Personas
-            </Link>
-          </div>
-          <div className="col-md-4">
-            <Link to="registro" className="btn btn-outline-success btn-block mb-2">
-              Registrar Persona
-            </Link>
+          <div className="col-md-5">
+            <CardLink
+              to="registro"
+              icon="📝"
+              title="5780"
+              subtitle="Registrar persona"
+            />
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

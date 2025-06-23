@@ -1,0 +1,52 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+.app-layout-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+.app-main {
+    flex: 1;
+    padding-bottom: 2rem; /* space before footer */
+  }
+
+.app-layout-container {
+    max-width: 1200px;
+    padding-left: 64px;
+    padding-right: 40px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  @media (max-width: 768px) {
+    .app-layout-container {
+      padding-left: 24px;
+      padding-right: 16px;
+    }
+  }
+  
+  .card-wrapper {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem; /* acts like container side padding */
+  }
+  
+  .card-wrapper > * {
+    flex: 1 1 400px; /* each card grows but caps at 400px */
+    max-width: 500px;
+  }
+  
+  .card-column {
+    flex: 1 1 45%;
+    max-width: 500px;
+  }

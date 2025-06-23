@@ -1,8 +1,6 @@
 .navbar-custom {
     background-color: #611232; /* Color de fondo de la barra */
     height: 60px; /* Altura de la barra personalizada */
-    margin-left: -1%;
-    margin-right: -0.6%;
   }
   
   .navbar-brand-custom {
@@ -13,7 +11,6 @@
     height: 100%; /* Altura completa del contenedor de la barra */
     position: relative; /* Evita conflictos con otros elementos */
     z-index: 10; /* Asegura que esté frente a otros elementos */
-    margin-left: 12.45rem; /* Mover el logo hacia la derecha */
   }
   
   .navbar-logo {
@@ -22,12 +19,8 @@
     pointer-events: none; /* Evita que el logo bloquee clics */
   }
   
-  .navbar-nav-custom {
-    margin-left: 68%; /* Adjust this value to move all items to the left */
-  }
-  
   .nav-link-custom {
-    color: white; /* Color blanco sólido */
+    color: #ffffff; /* Color blanco sólido */
     text-decoration: none; /* Eliminar subrayado */
   }
   
@@ -39,7 +32,16 @@
     background-color: #A97E29; /* Color de fondo de la barra */
     color: white;
     height: 60px; /* Altura de la barra personalizada */
-    margin-left: -1%;
-    margin-right: -0.6%;
     padding: 0.5rem;
   }
+
+  .type-link {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem; /* Adjust based on your desired size */
+    font-weight: 400;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    display: inline-block;
+  }
+

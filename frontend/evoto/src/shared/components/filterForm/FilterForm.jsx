@@ -2,9 +2,8 @@
 import React, { useState, useEffect } from "react";
 
 const GenericFilterForm = ({ config, values, setValues }) => {
-  const { fields = [], onSearch } = config; // Add a fallback for fields
+  const { fields = [], onSearch } = config;
 
-  // Local copy of options for dependent selects
   const [optionsMap, setOptionsMap] = useState(
     fields.reduce((acc, f) => {
       if (f.type === "select") acc[f.name] = f.options || [];
@@ -12,10 +11,14 @@ const GenericFilterForm = ({ config, values, setValues }) => {
     }, {})
   );
 
-  // Load initial options for selects without dependencies
+  // Load initial options
   useEffect(() => {
     fields.forEach(f => {
-      if (f.type === "select" && !f.fetchOptionsOn) {
+      if (
+        f.type === "select" &&
+        !f.fetchOptionsOn &&
+        typeof f.fetchOptions === "function"
+      ) {
         f.fetchOptions().then(arr =>
           setOptionsMap(o => ({ ...o, [f.name]: arr }))
         );
@@ -27,9 +30,9 @@ const GenericFilterForm = ({ config, values, setValues }) => {
     const { name, value } = e.target;
     setValues(v => ({ ...v, [name]: value || null }));
 
-    // if other fields depend on this one, reload their options
+    // Fetch dependent select options
     fields
-      .filter(f => f.fetchOptionsOn === name)
+      .filter(f => f.fetchOptionsOn === name && typeof f.fetchOptions === "function")
       .forEach(f => {
         f.fetchOptions(value).then(arr =>
           setOptionsMap(o => ({ ...o, [f.name]: arr }))
@@ -47,7 +50,14 @@ const GenericFilterForm = ({ config, values, setValues }) => {
       {fields.map(f => (
         <div className="mb-2" key={f.name}>
           <label className="form-label">{f.label}</label>
-          {f.type === "text" ? (
+
+          {f.type === "custom" ? (
+            f.render({
+              value: values[f.name] || null,
+              onChange: (val) =>
+                setValues((prev) => ({ ...prev, [f.name]: val })),
+            })
+          ) : f.type === "text" ? (
             <input
               type="text"
               name={f.name}
@@ -73,10 +83,6 @@ const GenericFilterForm = ({ config, values, setValues }) => {
               ))}
             </select>
           )}
-          {console.log("Options Map for field:", f.name, optionsMap[f.name])}{" "}
-          {/* Log options map */}
-          {console.log("Values passed to FilterForm:", values)}{" "}
-          {/* Log values */}
         </div>
       ))}
 

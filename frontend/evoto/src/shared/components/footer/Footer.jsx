@@ -26,7 +26,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="text-center footer-small">
-          <small>© 2024 Gobierno de México. Todos los derechos reservados.</small>
+          <small>© 2025 Gobierno de México. Todos los derechos reservados.</small>
         </div>
       </div>
     </footer>

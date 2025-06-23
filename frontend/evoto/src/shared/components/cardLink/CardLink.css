@@ -1,0 +1,42 @@
+.custom-card {
+    background: linear-gradient(90deg, #981c44, #6a0d2e);
+    border-radius: 16px;
+    padding: 20px 30px;
+    color: white;
+    height: 120px;
+    transition: transform 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .custom-card:hover {
+    transform: translateY(-3px);
+  }
+  
+  .card-number {
+    font-size: 2.2rem;
+    font-weight: 700;
+  }
+  
+  .card-label {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+  
+  .card-arrow {
+    width: 50px;
+    height: 100%;
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .cardlink-wrapper {
+    margin-bottom: 16px;
+  }
+  

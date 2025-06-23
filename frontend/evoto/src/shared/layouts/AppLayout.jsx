@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Footer from "../../shared/components/footer/Footer"; // Importa el pie de página
 import AppNavbar from "../../shared/components/navbar/AppNavbar"; // Import the new AppNavbar component
 import { getActiveSubNavbar } from "../components/navbar/SubnavbarConfig"; // Import the logic for subnavbars
+import "./AppLayout.css"; // Import global styles for the layout
 
 const AppLayout = () => {
   const location = useLocation(); // Detectar la ruta actual
@@ -11,7 +12,7 @@ const AppLayout = () => {
   const SubNavbarComponent = getActiveSubNavbar(currentPath);
 
   return (
-    <div className="container-fluid">
+    <div className="app-layout-wrapper">
       {/* Navbar */}
       <AppNavbar />
 
@@ -19,7 +20,7 @@ const AppLayout = () => {
       {SubNavbarComponent && <SubNavbarComponent />}
 
       {/* Contenido principal */}
-      <main>
+      <main className="app-main">
         <Outlet />
       </main>
       <Footer />
