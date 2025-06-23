@@ -73,6 +73,10 @@ const GenericFilterForm = ({ config, values, setValues }) => {
               ))}
             </select>
           )}
+          {console.log("Options Map for field:", f.name, optionsMap[f.name])}{" "}
+          {/* Log options map */}
+          {console.log("Values passed to FilterForm:", values)}{" "}
+          {/* Log values */}
         </div>
       ))}
 

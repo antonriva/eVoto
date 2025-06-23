@@ -26,9 +26,26 @@
   text-align: center; /* Centrar el contenido */
 }
 
+.card-icon-wrapper {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon-wrapper-online {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .card-icon {
-  width: 200px; /* Tamaño reducido para ajustarse al diseño */
-  height: 120px; /* Mantener proporciones */
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .card-title-custom {

@@ -20,22 +20,19 @@ const Home = () => {
           <div className="col-md-4">
             <div className="card shadow-sm card-custom">
               <div className="card-body card-body-custom">
-                <img
-                  src="https://www.gob.mx/cms/uploads/image/file/487050/01_Identidad_dorado_2.png"
-                  alt="Registro Civil"
-                  className="mb-3 card-icon"
-                />
+                <div className="card-icon-wrapper-online">
+                  <img
+                    src="https://www.gob.mx/cms/uploads/image/file/487050/01_Identidad_dorado_2.png"
+                    alt="Registro Civil"
+                    className="card-icon"
+                  />
+                </div>
                 <h5 className="card-title card-title-custom">
                   <Link to="/civil">Registro Civil</Link>
                 </h5>
-                <ul className="list-unstyled card-options">
-                  <li>
-                    <Link to="/civil/buscar">Búsqueda</Link>
-                  </li>
-                  <li>
-                    <Link to="/civil/registro">Registro</Link>
-                  </li>
-                </ul>
+                <p className="card-text text-justify mb-3">
+                  Realiza búsquedas, edición y nuevos registros de personas de manera sencilla
+                </p>
               </div>
             </div>
           </div>
@@ -44,11 +41,13 @@ const Home = () => {
           <div className="col-md-4">
             <div className="card shadow-sm card-custom">
               <div className="card-body card-body-custom">
-                <img
-                  src="/visuales/insti.png"
-                  alt="Colegio Electoral"
-                  className="mb-3 card-icon"
-                />
+                <div className="card-icon-wrapper">
+                  <img
+                    src="/visuales/insti.png"
+                    alt="Colegio Electoral"
+                    className="card-icon"
+                  />
+                </div>
                 <h5 className="card-title card-title-custom">
                   <Link to="/colegio">Colegio Electoral</Link>
                 </h5>
@@ -68,11 +67,13 @@ const Home = () => {
           <div className="col-md-4">
             <div className="card shadow-sm card-custom">
               <div className="card-body card-body-custom">
-                <img
-                  src="/visuales/boleta.png"
-                  alt="Votante"
-                  className="mb-3 card-icon"
-                />
+                <div className="card-icon-wrapper">
+                  <img
+                    src="/visuales/boleta.png"
+                    alt="Votante"
+                    className="card-icon"
+                  />
+                </div>
                 <h5 className="card-title card-title-custom">
                   <Link to="/votante">Votante</Link>
                 </h5>

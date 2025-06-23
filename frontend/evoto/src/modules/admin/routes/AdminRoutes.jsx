@@ -8,7 +8,7 @@ import ResultadosPag from "../pages/ResultadosPag"; // Correct path
 // Partido
 import SistemaP from "../pages/SistemaP"; // Correct path
 import PartidosP from "../pages/agrupacion/PartidosP"; // Correct path
-import BuscarPartidoP from "../pages/agrupacion/BuscarPartidoP"; // Correct path
+import BuscarPartidoP from "../pages/agrupacion/BuscarPartido"; // Correct path
 import EditarPartidoP from "../pages/agrupacion/EditarPartido"; // Correct path
 import RegistroPartidoP from "../pages/agrupacion/RegistroPartidoP"; // Correct path
 
