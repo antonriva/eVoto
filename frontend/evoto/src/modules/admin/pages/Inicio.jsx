@@ -30,15 +30,6 @@ const Inicio = () => {
             </div>
             <div className="col-md-3">
               <Link
-                to="about"
-                onClick={() => handleMenuToggle("about")}
-                className="btn btn-outline-info btn-block mb-2"
-              >
-                Acerca del Colegio Electoral
-              </Link>
-            </div>
-            <div className="col-md-3">
-              <Link
                 to="sistema"
                 onClick={() => handleMenuToggle("sistema")}
                 className="btn btn-outline-primary btn-block mb-2"
