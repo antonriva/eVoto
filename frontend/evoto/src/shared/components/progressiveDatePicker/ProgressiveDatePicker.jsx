@@ -23,13 +23,13 @@ const ProgressiveDatePicker = ({ value, onChange }) => {
 
   useEffect(() => {
     if (year && month && day) {
-      onChange(new Date(year, month - 1, day));
+      onChange(new Date(year, month - 1, day), "completa");
     } else if (year && month) {
-      onChange(new Date(year, month - 1));
+      onChange(new Date(year, month - 1), "anio-mes");
     } else if (year) {
-      onChange(new Date(year, 0));
+      onChange(new Date(year, 0), "anio");
     } else {
-      onChange(null);
+      onChange(null, null);
     }
   }, [year, month, day]);
 

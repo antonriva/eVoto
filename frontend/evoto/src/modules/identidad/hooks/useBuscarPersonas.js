@@ -5,27 +5,50 @@ export function useBuscarPersonas(initialFilters = {}) {
   const [filtros, setFiltros] = useState(initialFilters);
   const [error, setError] = useState("");
 
-  const formatFilters = (filters) =>
-    Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== ""));
+  const formatFilters = (filters) => {
+    const clean = {};
+  
+    const gran = filters.granularidadNacimiento || "completa";
+  
+    for (const [key, value] of Object.entries(filters)) {
+      if (value === null || value === "" || value === "null") continue;
+  
+      if (key === "fechaNacimiento" && value instanceof Date && !isNaN(value)) {
+        clean.anioNacimiento = value.getFullYear().toString();
+  
+        if (gran === "anio-mes" || gran === "completa") {
+          clean.mesNacimiento = (value.getMonth() + 1).toString().padStart(2, "0");
+        }
+  
+        if (gran === "completa") {
+          clean.diaNacimiento = value.getDate().toString().padStart(2, "0");
+        }
+      } else if (key !== "granularidadNacimiento") {
+        clean[key] = value;
+      }
+    }
+  
+    return clean;
+  };
+  
+
   const cleanEmpty = (obj) =>
     Object.fromEntries(
       Object.entries(obj).filter(
         ([_, v]) => v !== null && v !== "" && v !== "null"
       )
     );
-    
+
     const fetchPersonas = async (params = {}) => {
       try {
         // 💡 Clean filters before sending
-        const cleanEmpty = (obj) =>
-          Object.fromEntries(
-            Object.entries(obj).filter(
-              ([_, v]) => v !== null && v !== "" && v !== "null"
-            )
-          );
-    
-        const cleanedParams = cleanEmpty(params);
+
+        const formattedParams = formatFilters(params);
+        console.log("Formatted Filters:", formattedParams);
+        const cleanedParams = cleanEmpty(formattedParams);
         const query = new URLSearchParams(cleanedParams).toString();
+
+        console.log("🌐 Final URL:", `/api/personas?${query}`);
     
         const res = await fetch(`${import.meta.env.VITE_API_URL}/persona/buscar?${query}`);
         if (!res.ok) throw new Error("Error al cargar personas.");

@@ -81,19 +81,33 @@ const PaginaBuscar = () => {
       <div className="app-layout-container">
         <Breadcrumbs items={breadcrumbItems} />
       
-        <h1>Catálogo de Personas</h1>
-        
-        <GenericFilterForm
-          config={identidadFilterConfig}
-          values={filtros}
-          setValues={setFiltros}
-        />
+        <h1 className="text-center">Catálogo de Personas</h1>
+        <div className="row mb-4 gx-3 align-items-stretch">
+          <div className="col-md-6 d-flex">
+            <div className="card p-3 w-100 h-100">
+              <h5 className="mb-3 text-center">Identidad</h5>
+              <GenericFilterForm
+                config={identidadFilterConfig}
+                values={filtros}
+                setValues={setFiltros}
+              />
+            </div>
+          </div>
 
-        <GenericFilterForm
-          config={domicilioFilterConfig}
-          values={filtros}
-          setValues={setFiltros}
-        />
+          <div className="col-md-6 d-flex">
+            <div className="card p-3 w-100 h-100">
+              <h5 className="mb-3 text-center">Domicilio</h5>
+              <GenericFilterForm
+                config={domicilioFilterConfig}
+                values={filtros}
+                setValues={setFiltros}
+              />
+            </div>
+          </div>
+
+        </div>
+
+
 
         <Table
           headers={personasTableHeaders}

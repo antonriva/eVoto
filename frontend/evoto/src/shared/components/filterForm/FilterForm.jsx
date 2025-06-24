@@ -1,5 +1,6 @@
 // src/shared/components/GenericFilterForm.jsx
 import React, { useState, useEffect } from "react";
+import "./FilterForm.css"; // Import your CSS styles
 
 const GenericFilterForm = ({ config, values, setValues }) => {
   const { fields = [], onSearch } = config;
@@ -43,20 +44,31 @@ const GenericFilterForm = ({ config, values, setValues }) => {
       .trimStart()                                 // Remove leading and trailing spaces
     };
 
+    const normalizeOthers = (input) => {
+      return input
+        .toUpperCase()
+        .normalize("NFD")                             // Normalize accented characters
+        .replace(/[^A-ZÑ\s]/g, "")             // Allow only letters and spaces
+        .replace(/\s+/g, "")                        // Collapse multiple spaces
+        .trimStart()                                 // Remove leading and trailing spaces
+      };
+
   const handleChange = async (e) => {
     const { name, value } = e.target;
+    
+    const field = fields.find(f => f.name === name); // ✅ Find field config
 
     let transformedValue;
-
-    if (name === "id") {
-      // Only digits for ID
-      transformedValue = value.replace(/[^0-9]/g, "");
-    } else if (name === "nombre") {
-      // Normalize Spanish name for "nombre"
-      transformedValue = normalizeSpanishName(value);
+    if (field?.type === "select") {
+      transformedValue = value;
     } else {
-      // Restrict other text inputs to a single word (no spaces)
-      transformedValue = value.replace(/\s/g, "").toUpperCase(); // Remove spaces and convert to uppercase
+      const transformers = {
+        id: (v) => v.replace(/[^0-9]/g, ""),
+        nombre: normalizeSpanishName,
+        default: normalizeOthers,
+      };
+      const transform = transformers[name] || transformers.default;
+      transformedValue = transform(value);
     }
 
     setValues((v) => ({ ...v, [name]: transformedValue || null }));
@@ -82,9 +94,11 @@ const GenericFilterForm = ({ config, values, setValues }) => {
     onSearch(cleanedEmpty);
   };
 
+  const visibleFields = fields.filter(f => f.type !== "hidden");
+
   return (
     <form onSubmit={handleSubmit} className="mb-4">
-      {fields.map(f => (
+      {visibleFields.map(f => (
         <div className="mb-2" key={f.name}>
           <label className="form-label">{f.label}</label>
 
@@ -93,6 +107,8 @@ const GenericFilterForm = ({ config, values, setValues }) => {
               value: values[f.name] || null,
               onChange: (val) =>
                 setValues((prev) => ({ ...prev, [f.name]: val })),
+              setValues,
+              values
             })
           ) : f.type === "text" ? (
             <input
@@ -126,10 +142,17 @@ const GenericFilterForm = ({ config, values, setValues }) => {
           )}
         </div>
       ))}
+      <div className="mb-3">
+        <small className="form-text text-muted">
+          Los filtros son opcionales. Puedes dejar los campos vacíos.
+        </small>
+      </div>
+      <div className="mb-3 text-center">
+        <button type="submit" className="btn btn-vino">
+          Buscar
+        </button>
+      </div>
 
-      <button type="submit" className="btn btn-primary">
-        Buscar
-      </button>
     </form>
   );
 };
