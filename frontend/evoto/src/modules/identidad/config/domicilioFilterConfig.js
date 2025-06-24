@@ -2,9 +2,11 @@
 export const createDomicilioFilterConfig = ({
     entidades,
     municipios,
+    //colonias,
     localidades,
     tiposDeDomicilio,
     fetchMunicipios,
+    //fetchColonias,
     fetchLocalidades,
     onSearch
   }) => ({
@@ -32,6 +34,14 @@ export const createDomicilioFilterConfig = ({
         fetchOptionsOn: "municipio",
         fetchOptions: fetchLocalidades
       },
+      /*{
+        name: "colonia",
+        label: "Colonia",
+        type: "select",
+        options: colonias,
+        fetchOptionsOn: "municipio",
+        fetchOptions: fetchColonias
+      },*/
       {
         name: "tipoDeDomicilio",
         label: "Tipo de Domicilio",

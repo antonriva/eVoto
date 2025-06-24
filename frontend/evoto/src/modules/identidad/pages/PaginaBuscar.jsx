@@ -8,7 +8,7 @@ import { useBuscarPersonas } from "../hooks/useBuscarPersonas";
 import { usePersonasActions } from "../hooks/usePersonasActions"; // Import usePersonasActions
 import { personasTableHeaders } from "../config/personasTableConfig";
 import { useUbicaciones } from "../hooks/useUbicaciones"; // Import useUbicaciones
-import { createIdentidadFilterConfig } from "../config/identidadFilterConfig";
+import  createIdentidadFilterConfig  from "../config/identidadFilterConfig";
 import { createDomicilioFilterConfig } from "../config/domicilioFilterConfig";
 
 
@@ -32,9 +32,11 @@ const PaginaBuscar = () => {
     entidades,
     municipios,
     localidades,
+    //colonias,
     tiposDeDomicilio,
     fetchMunicipios,
     fetchLocalidades,
+    //fetchColonias
   } = useUbicaciones();
 
     // Create filter configuration using createPersonasFilterConfig
@@ -49,9 +51,11 @@ const PaginaBuscar = () => {
       entidades,
       municipios,
       localidades,
+      //colonias,
       tiposDeDomicilio,
       fetchMunicipios,
       fetchLocalidades,
+      //fetchColonias,
       onSearch: (vals) => {
         setFiltros(prev => ({ ...prev, ...vals }));
         fetchPersonas({ ...filtros, ...vals });

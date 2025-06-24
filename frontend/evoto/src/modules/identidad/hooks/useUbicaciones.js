@@ -5,7 +5,7 @@ export const useUbicaciones = () => {
   const [entidades, setEntidades] = useState([]);
   const [municipios, setMunicipios] = useState([]);
   const [localidades, setLocalidades] = useState([]);
-  const [colonias, setColonias] = useState([]);
+  //const [colonias, setColonias] = useState([]);
   const [tiposDeDomicilio, setTiposDeDomicilio] = useState([]);
 
   // Fetch entidades and tipos on mount
@@ -30,7 +30,7 @@ export const useUbicaciones = () => {
       const data = await res.json();
       setMunicipios(data);
       setLocalidades([]); // reset dependents
-      setColonias([]);
+      //setColonias([]);
       return data;
     } catch (err) {
       console.error("Error al cargar municipios:", err);
@@ -50,7 +50,7 @@ export const useUbicaciones = () => {
       return [];
     }
   };
-
+/*
   const fetchColonias = async (municipioId) => {
     try {
       if (!municipioId) return [];
@@ -63,7 +63,7 @@ export const useUbicaciones = () => {
       return [];
     }
   };
-
+*/
   const fetchTiposDeDomicilio = async () => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/tipoDeDomicilio`);
@@ -77,10 +77,10 @@ export const useUbicaciones = () => {
     entidades,
     municipios,
     localidades,
-    colonias,
+    //colonias,
     tiposDeDomicilio,
     fetchMunicipios,
-    fetchLocalidades,
-    fetchColonias,
+    fetchLocalidades
+    //fetchColonias,
   };
 };
