@@ -1,6 +1,6 @@
 // src/shared/components/GenericFilterForm.jsx
 import React, { useState, useEffect } from "react";
-import "./FilterForm.css"; // Import your CSS styles
+import "../../../shared/styles/Buttons.css"; // Import your CSS styles
 
 const GenericFilterForm = ({ config, values, setValues }) => {
   const { fields = [], onSearch } = config;

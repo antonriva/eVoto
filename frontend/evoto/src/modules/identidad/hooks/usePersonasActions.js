@@ -7,7 +7,7 @@ export const usePersonasActions = (setPersonas) => {
   const fetchDomicilios = useCallback(async (id) => {
     try {
       const res = await fetch(`${apiBase}/persona/${id}/detalles-domicilios`);
-      if (!res.ok) throw new Error(`Error al obtener domicilios para ID ${id}`);
+      if (!res.ok) throw new Error(`No se pudieron obtener los domicilios para ID ${id}`);
       return await res.json();
     } catch (err) {
       console.error(err);
@@ -16,26 +16,21 @@ export const usePersonasActions = (setPersonas) => {
   }, [apiBase]);
 
   const eliminarPersona = useCallback(async (id) => {
-    const confirmar = window.confirm("¿Estás seguro de que deseas eliminar esta persona?");
-    if (!confirmar) return;
-
     try {
-      const res = await fetch(`${apiBase}/persona/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(`${apiBase}/persona/${id}`, { method: "DELETE" });
 
       if (res.ok) {
-        alert("Persona eliminada correctamente.");
         setPersonas(prev => prev.filter(p => p.id !== id));
+        return { success: true };
       } else {
         const msg = await res.text();
-        if (res.status === 404) alert(`No existe la persona con ID ${id}.`);
-        else if (res.status === 409) alert(`Error: ${msg}`);
-        else alert(`Error inesperado: ${msg}`);
+        if (res.status === 404) return { success: false, error: `No existe la persona con ID ${id}.` };
+        if (res.status === 409) return { success: false, error: `Cuidado: ${msg}` };
+        return { success: false, error: `Alerta inesperada: ${msg}` };
       }
     } catch (err) {
       console.error(err);
-      alert("Error al eliminar. Inténtalo nuevamente.");
+      return { success: false, error: "No se pudo eliminar. Inténtalo nuevamente." };
     }
   }, [apiBase, setPersonas]);
 

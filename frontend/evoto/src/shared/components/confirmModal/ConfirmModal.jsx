@@ -10,7 +10,7 @@ const ConfirmModal = ({
   body = "Esta acción no se puede deshacer.",
   confirmText = "Confirmar",
   cancelText = "Cancelar",
-  loading = false,
+  loading = false
 }) => {
   return (
     <Modal show={show} onHide={onHide} centered backdrop="static">
@@ -19,7 +19,7 @@ const ConfirmModal = ({
       </Modal.Header>
 
       <Modal.Body>
-        <p>{body}</p>
+      <p>{body}</p>
       </Modal.Body>
 
       <Modal.Footer>

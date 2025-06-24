@@ -4,6 +4,7 @@ export function useBuscarPersonas(initialFilters = {}) {
   const [personas, setPersonas] = useState([]);
   const [filtros, setFiltros] = useState(initialFilters);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // ✅ Add this
 
   const formatFilters = (filters) => {
     const clean = {};
@@ -40,6 +41,7 @@ export function useBuscarPersonas(initialFilters = {}) {
     );
 
     const fetchPersonas = async (params = {}) => {
+      setIsLoading(true); // ✅ Start loading
       try {
         // 💡 Clean filters before sending
 
@@ -51,7 +53,7 @@ export function useBuscarPersonas(initialFilters = {}) {
         console.log("🌐 Final URL:", `/api/personas?${query}`);
     
         const res = await fetch(`${import.meta.env.VITE_API_URL}/persona/buscar?${query}`);
-        if (!res.ok) throw new Error("Error al cargar personas.");
+        if (!res.ok) throw new Error("No se pudieron las cargar personas.");
     
         const data = await res.json();
     
@@ -65,7 +67,9 @@ export function useBuscarPersonas(initialFilters = {}) {
         setError("");
       } catch (err) {
         console.error(err);
-        setError("Error al cargar personas. Inténtalo de nuevo.");
+        setError("No se pudieron cargar las personas. Inténtalo de nuevo.");
+      } finally {
+        setIsLoading(false); // ✅ Stop loading
       }
     };
     
@@ -81,5 +85,6 @@ export function useBuscarPersonas(initialFilters = {}) {
     setFiltros,
     fetchPersonas,
     error,
+    isLoading, // ✅ Return loading state
   };
 }

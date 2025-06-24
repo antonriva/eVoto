@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 //shared
 import Table from "../../../shared/components/table/Table";
@@ -6,6 +6,9 @@ import TimerRedirect from "../../../shared/components/timerRefresher/TimerRefres
 import GenericFilterForm from "../../../shared/components/filterForm/FilterForm";
 import Breadcrumbs from "../../../shared/components/breadcrumbs/Breadcrumbs";
 import "../../../shared/layouts/AppLayout.css"; 
+import {useConfirmDialog} from "../../../shared/hooks/useConfirmDialog";
+import ConfirmModal from "../../../shared/components/confirmModal/ConfirmModal";
+import ToastMessage from "../../../shared/components/toastMessage/ToastMessage";
 
 //identidad/components
 import ExpandableRow from "../components/identidadExpandableRow/IdentidadExpandableRow";
@@ -21,6 +24,7 @@ import { createDomicilioFilterConfig } from "../config/domicilioFilterConfig";
 
 
 const PaginaBuscar = () => {
+
   const navigate = useNavigate();
   const {
     personas,
@@ -28,11 +32,39 @@ const PaginaBuscar = () => {
     filtros,
     setFiltros,
     fetchPersonas,
+    isLoading,
     error,
   } = useBuscarPersonas();
 
   // Use the usePersonasActions hook
   const { fetchDomicilios, eliminarPersona } = usePersonasActions(setPersonas);
+
+  const [toast, setToast] = useState({ show: false, message: "", variant: "success" });
+
+  const showToast = (message, variant = "success") => {
+    setToast({ show: true, message, variant });
+  };
+
+  const hideToast = () => setToast(prev => ({ ...prev, show: false }));
+
+  const confirmDelete = useConfirmDialog();
+  
+  const handleDeleteConfirm = async () => {
+    confirmDelete.setLoading(true);
+    try {
+      const result = await eliminarPersona(confirmDelete.payload);
+      if (result.success) {
+        showToast("Persona eliminada correctamente", "success");
+        confirmDelete.close();
+      } else {
+        showToast(result.error || "Error al eliminar", "danger");
+      }
+    } catch (err) {
+      showToast(err.message || "Error inesperado", "danger");
+    } finally {
+      confirmDelete.setLoading(false);
+    }
+  };
 
   // Use the useUbicaciones hook to get location-related data
   const {
@@ -114,6 +146,8 @@ const PaginaBuscar = () => {
         <Table
           headers={personasTableHeaders}
           data={personas}
+          isLoading={isLoading} // ✅ Show spinner while loading
+          error={error}         // ✅ Show any backend error
           renderRow={(p) => (
             <ExpandableRow
               key={p.id}
@@ -129,10 +163,35 @@ const PaginaBuscar = () => {
               fetchDomicilios={() => fetchDomicilios(p.id)}
               colSpan={personasTableHeaders.length}
               onEdit={editarPersona}
-              onDelete={eliminarPersona}
+              onDelete={(id) => confirmDelete.open(id)}
             />
           )}
         />
+
+        <ConfirmModal
+          show={confirmDelete.isOpen}
+          onHide={confirmDelete.close}
+          onConfirm={handleDeleteConfirm}
+          body={`¿Estás seguro de eliminar a la persona con ID ${confirmDelete.payload}?`}
+          confirmText="Eliminar"
+          cancelText="Cancelar"
+          loading={confirmDelete.loading}
+        />
+        {toast.show && (
+          <div className="position-fixed bottom-0 end-0 p-3" style={{ zIndex: 1055 }}>
+            <div className={`toast align-items-center text-white bg-${toast.variant} border-0 show`} role="alert">
+              <div className="d-flex">
+                <div className="toast-body">{toast.message}</div>
+                <button
+                  type="button"
+                  className="btn-close btn-close-white me-2 m-auto"
+                  aria-label="Close"
+                  onClick={hideToast}
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

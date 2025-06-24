@@ -1,0 +1,48 @@
+button.btn-vino {
+    background-color: #611232;
+    color: white;
+    border: none;
+  }
+  
+button.btn-vino:hover {
+    background-color: #4a0e27;
+  }
+
+button.btn-outline-vino {
+color: #611232;
+border: 1.5px solid #611232;
+background-color: transparent;
+padding: 0.375rem 0.75rem;
+border-radius: 0.25rem;
+transition: all 0.2s ease-in-out;
+}
+
+button.btn-outline-vino:hover {
+background-color: #611232;
+color: white;
+border-color: #611232;
+}
+
+button.btn-outline-lightred {
+    color: #be1f19;
+    border: 1px solid #be1f19;
+    background-color: transparent;
+    transition: all 0.2s ease-in-out;
+  }
+  
+button.btn-outline-lightred:hover,
+button.btn-outline-lightred:focus {
+    background-color: #be1f19;
+    color: white;
+    border-color: #be1f19;
+}
+
+button.btn-outline-lightred:active {
+    background-color: #be1f19;
+    border-color: #be1f19;
+}
+
+button.btn-outline-lightred:disabled {
+    opacity: 0.65;
+    pointer-events: none;
+}

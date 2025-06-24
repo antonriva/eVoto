@@ -1,10 +1,10 @@
 export const personasTableHeaders = [
     "ID",
     "Nombre",
-    "Apellido Paterno",
-    "Apellido Materno",
-    "Fecha de Nacimiento",
-    "Fecha de Fin",
+    "Apellido paterno",
+    "Apellido materno",
+    "Fecha de nacimiento",
+    "Fecha de fin",
     "Domicilios",
     "Acciones"
   ];

@@ -6,7 +6,7 @@ const renderDomicilios = (domicilios) => (
   <table className="table table-sm">
     <thead>
       <tr>
-        <th>Entidad Federativa</th>
+        <th>Entidad federativa</th>
         <th>Municipio</th>
         <th>Localidad</th>
         <th>Colonia</th>
@@ -15,8 +15,8 @@ const renderDomicilios = (domicilios) => (
         <th>N° Interior</th>
         <th>Código Postal</th>
         <th>Tipo</th>
-        <th>Fecha Inicio</th>
-        <th>Fecha Fin</th>
+        <th>Fecha inicio</th>
+        <th>Fecha fin</th>
       </tr>
     </thead>
     <tbody>
