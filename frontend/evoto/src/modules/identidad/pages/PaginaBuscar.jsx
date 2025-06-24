@@ -39,11 +39,11 @@ const PaginaBuscar = () => {
     entidades,
     municipios,
     localidades,
-    //colonias,
+    colonias,
     tiposDeDomicilio,
     fetchMunicipios,
     fetchLocalidades,
-    //fetchColonias
+    fetchColonias
   } = useUbicaciones();
 
     // Create filter configuration using createPersonasFilterConfig
@@ -59,9 +59,11 @@ const PaginaBuscar = () => {
       entidades,
       municipios,
       localidades,
+      colonias,
       tiposDeDomicilio,
       fetchMunicipios,
       fetchLocalidades,
+      fetchColonias,
       onSearch: handleSearch
     });
 

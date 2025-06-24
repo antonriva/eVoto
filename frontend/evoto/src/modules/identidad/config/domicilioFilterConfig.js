@@ -2,18 +2,18 @@
 export const createDomicilioFilterConfig = ({
     entidades,
     municipios,
-    //colonias,
+    colonias,
     localidades,
     tiposDeDomicilio,
     fetchMunicipios,
-    //fetchColonias,
+    fetchColonias,
     fetchLocalidades,
     onSearch
   }) => ({
     fields: [
       {
         name: "entidadFederativa",
-        label: "Entidad Federativa",
+        label: "Entidad federativa",
         type: "select",
         options: entidades,
         fetchOptions: async () => entidades
@@ -34,17 +34,17 @@ export const createDomicilioFilterConfig = ({
         fetchOptionsOn: "municipio",
         fetchOptions: fetchLocalidades
       },
-      /*{
+      {
         name: "colonia",
         label: "Colonia",
         type: "select",
         options: colonias,
         fetchOptionsOn: "municipio",
         fetchOptions: fetchColonias
-      },*/
+      },
       {
         name: "tipoDeDomicilio",
-        label: "Tipo de Domicilio",
+        label: "Tipo de domicilio",
         type: "select",
         options: tiposDeDomicilio,
         fetchOptions: async () => tiposDeDomicilio

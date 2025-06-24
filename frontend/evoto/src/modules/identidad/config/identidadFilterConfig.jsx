@@ -4,11 +4,11 @@ export const createIdentidadFilterConfig = ({ onSearch }) => ({
   fields: [
     { name: "id", label: "ID", type: "text" },
     { name: "nombre", label: "Nombre", type: "text" },
-    { name: "apellidoPaterno", label: "Apellido Paterno", type: "text" },
-    { name: "apellidoMaterno", label: "Apellido Materno", type: "text" },
+    { name: "apellidoPaterno", label: "Apellido paterno", type: "text" },
+    { name: "apellidoMaterno", label: "Apellido materno", type: "text" },
     {
       name: "fechaNacimiento",
-      label: "Fecha de Nacimiento",
+      label: "Fecha de nacimiento",
       type: "custom",
       render: ({ value, onChange, setValues, values }) => (
         <ProgressiveDatePicker
