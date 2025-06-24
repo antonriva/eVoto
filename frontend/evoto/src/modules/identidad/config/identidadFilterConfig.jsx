@@ -1,4 +1,4 @@
-import DateSelector from "../../../shared/components/dateSelector/DateSelector";
+import ProgressiveDatePicker from "../../../shared/components/progressiveDatePicker/ProgressiveDatePicker";
 
 export const createIdentidadFilterConfig = ({ onSearch }) => ({
   fields: [
@@ -11,7 +11,7 @@ export const createIdentidadFilterConfig = ({ onSearch }) => ({
         label: "Fecha de Nacimiento",
         type: "custom",
         render: ({ value, onChange }) => (
-          <DateSelector value={value} onChange={onChange} />
+          <ProgressiveDatePicker value={value} onChange={onChange} />
         )
       }
   ],

@@ -1,13 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+//shared
 import Table from "../../../shared/components/table/Table";
-import ExpandableRow from "../components/identidadExpandableRow/IdentidadExpandableRow";
-import GenericFilterForm from "../../../shared/components/filterForm/FilterForm";
 import TimerRedirect from "../../../shared/components/timerRefresher/TimerRefresher";
+import GenericFilterForm from "../../../shared/components/filterForm/FilterForm";
+import Breadcrumbs from "../../../shared/components/breadcrumbs/Breadcrumbs";
+import "../../../shared/layouts/AppLayout.css"; 
+
+//identidad/components
+import ExpandableRow from "../components/identidadExpandableRow/IdentidadExpandableRow";
+//identidad/hooks
 import { useBuscarPersonas } from "../hooks/useBuscarPersonas";
-import { usePersonasActions } from "../hooks/usePersonasActions"; // Import usePersonasActions
+import { usePersonasActions } from "../hooks/usePersonasActions"; 
+import { useUbicaciones } from "../hooks/useUbicaciones"; 
+//identidad/config
 import { personasTableHeaders } from "../config/personasTableConfig";
-import { useUbicaciones } from "../hooks/useUbicaciones"; // Import useUbicaciones
 import  createIdentidadFilterConfig  from "../config/identidadFilterConfig";
 import { createDomicilioFilterConfig } from "../config/domicilioFilterConfig";
 
@@ -40,72 +47,77 @@ const PaginaBuscar = () => {
   } = useUbicaciones();
 
     // Create filter configuration using createPersonasFilterConfig
-    const identidadFilterConfig = createIdentidadFilterConfig({
-      onSearch: (vals) => {
-        setFiltros(prev => ({ ...prev, ...vals }));
-        fetchPersonas({ ...filtros, ...vals });
-      }
-    });
-    
+    const handleSearch = (partialFilters) => {
+      const merged = { ...filtros, ...partialFilters };
+      setFiltros(merged);
+      fetchPersonas(merged);
+    };
+
+    const identidadFilterConfig = createIdentidadFilterConfig({ onSearch: handleSearch });
+
     const domicilioFilterConfig = createDomicilioFilterConfig({
       entidades,
       municipios,
       localidades,
-      //colonias,
       tiposDeDomicilio,
       fetchMunicipios,
       fetchLocalidades,
-      //fetchColonias,
-      onSearch: (vals) => {
-        setFiltros(prev => ({ ...prev, ...vals }));
-        fetchPersonas({ ...filtros, ...vals });
-      }
+      onSearch: handleSearch
     });
+
 
   const editarPersona = (id) => {
     navigate(`editar/${id}`);
   };
 
+  const breadcrumbItems = [
+    { label: "Inicio", to: "/" },
+    { label: "Registro civil", to: "/civil" },
+    { label: "Buscar" }
+  ];
+
   return (
     <div>
-      <h1>Catálogo de Personas</h1>
-      <TimerRedirect />
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div className="app-layout-container">
+        <Breadcrumbs items={breadcrumbItems} />
       
-      <GenericFilterForm
-  config={identidadFilterConfig}
-  values={filtros}
-  setValues={setFiltros}
-/>
+        <h1>Catálogo de Personas</h1>
+        
+        <GenericFilterForm
+          config={identidadFilterConfig}
+          values={filtros}
+          setValues={setFiltros}
+        />
 
-<GenericFilterForm
-  config={domicilioFilterConfig}
-  values={filtros}
-  setValues={setFiltros}
-/>
+        <GenericFilterForm
+          config={domicilioFilterConfig}
+          values={filtros}
+          setValues={setFiltros}
+        />
 
-      <Table
-        headers={personasTableHeaders}
-        data={personas}
-        renderRow={(p) => (
-          <ExpandableRow
-            key={p.id}
-            idPersona={p.id}
-            rowData={[
-              p.id,
-              p.nombre,
-              p.apellidoPaterno,
-              p.apellidoMaterno,
-              p.fechaDeNacimiento,
-              p.fechaDeFin
-            ]}
-            fetchDomicilios={() => fetchDomicilios(p.id)}
-            colSpan={personasTableHeaders.length}
-            onEdit={editarPersona}
-            onDelete={eliminarPersona}
-          />
-        )}
-      />
+        <Table
+          headers={personasTableHeaders}
+          data={personas}
+          renderRow={(p) => (
+            <ExpandableRow
+              key={p.id}
+              idPersona={p.id}
+              rowData={[
+                p.id,
+                p.nombre,
+                p.apellidoPaterno,
+                p.apellidoMaterno,
+                p.fechaDeNacimiento,
+                p.fechaDeFin
+              ]}
+              fetchDomicilios={() => fetchDomicilios(p.id)}
+              colSpan={personasTableHeaders.length}
+              onEdit={editarPersona}
+              onDelete={eliminarPersona}
+            />
+          )}
+        />
+      </div>
     </div>
   );
 };

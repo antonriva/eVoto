@@ -29,31 +29,59 @@ public class PersonaSpecifications {
             id == null ? null : criteriaBuilder.equal(root.get("id"), id);
     }
 
+//    public static Specification<Persona> conNombre(String nombre) {
+//        return (root, query, criteriaBuilder) -> {
+//            if (nombre == null || nombre.isEmpty()) return null;
+//
+//            // Dividir el término de búsqueda en palabras
+//            String[] palabrasBusqueda = nombre.toLowerCase().split(" ");
+//
+//            // Construir condiciones LIKE que aseguren que las palabras comiencen con la letra buscada
+//            Predicate[] predicates = Arrays.stream(palabrasBusqueda)
+//                    .map(palabra -> criteriaBuilder.or(
+//                            // Primera palabra del nombre
+//                            criteriaBuilder.like(
+//                                    criteriaBuilder.lower(root.get("nombre")),
+//                                    palabra + "%"
+//                            ),
+//                            // Palabras después de un espacio
+//                            criteriaBuilder.like(
+//                                    criteriaBuilder.lower(root.get("nombre")),
+//                                    "% " + palabra + "%"
+//                            )
+//                    ))
+//                    .toArray(Predicate[]::new);
+//
+//            // Combinar las condiciones con OR
+//            return criteriaBuilder.or(predicates);
+//        };
+//    }
+    
     public static Specification<Persona> conNombre(String nombre) {
-        return (root, query, criteriaBuilder) -> {
-            if (nombre == null || nombre.isEmpty()) return null;
+        return (root, query, cb) -> {
+            if (nombre == null || nombre.trim().isEmpty()) return null;
 
-            // Dividir el término de búsqueda en palabras
-            String[] palabrasBusqueda = nombre.toLowerCase().split(" ");
+            String[] palabras = nombre.toLowerCase().trim().split("\\s+");
 
-            // Construir condiciones LIKE que aseguren que las palabras comiencen con la letra buscada
-            Predicate[] predicates = Arrays.stream(palabrasBusqueda)
-                    .map(palabra -> criteriaBuilder.or(
-                            // Primera palabra del nombre
-                            criteriaBuilder.like(
-                                    criteriaBuilder.lower(root.get("nombre")),
-                                    palabra + "%"
-                            ),
-                            // Palabras después de un espacio
-                            criteriaBuilder.like(
-                                    criteriaBuilder.lower(root.get("nombre")),
-                                    "% " + palabra + "%"
-                            )
-                    ))
-                    .toArray(Predicate[]::new);
+            // Caso: búsqueda progresiva
+            List<Predicate> predicates = new ArrayList<>();
+            for (String palabra : palabras) {
+                predicates.add(cb.like(
+                    cb.lower(root.get("nombre")),
+                    "%" + palabra + "%"
+                ));
+            }
 
-            // Combinar las condiciones con OR
-            return criteriaBuilder.or(predicates);
+            // Si se escribió todo el nombre completo, exigir que empiece exactamente con esa frase
+            if (palabras.length > 1) {
+                return cb.like(
+                    cb.lower(root.get("nombre")),
+                    nombre.toLowerCase() + "%"
+                );
+            }
+
+            // Si solo es una palabra, combinar por OR parcial
+            return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
 

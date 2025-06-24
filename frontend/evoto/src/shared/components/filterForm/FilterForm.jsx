@@ -26,11 +26,42 @@ const GenericFilterForm = ({ config, values, setValues }) => {
     });
   }, [fields]);
 
-  const handleChange = async e => {
-    const { name, value } = e.target;
-    setValues(v => ({ ...v, [name]: value || null }));
+  const cleanEmpty = (obj) =>
+    Object.fromEntries(
+      Object.entries(obj).filter(
+        ([_, v]) => v !== null && v !== "" && v !== "null"
+      )
+    );
+  
 
-    // Fetch dependent select options
+  const normalizeSpanishName = (input) => {
+    return input
+      .toUpperCase()
+      .normalize("NFD")                             // Normalize accented characters
+      .replace(/[^A-ZÑ\s]/g, "")             // Allow only letters and spaces
+      .replace(/\s+/g, " ")                        // Collapse multiple spaces
+      .trimStart()                                 // Remove leading and trailing spaces
+    };
+
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    let transformedValue;
+
+    if (name === "id") {
+      // Only digits for ID
+      transformedValue = value.replace(/[^0-9]/g, "");
+    } else if (name === "nombre") {
+      // Normalize Spanish name for "nombre"
+      transformedValue = normalizeSpanishName(value);
+    } else {
+      // Restrict other text inputs to a single word (no spaces)
+      transformedValue = value.replace(/\s/g, "").toUpperCase(); // Remove spaces and convert to uppercase
+    }
+
+    setValues((v) => ({ ...v, [name]: transformedValue || null }));
+
+    // Handle dynamic selects
     fields
       .filter(f => f.fetchOptionsOn === name && typeof f.fetchOptions === "function")
       .forEach(f => {
@@ -42,7 +73,13 @@ const GenericFilterForm = ({ config, values, setValues }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    onSearch(values);
+    const cleaned = Object.fromEntries(
+      Object.entries(values).map(([k, v]) => [k, typeof v === "string" ? v.trim() : v])
+    );
+    const cleanedEmpty = cleanEmpty(cleaned);
+    console.log("Submitted filters:", cleanedEmpty); // ✅ Add this line to log
+
+    onSearch(cleanedEmpty);
   };
 
   return (
@@ -64,8 +101,12 @@ const GenericFilterForm = ({ config, values, setValues }) => {
               className="form-control"
               value={values[f.name] || ""}
               onChange={handleChange}
-              pattern={f.validation?.pattern?.source}
-              title={f.validation?.title}
+              pattern={f.name === "id" ? "[0-9]*" : "[A-ZÑ\\s]*"} // Restrict input based on field name
+              title={
+                f.name === "id"
+                  ? "Solo se permiten números."
+                  : "Solo letras y espacios"
+              }
             />
           ) : (
             <select
