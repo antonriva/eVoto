@@ -227,8 +227,7 @@ public class PersonaController {
             if (personaExistente.isPresent() && !confirmar) {
                 Persona persona = personaExistente.get();
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                        "Ya existe una persona con estas características: ID " + persona.getId() + 
-                        ". Si desea continuar, añada el parámetro `confirmar=true`."
+                        "Ya existe una persona con estas características: ID " + persona.getId() 
                 );
             }
 

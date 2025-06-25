@@ -1,54 +1,48 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { useMenuVisibility } from "../hooks/useMenuVisibility";
+import Breadcrumbs from "../../../shared/components/breadcrumbs/Breadcrumbs";
+import CardLink from "../../../shared/components/cardLink/CardLink";
+import "../../../shared/layouts/AppLayout.css"; 
 
 const Inicio = () => {
-  const { menuVisible, handleMenuToggle } = useMenuVisibility();
+
+  const breadcrumbItems = [
+    { label: "Inicio", to: "/" },
+    { label: "Colegio electoral" }
+  ];
 
   return (
     <div>
+      <div className="app-layout-container">
+        {/* Breadcrumb */}
+        <Breadcrumbs items={breadcrumbItems} />
       {/* Header */}
-      <header className="mb-4 text-center">
-        <h1 className="display-4 text-primary">Colegio Electoral</h1>
+      <header className="mb-4">
+        <h1 className="display-4 fw-bold text-dark">Colegio electoral</h1>
         <p className="lead">
-          Sistema para el registro de candidatos, electores y gestión de votos.
-          Administra partidos, electores y procesos electorales.
+          Plataforma para la gestión electoral de principio a fin. Administra partidos, electores y procesos completos incluyendo candidatos y resultados
         </p>
       </header>
 
       {/* Navigation */}
-      {menuVisible && (
-        <div className="container mb-4">
-          <div className="row justify-content-center">
-            <div className="col-md-3">
-              <Link
-                to="/"
-                className="btn btn-outline-secondary btn-block mb-2"
-              >
-                Menú Principal
-              </Link>
-            </div>
-            <div className="col-md-3">
-              <Link
-                to="sistema"
-                onClick={() => handleMenuToggle("sistema")}
-                className="btn btn-outline-primary btn-block mb-2"
-              >
-                Sistema Electoral
-              </Link>
-            </div>
-            <div className="col-md-3">
-              <Link
-                to="proceso"
-                onClick={() => handleMenuToggle("proceso")}
-                className="btn btn-outline-success btn-block mb-2"
-              >
-                Proceso Electoral
-              </Link>
-            </div>
+      <div className="card-wrapper">
+          <div className="card-column">
+            <CardLink
+              to="sistema"
+              icon="🗳️"
+              title="67"
+              subtitle="Partidos y electores"
+            />
+          </div>
+          <div className="card-column">
+            <CardLink
+              to="proceso"
+              icon="📊"
+              title="5780"
+              subtitle="Candidatos y elecciones"
+            />
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

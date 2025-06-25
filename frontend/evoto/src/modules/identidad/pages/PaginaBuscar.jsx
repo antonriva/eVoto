@@ -8,7 +8,7 @@ import Breadcrumbs from "../../../shared/components/breadcrumbs/Breadcrumbs";
 import "../../../shared/layouts/AppLayout.css"; 
 import {useConfirmDialog} from "../../../shared/hooks/useConfirmDialog";
 import ConfirmModal from "../../../shared/components/confirmModal/ConfirmModal";
-import ToastMessage from "../../../shared/components/toastMessage/ToastMessage";
+import { useToast } from "../../../shared/context/ToastContext";
 
 //identidad/components
 import ExpandableRow from "../components/identidadExpandableRow/IdentidadExpandableRow";
@@ -24,7 +24,7 @@ import { createDomicilioFilterConfig } from "../config/domicilioFilterConfig";
 
 
 const PaginaBuscar = () => {
-
+  //Fetch
   const navigate = useNavigate();
   const {
     personas,
@@ -36,74 +36,85 @@ const PaginaBuscar = () => {
     error,
   } = useBuscarPersonas();
 
-  // Use the usePersonasActions hook
+  // Preparar los datos y acciones a utilizar
   const { fetchDomicilios, eliminarPersona } = usePersonasActions(setPersonas);
 
-  const [toast, setToast] = useState({ show: false, message: "", variant: "success" });
 
-  const showToast = (message, variant = "success") => {
-    setToast({ show: true, message, variant });
-  };
+  // Datos de ubicaciones
+  const {
+    entidades,
+    municipios,
+    //localidades,
+    colonias,
+    tiposDeDomicilio,
+    fetchMunicipios,
+    //fetchLocalidades,
+    fetchColonias
+  } = useUbicaciones();
 
-  const hideToast = () => setToast(prev => ({ ...prev, show: false }));
+    // Cargar los filtros
+    const handleSearch = (partialFilters) => {
+      const merged = { ...filtros, ...partialFilters };
+      setFiltros(merged);
+      fetchPersonas(merged);
+    };
+    
+      //Filtros de persona
+    const identidadFilterConfig = createIdentidadFilterConfig({ onSearch: handleSearch });
 
+      //Filtros de domicilio
+    const domicilioFilterConfig = createDomicilioFilterConfig({
+      entidades,
+      municipios,
+      //localidades,
+      colonias,
+      tiposDeDomicilio,
+      fetchMunicipios,
+      //fetchLocalidades,
+      fetchColonias,
+      onSearch: handleSearch
+    });
+
+  //Eliminar
+  const { showToast } = useToast();
   const confirmDelete = useConfirmDialog();
   
   const handleDeleteConfirm = async () => {
     confirmDelete.setLoading(true);
     try {
       const result = await eliminarPersona(confirmDelete.payload);
+  
       if (result.success) {
-        showToast("Persona eliminada correctamente", "success");
+        showToast({
+          title: "Éxito",
+          body: "Persona eliminada correctamente",
+          variant: "success",
+        });
         confirmDelete.close();
       } else {
-        showToast(result.error || "Error al eliminar", "danger");
+        showToast({
+          title: "Alerta",
+          body: result.error || "No se pudo eliminar",
+          variant: "danger",
+        });
       }
     } catch (err) {
-      showToast(err.message || "Error inesperado", "danger");
+      showToast({
+        title: "Alerta inesperada",
+        body: err.message || "Alerta inesperada",
+        variant: "danger",
+      });
     } finally {
       confirmDelete.setLoading(false);
     }
   };
 
-  // Use the useUbicaciones hook to get location-related data
-  const {
-    entidades,
-    municipios,
-    localidades,
-    colonias,
-    tiposDeDomicilio,
-    fetchMunicipios,
-    fetchLocalidades,
-    fetchColonias
-  } = useUbicaciones();
-
-    // Create filter configuration using createPersonasFilterConfig
-    const handleSearch = (partialFilters) => {
-      const merged = { ...filtros, ...partialFilters };
-      setFiltros(merged);
-      fetchPersonas(merged);
-    };
-
-    const identidadFilterConfig = createIdentidadFilterConfig({ onSearch: handleSearch });
-
-    const domicilioFilterConfig = createDomicilioFilterConfig({
-      entidades,
-      municipios,
-      localidades,
-      colonias,
-      tiposDeDomicilio,
-      fetchMunicipios,
-      fetchLocalidades,
-      fetchColonias,
-      onSearch: handleSearch
-    });
-
-
+  //Editar
   const editarPersona = (id) => {
     navigate(`editar/${id}`);
   };
 
+  //Visuales
   const breadcrumbItems = [
     { label: "Inicio", to: "/" },
     { label: "Registro civil", to: "/civil" },
@@ -177,21 +188,7 @@ const PaginaBuscar = () => {
           cancelText="Cancelar"
           loading={confirmDelete.loading}
         />
-        {toast.show && (
-          <div className="position-fixed bottom-0 end-0 p-3" style={{ zIndex: 1055 }}>
-            <div className={`toast align-items-center text-white bg-${toast.variant} border-0 show`} role="alert">
-              <div className="d-flex">
-                <div className="toast-body">{toast.message}</div>
-                <button
-                  type="button"
-                  className="btn-close btn-close-white me-2 m-auto"
-                  aria-label="Close"
-                  onClick={hideToast}
-                />
-              </div>
-            </div>
-          </div>
-        )}
+
       </div>
     </div>
   );

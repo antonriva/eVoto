@@ -22,6 +22,11 @@ html, body {
     margin-left: auto;
     margin-right: auto;
   }
+
+  .form-wrapper {
+    max-width: 600px; /* Or 720px */
+    margin: 0 auto;
+  }
   
   @media (max-width: 768px) {
     .app-layout-container {
@@ -49,4 +54,11 @@ html, body {
   .card-column {
     flex: 1 1 45%;
     max-width: 500px;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
   }

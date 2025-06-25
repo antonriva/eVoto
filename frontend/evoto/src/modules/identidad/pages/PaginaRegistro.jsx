@@ -1,64 +1,43 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-
+import { useToast } from "../../../shared/context/ToastContext";
+import { usePersonasActions } from "../hooks/usePersonasActions";
+import { getPersonaRegistroConfig } from "../config/personaRegisterConfig";
+import GenericFormFields from "../../../shared/components/genericFormFields/GenericFormFields";
+import { useUbicaciones } from "../hooks/useUbicaciones";
+import { useConfirmDialog } from "../../../shared/hooks/useConfirmDialog";
+import ConfirmModal from "../../../shared/components/confirmModal/ConfirmModal";
+import Breadcrumbs from "../../../shared/components/breadcrumbs/Breadcrumbs";
+import "../../../shared/layouts/AppLayout.css"; 
+import { Spinner, Alert } from "react-bootstrap";
+import "../../../shared/styles/Buttons.css"; // Import global styles for buttons
 
 const PaginaRegistro = () => {
-  const [formData, setFormData] = useState({
-    nombre: "",
-    apellidoPaterno: "",
-    apellidoMaterno: "",
-    fechaDeNacimiento: "",
-    fechaDeInicio: "",
-    fechaDeFin: "",
-    entidadFederativaId: "",
-    municipioId: "",
-  });
-
-  const [entidades, setEntidades] = useState([]);
-  const [municipios, setMunicipios] = useState([]);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { showToast } = useToast();
+  const { registrarPersona } = usePersonasActions();
+  const { entidades, municipios, fetchMunicipios } = useUbicaciones();
 
   const today = new Date().toISOString().split("T")[0];
-  const oneHundredYearsAgo = new Date(new Date().getFullYear() - 100, new Date().getMonth(), new Date().getDate())
-    .toISOString()
-    .split("T")[0];
 
-  useEffect(() => {
-    fetchEntidades();
-  }, []);
+  const config = getPersonaRegistroConfig({ entidades, municipios, today });
 
-  const fetchEntidades = async () => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/entidad-federativa`);
-      const data = await response.json();
-      setEntidades(data);
-    } catch (error) {
-      console.error("Error al cargar entidades federativas:", error);
-    }
-  };
+  const confirmConflict = useConfirmDialog(); // ⬅️ for handling 409 confirm modal
 
-  const fetchMunicipios = async (entidadId) => {
-    try {
-      if (!entidadId) {
-        setMunicipios([]);
-        return;
-      }
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/municipio/entidad/${entidadId}`);
-      const data = await response.json();
-      setMunicipios(data);
-    } catch (error) {
-      console.error("Error al cargar municipios:", error);
-    }
-  };
+  const initialFormData = config.reduce((acc, field) => {
+    acc[field.name] = field.defaultValue || "";
+    return acc;
+  }, {});
+
+  const [formData, setFormData] = useState(initialFormData);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData((prevData) => ({
-      ...prevData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
     }));
 
@@ -66,150 +45,131 @@ const PaginaRegistro = () => {
       fetchMunicipios(value);
     }
   };
-
+  const handleConflictConfirm = async () => {
+    confirmConflict.setLoading(true);
+  
+    const confirmResult = await registrarPersona({ formData, confirmar: true });
+  
+    if (confirmResult.success) {
+      showToast({
+        title: "Éxito",
+        body: confirmResult.message,
+        variant: "success",
+      });
+      navigate("/civil");
+    } else {
+      showToast({
+        title: "Error",
+        body: confirmResult.message,
+        variant: "danger",
+      });
+    }
+  
+    confirmConflict.close();
+    confirmConflict.setLoading(false);
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/registrar`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+  
+    const result = await registrarPersona({ formData });
+  
+    if (result.success) {
+      showToast({
+        title: "Éxito",
+        body: result.message,
+        variant: "success",
       });
-
-      if (response.status === 409) {
-        const errorMessage = await response.text();
-        if (window.confirm(`${errorMessage}\n¿Desea continuar?`)) {
-          await fetch(`${import.meta.env.VITE_API_URL}/persona/registrar?confirmar=true`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData),
-          });
-          alert("Persona registrada exitosamente.");
-          navigate("/civil");
-        }
-      } else if (!response.ok) {
-        throw new Error(await response.text());
-      } else {
-        alert("Persona registrada exitosamente.");
-        navigate("/civil");
-      }
-    } catch (error) {
-      console.error("Error al registrar persona:", error);
-      setError("Error al registrar la persona. Intente nuevamente.");
-    } finally {
-      setLoading(false);
+      navigate("/civil");
+    } else if (result.conflict) {
+      confirmConflict.open(result.message); // open modal
+    } else {
+      showToast({
+        title: "Error",
+        body: result.message,
+        variant: "danger",
+      });
+      setError(result.message);
     }
+  
+    setLoading(false);
   };
+
+    if (loading) {
+      return (
+        <div className="d-flex justify-content-center align-items-center mt-4">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Cargando...</span>
+          </Spinner>
+          <span className="ms-2">Cargando...</span>
+        </div>
+      );
+    }
+    
+  
+    if (error) {
+      return (
+        <Alert variant="danger" className="mt-4 text-center">
+          <Alert.Heading>Ooops! Estamos solucionando esto...</Alert.Heading>
+          <p>{error}</p>
+        </Alert>
+      );
+    }
+
+    const breadcrumbItems = [
+      { label: "Inicio", to: "/" },
+      { label: "Registro civil", to: "/civil" },
+      { label: "Registrar" }
+    ];
+  
 
   return (
     <div>
-      <h1>Registro de Persona</h1>
-      
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nombre:</label>
-          <input
-            type="text"
-            name="nombre"
-            value={formData.nombre}
-            onChange={handleChange}
-            required
-            pattern="^[A-Z]+( [A-Z]+)*$"
-            title="El nombre debe contener solo letras mayúsculas y espacios, sin números ni caracteres especiales."
-          />
+      <div className="app-layout-container">
+        <Breadcrumbs items={breadcrumbItems} />
+        <h1 className="text-center">Registrar persona</h1>
+
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
+        {/* ✅ Centered and narrower form */}
+        <div className="row">
+          <div className="col-md-8 col-lg-6 mx-auto">
+            <form onSubmit={handleSubmit}>
+              <GenericFormFields
+                config={config}
+                values={formData}
+                onChange={handleChange}
+              />
+
+              <div className="d-flex justify-content-between mt-4">
+                <button type="submit" className="btn btn-vino" disabled={loading}>
+                  {loading ? "Registrando..." : "Registrar"}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-vino"
+                  onClick={() => navigate("/civil")}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-        <div>
-          <label>Apellido Paterno:</label>
-          <input
-            type="text"
-            name="apellidoPaterno"
-            value={formData.apellidoPaterno}
-            onChange={handleChange}
-            required
-            pattern="^[A-Z]+( [A-Z]+)*$"
-            title="El apellido paterno debe contener solo letras mayúsculas, sin números ni caracteres especiales."
-          />
-        </div>
-        <div>
-          <label>Apellido Materno:</label>
-          <input
-            type="text"
-            name="apellidoMaterno"
-            value={formData.apellidoMaterno}
-            onChange={handleChange}
-            required
-            pattern="^[A-Z]+( [A-Z]+)*$"
-            title="El apellido materno debe contener solo letras mayúsculas, sin números ni caracteres especiales."
-          />
-        </div>
-        <div>
-          <label>Fecha de Nacimiento:</label>
-          <input
-            type="date"
-            name="fechaDeNacimiento"
-            value={formData.fechaDeNacimiento}
-            onChange={handleChange}
-            min={oneHundredYearsAgo}
-            max={today}
-            required
-          />
-        </div>
-        <div>
-          <label>Entidad Federativa:</label>
-          <select
-            name="entidadFederativaId"
-            value={formData.entidadFederativaId}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Seleccione Entidad Federativa</option>
-            {Array.isArray(entidades)&&entidades.map((entidad) => (
-              <option key={entidad.id} value={entidad.id}>
-                {entidad.descripcion}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label>Municipio:</label>
-          <select
-            name="municipioId"
-            value={formData.municipioId}
-            onChange={handleChange}
-            required
-            disabled={!municipios.length}
-          >
-            <option value="">Seleccione Municipio</option>
-            {Array.isArray(municipios)&&municipios.map((municipio) => (
-              <option key={municipio.id} value={municipio.id}>
-                {municipio.descripcion}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label>Fecha de Inicio:</label>
-          <input
-            type="date"
-            name="fechaDeInicio"
-            value={formData.fechaDeInicio}
-            onChange={handleChange}
-            min={formData.fechaDeNacimiento || oneHundredYearsAgo}
-            max={formData.fechaDeFin || today}
-            required
-          />
-        </div>
-        <button type="submit" disabled={loading}>
-          {loading ? "Registrando..." : "Registrar"}
-        </button>
-        <button type="button" onClick={() => navigate("/civil")}>
-          Cancelar
-        </button>
-      </form>
+        <ConfirmModal
+          show={confirmConflict.isOpen}
+          onHide={confirmConflict.close}
+          onConfirm={handleConflictConfirm}
+          title="Posible duplicado"
+          body={`${confirmConflict.payload}\n¿Desea continuar?`}
+          confirmText="Registrar"
+          cancelText="Cancelar"
+          loading={confirmConflict.loading}
+        />
+      </div>
     </div>
   );
 };

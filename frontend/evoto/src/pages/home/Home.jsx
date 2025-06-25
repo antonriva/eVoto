@@ -28,7 +28,7 @@ const Home = () => {
                   />
                 </div>
                 <h5 className="card-title card-title-custom">
-                  <Link to="/civil">Registro Civil</Link>
+                  <Link to="/civil">Registro civil</Link>
                 </h5>
                 <p className="card-text text-justify mb-3">
                   Realiza búsquedas, edición y nuevos registros de personas de manera sencilla
@@ -49,16 +49,11 @@ const Home = () => {
                   />
                 </div>
                 <h5 className="card-title card-title-custom">
-                  <Link to="/colegio">Colegio Electoral</Link>
+                  <Link to="/colegio">Colegio electoral</Link>
                 </h5>
-                <ul className="list-unstyled card-options">
-                  <li>
-                    <Link to="/colegio/sistema">Sistema</Link>
-                  </li>
-                  <li>
-                    <Link to="/colegio/proceso">Proceso</Link>
-                  </li>
-                </ul>
+                <p className="card-text text-justify mb-3">
+                  Administra partidos, electores y el proceso electoral de principio a fin de manera sencilla
+                </p>
               </div>
             </div>
           </div>

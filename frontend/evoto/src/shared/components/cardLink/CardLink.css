@@ -11,6 +11,11 @@
   .custom-card:hover {
     transform: translateY(-3px);
   }
+  .card-description {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    color: #6c757d; /* Bootstrap muted text */
+  }
   
   .card-number {
     font-size: 2.2rem;

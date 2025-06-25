@@ -1,89 +1,46 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useUbicaciones } from "../hooks/useUbicaciones";
+import { useToast } from "../../../shared/context/ToastContext";
+import GenericFormFields from "../../../shared/components/genericFormFields/GenericFormFields";
+import { getPersonaEditableConfig } from "../../../modules/identidad/config/personaEditableConfig";
+import { useEditableEntityData } from "../../../shared/hooks/useEditableEntityData";
+import { usePersonasActions } from "../hooks/usePersonasActions";
+import Breadcrumbs from "../../../shared/components/breadcrumbs/Breadcrumbs";
+import "../../../shared/layouts/AppLayout.css"; 
+import { Spinner, Alert } from "react-bootstrap";
+import "../../../shared/styles/Buttons.css"; // Import global styles for buttons
 
 const PaginaEditar = () => {
   const { id } = useParams(); // Obtiene el ID de la persona desde la URL
   const navigate = useNavigate();
 
+  // Use the shared useUbicaciones hook
+  const { entidades, municipios, fetchMunicipios } = useUbicaciones();
 
-  const [formData, setFormData] = useState({
-    nombre: "",
-    apellidoPaterno: "",
-    apellidoMaterno: "",
-    fechaDeNacimiento: "",
-    fechaDeFin: "",
-    entidadFederativaId: "",
-    municipioId: "",
-    fechaDeInicio: "",
+  // Use the shared useEditableEntityData hook
+  const { formData, setFormData, originalData, loading, error } = useEditableEntityData({
+    endpoint: "persona",
+    id,
+    initialValues: {
+      nombre: "",
+      apellidoPaterno: "",
+      apellidoMaterno: "",
+      fechaDeNacimiento: "",
+      fechaDeFin: "",
+      entidadFederativaId: "",
+      municipioId: "",
+      fechaDeInicio: "",
+    },
+    onAfterLoad: (data) => {
+      if (data.entidadFederativaId) {
+        fetchMunicipios(data.entidadFederativaId); // Fetch municipios if entidad is loaded
+      }
+    },
   });
 
-  const [entidades, setEntidades] = useState([]);
-  const [municipios, setMunicipios] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  // Fetch inicial para cargar datos de la persona y listas de entidades/municipios
-  useEffect(() => {
-    fetchPersonaData();
-    fetchEntidades();
-  }, []);
-
-  const fetchPersonaData = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/${id}/editar`);
-      if (!response.ok) {
-        throw new Error("Error al obtener los datos de la persona.");
-      }
-      const data = await response.json();
-      setFormData({
-        nombre: data.nombre || "",
-        apellidoPaterno: data.apellidoPaterno || "",
-        apellidoMaterno: data.apellidoMaterno || "",
-        fechaDeNacimiento: data.fechaDeNacimiento || "",
-        fechaDeFin: data.fechaDeFin || "",
-        entidadFederativaId: data.entidadFederativaId || "",
-        municipioId: data.municipioId || "",
-        fechaDeInicio: data.fechaDeInicio || "",
-      });
-      if (data.entidadFederativaId) {
-        fetchMunicipios(data.entidadFederativaId);
-      }
-    } catch (error) {
-      console.error("Error al cargar datos de la persona:", error);
-      setError("No se pudo cargar la información de la persona.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchEntidades = async () => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/entidad-federativa`);
-      const data = await response.json();
-      setEntidades(data);
-    } catch (error) {
-      console.error("Error al cargar entidades federativas:", error);
-    }
-  };
-
-  const fetchMunicipios = async (entidadId) => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/municipio/entidad/${entidadId}`);
-      const data = await response.json();
-      setMunicipios(data);
-    } catch (error) {
-      console.error("Error al cargar municipios:", error);
-    }
-  };
-
-
-    ///CAMPO DE VALIDACIONES///
-    const today = new Date().toISOString().split("T")[0]; // Fecha actual
-    const oneHundredYearsAgo = new Date(new Date().getFullYear() - 100, new Date().getMonth(), new Date().getDate())
-        .toISOString()
-        .split("T")[0]; // Hace 100 años
-    ///////
+  // Use the shared usePersonasActions hook
+  const { actualizarPersona } = usePersonasActions();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -98,158 +55,101 @@ const PaginaEditar = () => {
         ...prevData,
         municipioId: "", // Limpiar municipio seleccionado
       }));
-      fetchMunicipios(value);
+      fetchMunicipios(value); // Use the shared hook
     }
   };
+
+  const { showToast } = useToast(); // Make sure this is imported from your toast context
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/persona/${id}/editar`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+  
+    const result = await actualizarPersona({ id, formData });
+  
+    if (result.success) {
+      const changes = Object.entries(formData)
+        .filter(([key, value]) => originalData[key] !== value)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(", ");
+  
+      showToast({
+        title: "Éxito",
+        body: `Persona actualizada. Cambios: ${changes || "ninguno"}`,
+        variant: "success",
       });
-      
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(errorMessage);
-      }
-      alert("Persona actualizada exitosamente con los siguientes datos");
-      navigate("/civil"); // Redirige a la página principal
-      alert(JSON.stringify(formData))
-    } catch (error) {
-      console.error("Error al actualizar persona:", error);
-      setError("No se pudo actualizar la información de la persona.");
-    } finally {
-      setLoading(false);
+  
+      navigate("/civil");
+    } else {
+      showToast({
+        title: "Alerta",
+        body: result.message,
+        variant: "danger",
+      });
     }
   };
 
+  const breadcrumbItems = [
+    { label: "Inicio", to: "/" },
+    { label: "Registro civil", to: "/civil" },
+    { label: "Buscar", to: "/civil/buscar"},
+    { label: "Editar" }
+  ];
+  
+  
   if (loading) {
-    return <div>Cargando...</div>;
+    return (
+      <div className="d-flex justify-content-center align-items-center mt-4">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </Spinner>
+        <span className="ms-2">Cargando...</span>
+      </div>
+    );
   }
+  
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <Alert variant="danger" className="mt-4 text-center">
+        <Alert.Heading>Ooops! Estamos solucionando esto...</Alert.Heading>
+        <p>{error}</p>
+      </Alert>
+    );
   }
+
+  const config = getPersonaEditableConfig({ entidades, municipios });
 
   return (
     <div>
-      <h1>Editar Persona</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nombre:</label>
-          <input
-            type="text"
-            name="nombre"
-            value={formData.nombre}
-            onChange={handleChange}
-            required
-            pattern="^[A-Z]+( [A-Z]+)*$"
-            title="El nombre debe contener solo letras mayúsculas y espacios, sin números ni caracteres especiales."
-          />
+    <div className="app-layout-container">
+      <Breadcrumbs items={breadcrumbItems} />
+      <h1 className="text-center">Editar persona</h1>
+
+      {/* ✅ Add a responsive centered column */}
+      <div className="row">
+        <div className="col-md-8 col-lg-6 mx-auto">
+          <form onSubmit={handleSubmit}>
+            <GenericFormFields
+              config={config}
+              values={formData}
+              onChange={handleChange}
+            />
+
+            <div className="d-flex justify-content-between mt-3">
+              <button type="submit" className="btn btn-vino">Guardar Cambios</button>
+              <button
+                type="button"
+                className="btn btn-vino"
+                onClick={() => navigate("/civil")}
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
         </div>
-        <div>
-          <label>Apellido Paterno:</label>
-          <input
-            type="text"
-            name="apellidoPaterno"
-            value={formData.apellidoPaterno}
-            onChange={handleChange}
-            required
-            pattern="^[A-Z]+( [A-Z]+)*$"
-            title="El apellido paterno debe contener solo letras mayúsculas, sin números ni caracteres especiales."
-          />
-        </div>
-        <div>
-          <label>Apellido Materno:</label>
-          <input
-            type="text"
-            name="apellidoMaterno"
-            value={formData.apellidoMaterno}
-            onChange={handleChange}
-            required
-            pattern="^[A-Z]+( [A-Z]+)*$"
-            title="El apellido materno debe contener solo letras mayúsculas, sin números ni caracteres especiales."
-          />
-        </div>
-        <div>
-        <label>Fecha de Nacimiento:</label>
-        <input
-          type="date"
-          name="fechaDeNacimiento"
-          value={formData.fechaDeNacimiento}
-          onChange={handleChange}
-          min={oneHundredYearsAgo} // No anterior a hace 100 años
-          max={today} // No posterior al día de hoy
-          required
-        />
       </div>
-      <div>
-        <label>Fecha de Fin:</label>
-        <input
-          type="date"
-          name="fechaDeFin"
-          value={formData.fechaDeFin}
-          onChange={handleChange}
-          min={formData.fechaDeNacimiento || oneHundredYearsAgo} // No anterior a la fecha de nacimiento
-          max={today} // No posterior al día de hoy
-        />
-      </div>
-        <div>
-          <label>Entidad Federativa:</label>
-          <select
-            name="entidadFederativaId"
-            value={formData.entidadFederativaId}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Seleccione Entidad Federativa</option>
-            {Array.isArray(entidades)&&entidades.map((entidad) => (
-              <option key={entidad.id} value={entidad.id}>
-                {entidad.descripcion}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label>Municipio:</label>
-          <select
-            name="municipioId"
-            value={formData.municipioId}
-            onChange={handleChange}
-            required
-            disabled={!municipios.length}
-          >
-            <option value="">Seleccione Municipio</option>
-            {Array.isArray(municipios)&&municipios.map((municipio) => (
-              <option key={municipio.id} value={municipio.id}>
-                {municipio.descripcion}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-        <label>Fecha de Inicio:</label>
-        <input
-          type="date"
-          name="fechaDeInicio"
-          value={formData.fechaDeInicio}
-          onChange={handleChange}
-          min={formData.fechaDeNacimiento || oneHundredYearsAgo} // No anterior a la fecha de nacimiento
-          max={formData.fechaDeFin || today} // No posterior a la fecha de fin o al día de hoy
-          required
-        />
-      </div>
-        <button type="submit">Guardar Cambios</button>
-        <button type="button" onClick={() => navigate("/civil")}>
-          Cancelar
-        </button>
-      </form>
     </div>
+  </div>
   );
 };
 
