@@ -1,6 +1,6 @@
 import React from "react";
 import Table from "../table/Table";
-import GenericFilterForm from "../filterForm/FilterForm";
+import GenericFilterForm from "../../../modules/identidad/components/modalBuscarPersona/ModalGenericFilters";
 
 const GenericSearchModal = ({ title, filterConfig, headers, data, onSelect, error }) => (
   <div>
@@ -8,10 +8,8 @@ const GenericSearchModal = ({ title, filterConfig, headers, data, onSelect, erro
     {error && <p style={{ color: "red" }}>{error}</p>}
 
     <GenericFilterForm
-      config={{
-        ...filterConfig.config,
-        onSearch: filterConfig.onSearch,
-      }}
+      fields={filterConfig.fields}
+      onSearch={filterConfig.onSearch}
       values={filterConfig.values}
       setValues={filterConfig.setValues}
     />

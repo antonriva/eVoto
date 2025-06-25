@@ -113,10 +113,23 @@ const PaginaBuscarElectores = () => {
   };
 
 
+    //Visuales
+    const breadcrumbItems = [
+      { label: "Inicio", to: "/" },
+      { label: "Colegio electoral", to: "/colegio" },
+      { label: "Sistema electoral", to: "/colegio/sistema" },
+      { label: "Buscar Elector"}
+    ];
+  
 
   return (
     <div>
-      <h1>Catálogo de Electores</h1>
+      <div className="app-layout-container">
+      <Breadcrumbs items={breadcrumbItems} />
+      <h1 className="display-4 fw-bold text-dark">Catálogo de Electores</h1>
+      <div className="row mb-4 gx-3 align-items-stretch">
+          <div className="col-md-6 d-flex">
+            <div className="card p-3 w-100 h-100">
 
       {error && <p style={{ color: "red" }}>{error}</p>}
       <GenericFilterForm
@@ -124,14 +137,19 @@ const PaginaBuscarElectores = () => {
         values={filtros}
         setValues={setFiltros}
       />
-
+              </div>
+              </div>
+              <div className="col-md-6 d-flex">
+              <div className="card p-3 w-100 h-100">
       <GenericFilterForm
         config={domicilioFilterConfig}
         values={filtros}
         setValues={setFiltros}
       />
+        </div>
+        </div>
 
-
+        </div>
       {/* Tabla de Electores */}
       <Table
           headers={electorTableHeaders}
@@ -153,13 +171,13 @@ const PaginaBuscarElectores = () => {
               ]}
               fetchDomicilios={() => fetchDomicilios(p.id)}
               colSpan={personasTableHeaders.length}
-              onEdit={editarElector(p.idElector)}
+              onEdit={() => editarElector(p.idElector)}
               onDelete={(id) => confirmDelete.open(p.idElector)}
             />
           )}
         />
 
-<ConfirmModal
+        <ConfirmModal
           show={confirmDelete.isOpen}
           onHide={confirmDelete.close}
           onConfirm={handleDeleteConfirm}
@@ -168,6 +186,8 @@ const PaginaBuscarElectores = () => {
           cancelText="Cancelar"
           loading={confirmDelete.loading}
         />
+
+        </div>
     </div>
   );
 };

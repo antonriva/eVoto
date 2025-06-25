@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Table from "../../../../shared/components/table/Table";
-import ExpandableRow from "../../components/ExpandableRow";
+import ExpandableRow from "../../components/procesoExpandableRow/ProcesoExpandableRow";
 import FiltrosProcesos from "../../components/FiltrosInstancia"
 
 const PaginaBuscarInstanciaDeProceso = () => {
@@ -89,7 +89,7 @@ const fetchInstancias = async (params = {}) => {
         `${import.meta.env.VITE_API_URL}/candidatura/${idDeInstanciaDeProceso}`
       );
       if (!response.ok) {
-        throw new Error(`Error al obtener candidaturas para instancia con ID ${idInstancia}`);
+        throw new Error(`Error al obtener candidaturas para instancia con ID ${idDeInstanciaDeProceso}`);
       }
       return await response.json();
     } catch (error) {
@@ -171,6 +171,11 @@ const fetchInstancias = async (params = {}) => {
   const handleRegresar = () => {
     navigate("/colegio/proceso"); // Regresa al menú anterior
   };
+
+  const agregarCandidatura = (idInstancia) => {
+    navigate(`/colegio/proceso/buscar/agregar/${idInstancia}`); // Navigate to the route with idInstancia
+  };
+
   return (
     <div>
       <h1>Catálogo de Instancias de Proceso</h1>
@@ -214,6 +219,7 @@ const fetchInstancias = async (params = {}) => {
             onEdit={(id) => editarInstancia(id)}
             onDelete={(id) => eliminarInstancia(id)}
             onAdd={(id) => agregarInstancia(id)}
+            onAddCandidatura={agregarCandidatura}
           />
         )}
       />

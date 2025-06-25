@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ModalBuscarElector from "../../components/ModalBuscarElector";
+import ModalBuscarElector from "../../components/modalBuscarElector/ModalBuscarElector";
 import { useParams } from "react-router-dom";
+import { Modal, Button } from "react-bootstrap";
 
 const RegistroCandidaturaYElector = () => {
   const today = new Date().toISOString().split("T")[0];
@@ -207,15 +208,32 @@ const responseElector = await fetch(
       </form>
 
 
-      {showModalElector && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Buscar Elector</h2>
-            <ModalBuscarElector onSelect={handleSelectElector} />
-            <button onClick={() => setShowModalElector(false)}>Cerrar</button>
-          </div>
-        </div>
-      )}
+      <Modal
+  show={showModalElector}
+  onHide={() => setShowModalElector(false)}
+  size="xl"
+  centered
+>
+  <Modal.Header closeButton>
+    <Modal.Title>Buscar Elector</Modal.Title>
+  </Modal.Header>
+
+  <Modal.Body style={{ maxHeight: "70vh", overflowY: "auto" }}>
+    <ModalBuscarElector
+      onSelect={(idElector) => {
+        handleSelectElector(idElector);  // your callback
+        setShowModalElector(false);      // close the modal after selecting
+      }}
+    />
+  </Modal.Body>
+
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => setShowModalElector(false)}>
+      Cerrar
+    </Button>
+  </Modal.Footer>
+</Modal>
+
     </div>
   );
 };

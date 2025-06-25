@@ -1,26 +1,47 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Breadcrumbs from "../../../../shared/components/breadcrumbs/Breadcrumbs";
+import "../../../../shared/layouts/AppLayout.css";
+import { Spinner, Alert } from "react-bootstrap";
+import "../../../../shared/styles/Buttons.css";
+
 
 const ElectorEditar = () => {
   const { id } = useParams(); // Obtiene el ID del elector desde la URL
   const navigate = useNavigate();
 
-  const { formData, setFormData, originalData, loading, error } = useEditableEntityData({
-    endpoint: "elector", // ✅ Still correct for elector
-    id: idElector,        // ✅ Must use generic 'id' as expected by the hook
-    initialValues: {
-      idElector: idElector || "",      // ✅ Read-only
-      entidadFederativaId: "",
-      municipioId: "",
-      coloniaId: "",
-      codigoPostalId: "",
-      calle: "",
-      numeroExterior: "",
-      numeroInterior: "",
-      fechaDeInicio: "",
-    },
+  const [formData, setFormData] = useState({
+    idElector: "",
+    idPersona: "",
+    entidadFederativaId: "",
+    municipioId: "",
+    localidadId: "",
+    coloniaId: "",
+    codigoPostalId: "",
+    calle: "",
+    numeroExterior: "",
+    numeroInterior: "",
+    fechaDeInicio: "",
+    fechaDeInicioElector: "",
   });
+
+  const [entidades, setEntidades] = useState([]);
+  const [municipios, setMunicipios] = useState([]);
+  const [localidades, setLocalidades] = useState([]);
+  const [colonias, setColonias] = useState([]);
+  const [codigosPostales, setCodigosPostales] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+    // Breadcrumb items
+    const breadcrumbItems = [
+      { label: "Inicio", to: "/" },
+      { label: "Colegio electoral", to: "/colegio" },
+      { label: "Sistema electoral", to: "/colegio/sistema" },
+      { label: "Buscar Elector", to:"/colegio/sistema/buscarelector"}
+    ];
   
+
   // Fetch inicial para cargar los datos del elector
   useEffect(() => {
     fetchElectorData();
@@ -150,7 +171,7 @@ const ElectorEditar = () => {
         throw new Error(errorMessage);
       }
       alert("Elector actualizado exitosamente.");
-      navigate("/colegio/sistema/ele");
+      navigate("/colegio/sistema");
     } catch (error) {
       console.error("Error al actualizar elector:", error);
       setError("No se pudo actualizar la información del elector.");
@@ -159,8 +180,33 @@ const ElectorEditar = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center mt-4">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </Spinner>
+        <span className="ms-2">Cargando...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert variant="danger" className="mt-4 text-center">
+        <Alert.Heading>Ooops! Estamos solucionando esto...</Alert.Heading>
+        <p>{error}</p>
+      </Alert>
+    );
+  }
+
   return (
     <div>
+            <div className="app-layout-container">
+        <Breadcrumbs items={breadcrumbItems} />
+        <h1 className="text-center">Editar Elector</h1>
+        <div className="row">
+          <div className="col-md-8 col-lg-6 mx-auto"></div>
       <h1>Editar Elector</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
@@ -201,7 +247,7 @@ const ElectorEditar = () => {
             ))}
           </select>
         </div>
-        <div>
+        {/* <div>
           <label>Localidad:</label>
           <select
             name="localidadId"
@@ -217,7 +263,7 @@ const ElectorEditar = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
         <div>
           <label>Colonia:</label>
           <select
@@ -297,13 +343,15 @@ const ElectorEditar = () => {
           />
         </div>
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="btn btn-vino" disabled={loading}>
           {loading ? "Guardando..." : "Guardar Cambios"}
         </button>
-        <button type="button" onClick={() => navigate("/colegio/sistema/ele")}>
+        <button type="button" className="btn btn-vino" onClick={() => navigate("/colegio/sistema")}>
           Cancelar
         </button>
       </form>
+      </div>
+      </div>
     </div>
   );
 };

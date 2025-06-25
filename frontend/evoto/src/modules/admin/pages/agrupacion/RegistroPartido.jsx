@@ -117,7 +117,7 @@ const RegistroPartido = () => {
                 <button
                   type="button"
                   className="btn btn-vino"
-                  onClick={() => navigate("/civil")}
+                  onClick={() => navigate("/colegio/sistema")}
                 >
                   Cancelar
                 </button>

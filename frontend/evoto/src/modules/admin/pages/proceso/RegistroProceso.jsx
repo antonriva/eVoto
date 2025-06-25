@@ -89,11 +89,11 @@ const RegistroProceso = () => {
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
-      ...(name === "idDeEntidad" && { idDeMunicipio: "", idDeLocalidad: "" }),
+      ...(name === "idDeEntidadFederativa" && { idDeMunicipio: "", idDeLocalidad: "" }),
       ...(name === "idDeMunicipio" && { idDeLocalidad: "" }),
     }));
-  
-    if (name === "idDeEntidad") fetchMunicipios(value);
+
+    if (name === "idDeEntidadFederativa") fetchMunicipios(value); // Correct name check
     if (name === "idDeMunicipio") fetchLocalidades(value);
   };
 
@@ -236,7 +236,7 @@ const RegistroProceso = () => {
             ))}
           </select>
         </div>
-        <div>
+        {/* <div>
           <label>Localidad:</label>
           <select
             name="idDeLocalidad"
@@ -251,7 +251,7 @@ const RegistroProceso = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
         <button type="submit" disabled={loading}>
           {loading ? "Registrando..." : "Registrar"}
         </button>

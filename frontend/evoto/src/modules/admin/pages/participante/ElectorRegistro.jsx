@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ModalBuscar from '../../../../modules/identidad/components/modalBuscarPersona/ModalBuscarPersona';
-import { Modal, Button} from 'react-bootstrap';
+import Breadcrumbs from "../../../../shared/components/breadcrumbs/Breadcrumbs";
+import ModalBuscar from "../../../../modules/identidad/components/modalBuscarPersona/ModalBuscarPersona";
+import { Modal, Button } from "react-bootstrap";
+import "../../../../shared/layouts/AppLayout.css";
+import "../../../../shared/styles/Buttons.css"; // Import global styles for buttons
 
 const ElectorRegistro = () => {
   const today = new Date().toISOString().split("T")[0];
@@ -167,12 +170,20 @@ const ElectorRegistro = () => {
     }
   };
 
+  const breadcrumbItems = [
+    { label: "Inicio", to: "/" },
+    { label: "Colegio electoral", to: "/colegio" },
+    { label: "Sistema electoral", to: "/colegio/sistema" },
+    { label: "Registrar elector"}
+  ];
+
   return (
     <div>
-      <h1>Registro de Elector</h1>
-      <button onClick={handleRegresar} style={{ marginBottom: "20px" }}>
-  Regresar
-</button>
+    <div className="app-layout-container">
+        <Breadcrumbs items={breadcrumbItems} />
+        <h1 className="text-center">Registrar Elector</h1>
+        <div className="row">
+          <div className="col-md-8 col-lg-6 mx-auto">
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
       <div>
@@ -226,7 +237,7 @@ const ElectorRegistro = () => {
             ))}
           </select>
         </div>
-        <div>
+        {/* <div>
           <label>Localidad:</label>
           <select
             name="localidadId"
@@ -242,7 +253,7 @@ const ElectorRegistro = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
         <div>
           <label>Colonia:</label>
           <select
@@ -334,28 +345,34 @@ const ElectorRegistro = () => {
             required
           />
         </div>
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="btn btn-vino" disabled={loading}>
           {loading ? "Registrando..." : "Registrar"}
         </button>
-        <button type="button" onClick={() => navigate("/colegio/sistema/ele")}>
+        <button type="button" className="btn btn-vino" onClick={() => navigate("/colegio/sistema")}>
           Cancelar
         </button>
       </form>
+      <Modal show={showModal} onHide={handleCloseModal} size="xl" centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Buscar Persona</Modal.Title>
+      </Modal.Header>
 
-      <Modal show={showModal} onHide={handleCloseModal} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Buscar Persona</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ModalBuscar onSelect={handleSelectPersona} />
+        <Modal.Body style={{ maxHeight: "70vh", overflowY: "auto" }}>
+          <ModalBuscar onSelect={(idPersona) => {
+            handleSelectPersona(idPersona); // Pass selected ID
+            handleCloseModal();             // Close modal after selecting
+          }} />
         </Modal.Body>
+
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
             Cerrar
           </Button>
         </Modal.Footer>
       </Modal>
-      
+      </div>
+      </div>
+      </div>
     </div>
   );
 };
