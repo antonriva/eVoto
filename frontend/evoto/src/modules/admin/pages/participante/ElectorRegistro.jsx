@@ -237,7 +237,7 @@ const ElectorRegistro = () => {
             ))}
           </select>
         </div>
-        {/* <div>
+         <div>
           <label>Localidad:</label>
           <select
             name="localidadId"
@@ -253,7 +253,7 @@ const ElectorRegistro = () => {
               </option>
             ))}
           </select>
-        </div> */}
+        </div> 
         <div>
           <label>Colonia:</label>
           <select
