@@ -28,6 +28,7 @@ export const cleanEmpty = (obj) =>
   export const transformers = {
     id: normalizeId,
     nombre: normalizeSpanishName,
+    denominacion: normalizeSpanishName,
     default: normalizeOthers,
   };
   

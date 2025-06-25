@@ -10,7 +10,7 @@ export const usePartidosActions = (setPartidos) => {
       const res = await fetch(`${apiBase}/partido/${id}/eliminar`, { method: "DELETE" });
 
       if (res.ok) {
-        setPersonas(prev => prev.filter(p => p.id !== id));
+        setPartidos(prev => prev.filter(p => p.id !== id));
         return { success: true, message: "Partido eliminado exitosamente." };
       } else {
         const msg = await res.text();
@@ -125,9 +125,9 @@ export const usePartidosActions = (setPartidos) => {
     }
   }, [apiBase]);
 
-  const registrarPersona = useCallback(async ({ formData, confirmar = false }) => {
+  const registrarPartido = useCallback(async ({ formData}) => {
     try {
-      const url = `${apiBase}/persona/registrar${confirmar ? "?confirmar=true" : ""}`;
+      const url = `${apiBase}/partido/registrar`;
 
       const res = await fetch(url, {
         method: "POST",
@@ -136,7 +136,7 @@ export const usePartidosActions = (setPartidos) => {
       });
 
       if (res.ok) {
-        return { success: true, message: "Persona registrada exitosamente." };
+        return { success: true, message: "Partido registrado exitosamente." };
       }
 
       const msg = await res.text();
@@ -155,10 +155,10 @@ export const usePartidosActions = (setPartidos) => {
 
       return { success: false, message: `Error inesperado: ${msg}` };
     } catch (err) {
-      console.error("Error al registrar persona:", err);
-      return { success: false, message: "No se pudo registrar a la persona. Inténtalo nuevamente." };
+      console.error("Error al registrar partido:", err);
+      return { success: false, message: "No se pudo registrar al partido. Inténtalo nuevamente." };
     }
   }, [apiBase]);
 
-  return { eliminarPartido, actualizarPartido, registrarPersona, cargarLogo };
+  return { eliminarPartido, actualizarPartido, registrarPartido, cargarLogo };
 };

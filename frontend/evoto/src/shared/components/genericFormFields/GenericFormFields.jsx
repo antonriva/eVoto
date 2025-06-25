@@ -42,9 +42,9 @@ const GenericFormFields = ({ config, values, onChange }) => {
           }
 
           if (name === "fechaDeFin") {
-            const birthDate = values["fechaDeNacimiento"];
-            if (birthDate) dynamicMin = birthDate;
-            dynamicMax = today; // Cannot go beyond today
+            const startDate = values["fechaDeNacimiento"] || values["fechaDeInicio"];
+            if (startDate) dynamicMin = startDate;
+            dynamicMax = today;
           }
 
           if (name === "fechaDeInicio") {

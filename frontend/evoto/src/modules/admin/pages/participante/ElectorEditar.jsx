@@ -5,30 +5,21 @@ const ElectorEditar = () => {
   const { id } = useParams(); // Obtiene el ID del elector desde la URL
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    idElector: "",
-    idPersona: "",
-    entidadFederativaId: "",
-    municipioId: "",
-    localidadId: "",
-    coloniaId: "",
-    codigoPostalId: "",
-    calle: "",
-    numeroExterior: "",
-    numeroInterior: "",
-    fechaDeInicio: "",
-    fechaDeInicioElector: "",
+  const { formData, setFormData, originalData, loading, error } = useEditableEntityData({
+    endpoint: "elector", // ✅ Still correct for elector
+    id: idElector,        // ✅ Must use generic 'id' as expected by the hook
+    initialValues: {
+      idElector: idElector || "",      // ✅ Read-only
+      entidadFederativaId: "",
+      municipioId: "",
+      coloniaId: "",
+      codigoPostalId: "",
+      calle: "",
+      numeroExterior: "",
+      numeroInterior: "",
+      fechaDeInicio: "",
+    },
   });
-
-  const [entidades, setEntidades] = useState([]);
-  const [municipios, setMunicipios] = useState([]);
-  const [localidades, setLocalidades] = useState([]);
-  const [colonias, setColonias] = useState([]);
-  const [codigosPostales, setCodigosPostales] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-    
-  
   
   // Fetch inicial para cargar los datos del elector
   useEffect(() => {

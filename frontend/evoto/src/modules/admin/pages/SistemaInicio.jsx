@@ -40,7 +40,7 @@ const SistemaInicio = () => {
               subtitle="Buscar partido"
             />
             <CardLink
-              to="/colegio/sistema/registropartido"
+              to="/colegio/sistema/buscarelector"
               icon="🔍"
               subtitle="Buscar elector"
             />
@@ -49,7 +49,7 @@ const SistemaInicio = () => {
           {/* Columna 2 */}
           <div className="card-column">
             <CardLink
-              to="/colegio/sistema/buscarelector"
+              to="/colegio/sistema/registropartido"
               icon="📝"
               subtitle="Registrar partido"
             />

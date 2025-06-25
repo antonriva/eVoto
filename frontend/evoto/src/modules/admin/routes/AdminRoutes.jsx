@@ -9,10 +9,10 @@ import ResultadosPag from "../pages/ResultadosPag"; // Correct path
 import SistemaP from "../pages/SistemaInicio"; // Correct path
 import BuscarPartidoP from "../pages/agrupacion/BuscarPartido"; // Correct path
 import EditarPartidoP from "../pages/agrupacion/EditarPartido"; // Correct path
-import RegistroPartidoP from "../pages/agrupacion/RegistroPartidoP"; // Correct path
+import RegistroPartidoP from "../pages/agrupacion/RegistroPartido"; // Correct path
 
 // Elector
-import BuscarElectorP from "../pages/participante/PaginaBuscarElectores"; // Correct path
+import BuscarElectorP from "../pages/participante/BuscarElector"; // Correct path
 import EditarElectorP from "../pages/participante/ElectorEditar"; // Correct path
 import RegistroElectorP from "../pages/participante/ElectorRegistro"; // Correct path
 
