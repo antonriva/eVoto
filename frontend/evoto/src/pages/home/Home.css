@@ -23,7 +23,11 @@
 }
 
 .card-body-custom {
-  text-align: center; /* Centrar el contenido */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  height: 100%;
 }
 
 .card-icon-wrapper {

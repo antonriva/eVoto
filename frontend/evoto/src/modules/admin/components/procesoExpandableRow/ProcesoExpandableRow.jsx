@@ -1,7 +1,7 @@
 import React from "react";
 import GenericExpandableRow from "./ProcesoGenericExpandableRow";
 
-const renderCandidaturas = (candidaturas, onAddCandidatura) => (
+const renderCandidaturas = (candidaturas, onAddCandidatura, onDeleteCandidatura) => (
   <div>
     {candidaturas.length > 0 ? (
       <table className="table table-sm">
@@ -13,6 +13,7 @@ const renderCandidaturas = (candidaturas, onAddCandidatura) => (
             <th>Votos</th>
             <th>Fecha de Inicio</th>
             <th>Fecha de Fin</th>
+            <th>Acciones</th> {/* New column for actions */}
           </tr>
         </thead>
         <tbody>
@@ -24,6 +25,14 @@ const renderCandidaturas = (candidaturas, onAddCandidatura) => (
               <td>{c.votos}</td>
               <td>{c.fechaDeInicio || "---"}</td>
               <td>{c.fechaDeFin || "---"}</td>
+              <td>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => onDeleteCandidatura(c.idCandidatura)}
+                >
+                  Eliminar
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -47,7 +56,8 @@ const ProcesoExpandableRow = ({
   colSpan,
   onEdit,
   onDelete,
-  onAddCandidatura, // New prop for adding candidatura
+  onAddCandidatura,
+  onDeleteCandidatura, // New prop for deleting candidatura
 }) => (
   <GenericExpandableRow
     id={idInstancia}
@@ -57,7 +67,7 @@ const ProcesoExpandableRow = ({
     onEdit={onEdit}
     onDelete={onDelete}
     renderExpandedContent={(candidaturas) =>
-      renderCandidaturas(candidaturas, () => onAddCandidatura(idInstancia))
+      renderCandidaturas(candidaturas, () => onAddCandidatura(idInstancia), onDeleteCandidatura)
     }
     loadingMessage="Cargando candidaturas..."
     emptyMessage="" // Remove the default empty message

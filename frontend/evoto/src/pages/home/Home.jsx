@@ -18,7 +18,7 @@ const Home = () => {
         <div className="row">
           {/* Registro Civil */}
           <div className="col-md-4">
-            <div className="card shadow-sm card-custom">
+            <div className="card shadow-sm card-custom w-100 h-100">
               <div className="card-body card-body-custom">
                 <div className="card-icon-wrapper">
                   <img
@@ -39,7 +39,7 @@ const Home = () => {
 
           {/* Colegio Electoral */}
           <div className="col-md-4">
-            <div className="card shadow-sm card-custom">
+            <div className="card shadow-sm card-custom w-100 h-100">
               <div className="card-body card-body-custom">
                 <div className="card-icon-wrapper">
                   <img
@@ -60,7 +60,7 @@ const Home = () => {
 
           {/* Votante */}
           <div className="col-md-4">
-            <div className="card shadow-sm card-custom">
+            <div className="card shadow-sm card-custom w-100 h-100">
               <div className="card-body card-body-custom">
                 <div className="card-icon-wrapper">
                   <img
@@ -72,11 +72,9 @@ const Home = () => {
                 <h5 className="card-title card-title-custom">
                   <Link to="/votante">Votante</Link>
                 </h5>
-                <ul className="list-unstyled card-options">
-                  <li>
-                    <Link to="/votante/ingreso">Ingreso</Link>
-                  </li>
-                </ul>
+                <p className="card-text text-justify mb-3">
+                  Vista del votante. Consulta los procesos electores a los que tiene acceso y participa.
+                </p>
               </div>
             </div>
           </div>

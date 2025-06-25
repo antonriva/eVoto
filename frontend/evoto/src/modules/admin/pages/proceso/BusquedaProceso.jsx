@@ -176,6 +176,49 @@ const fetchInstancias = async (params = {}) => {
     navigate(`/colegio/proceso/buscar/agregar/${idInstancia}`); // Navigate to the route with idInstancia
   };
 
+  // Function to delete a candidatura
+  const eliminarCandidatura = async (idCandidatura) => {
+    const confirmar = window.confirm(
+      `¿Estás seguro de que deseas eliminar la candidatura con ID ${idCandidatura}?`
+    );
+
+    if (confirmar) {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/candidatura/eliminar/${idCandidatura}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (response.ok) {
+          alert(`Candidatura con ID ${idCandidatura} eliminada exitosamente.`);
+          // Optionally refresh candidaturas or update state
+          setInstancias((prevInstancias) =>
+            prevInstancias.map((instancia) => ({
+              ...instancia,
+              candidaturas: instancia.candidaturas.filter(
+                (candidatura) => candidatura.idCandidatura !== idCandidatura
+              ),
+            }))
+          );
+        } else {
+          const errorMessage = await response.text();
+          if (response.status === 404) {
+            alert(`Error: La candidatura con ID ${idCandidatura} no existe.`);
+          } else if (response.status === 409) {
+            alert(`Error: ${errorMessage}`);
+          } else {
+            alert(`Error inesperado: ${errorMessage}`);
+          }
+        }
+      } catch (error) {
+        console.error(`Error al eliminar candidatura con ID ${idCandidatura}:`, error);
+        alert("Error inesperado al eliminar la candidatura. Por favor, inténtelo nuevamente.");
+      }
+    }
+  };
+
   return (
     <div>
       <h1>Catálogo de Instancias de Proceso</h1>
@@ -211,15 +254,15 @@ const fetchInstancias = async (params = {}) => {
               instancia.entidadFederativa,
               instancia.municipio,
               instancia.localidad,
-              instancia.votoTotal
+              instancia.votoTotal,
             ]}
             fetchCandidaturas={() => fetchCandidaturas(instancia.idDeInstanciaDeProceso)}
             colSpan={headers.length}
-
             onEdit={(id) => editarInstancia(id)}
             onDelete={(id) => eliminarInstancia(id)}
             onAdd={(id) => agregarInstancia(id)}
-            onAddCandidatura={agregarCandidatura}
+            onAddCandidatura={(id) => agregarCandidatura(id)}
+            onDeleteCandidatura={(idCandidatura) => eliminarCandidatura(idCandidatura)} // Pass delete function
           />
         )}
       />

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ModalBuscarElector from "../../admin/components/ModalBuscarElector";
+import ModalBuscarElector from "../../../modules/admin/components/modalBuscarElector/ModalBuscarElector";
+import { Modal, Button } from "react-bootstrap";
 
 const RegistroCandidaturaYElector = () => {
 
@@ -55,15 +56,31 @@ const RegistroCandidaturaYElector = () => {
       </div>
 
       {/* Modal para buscar electores */}
-      {showModalElector && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Buscar Elector</h2>
-            <ModalBuscarElector onSelect={handleSelectElector} />
-            <button onClick={() => setShowModalElector(false)}>Cerrar</button>
-          </div>
-        </div>
-      )}
+      <Modal
+  show={showModalElector}
+  onHide={() => setShowModalElector(false)}
+  size="xl"
+  centered
+>
+  <Modal.Header closeButton>
+    <Modal.Title>Buscar Elector</Modal.Title>
+  </Modal.Header>
+
+  <Modal.Body style={{ maxHeight: "70vh", overflowY: "auto" }}>
+    <ModalBuscarElector
+      onSelect={(idElector) => {
+        handleSelectElector(idElector);  // your callback
+        setShowModalElector(false);      // close the modal after selecting
+      }}
+    />
+  </Modal.Body>
+
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => setShowModalElector(false)}>
+      Cerrar
+    </Button>
+  </Modal.Footer>
+</Modal>
     </div>
   );
 };
