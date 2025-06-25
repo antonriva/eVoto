@@ -105,7 +105,7 @@ const ElectorRegistro = () => {
   };
 
   const handleRegresar = () => {
-    navigate("/colegio/sistema/ele"); // Regresa al menú anterior
+    navigate("/colegio/sistema"); // Regresa al menú anterior
   };
 
   const handleChange = (e) => {
