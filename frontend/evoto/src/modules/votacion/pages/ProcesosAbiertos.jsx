@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import "../../../shared/styles/Buttons.css"; 
+import "../../../shared/styles/Buttons.css";
 
 const InicioVotante = () => {
-  const { idDeElector} = useParams(); // Recuperar el ID del elector desde la URL
-  console.log("ID del Elector recibido desde la URL:", idDeElector);
+  const { idDeElector } = useParams(); // Recuperar el ID del elector desde la URL
   const navigate = useNavigate();
-
 
   const [procesos, setProcesos] = useState([]); // Almacena los datos de procesos abiertos
   const [error, setError] = useState("");
@@ -39,19 +37,13 @@ const InicioVotante = () => {
     fetchProcesosAbiertos();
   }, [idDeElector]);
 
-  // Función para navegar a la siguiente página
+  // Función para manejar la navegación a la siguiente página
   const handleNavigateToDetalleProceso = () => {
-    if (!procesoSeleccionado) {
-      alert("Debe seleccionar un proceso antes de continuar.");
+    if (!idDeInstanciaDeProceso) {
+      alert("Debe seleccionar un proceso antes de continuar."); // Muestra un mensaje si no hay proceso seleccionado
       return;
     }
-    navigate(`/detalleProceso/${idDeElector}/${procesoSeleccionado}`); // Envía ID de elector e ID de proceso
-  };
-
-  const enviarTodo = (idDeElector,idDeInstanciaDeProceso) => {
-    console.log("ID del Elector recibido desde la URL:", idDeElector);
-    console.log("ID del Elector recibido desde la URL:", idDeInstanciaDeProceso);
-    navigate(`detalleProceso/${idDeElector}/${idDeInstanciaDeProceso}`);
+    navigate(`/detalleProceso/${idDeElector}/${idDeInstanciaDeProceso}`); // Navega a la siguiente página con los IDs
   };
 
   return (
@@ -114,8 +106,9 @@ const InicioVotante = () => {
           </table>
 
           {/* Botón para continuar a la siguiente página */}
-          <button className="btn btn-vino"
-            onClick={() => enviarTodo(idDeElector,idDeInstanciaDeProceso)}
+          <button
+            className="btn btn-vino"
+            onClick={handleNavigateToDetalleProceso}
             style={{ marginTop: "20px" }}
           >
             Continuar con el Proceso Seleccionado
