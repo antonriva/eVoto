@@ -126,7 +126,7 @@ const PaginaBuscarElectores = () => {
     <div>
       <div className="app-layout-container">
       <Breadcrumbs items={breadcrumbItems} />
-      <h1 className="display-4 fw-bold text-dark">Catálogo de Electores</h1>
+      <h1 className="display-4 fw-bold text-dark text-center">Catálogo de electores</h1>
       <div className="row mb-4 gx-3 align-items-stretch">
           <div className="col-md-6 d-flex">
             <div className="card p-3 w-100 h-100">

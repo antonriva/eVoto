@@ -46,3 +46,70 @@ button.btn-outline-lightred:disabled {
     opacity: 0.65;
     pointer-events: none;
 }
+
+/* Custom button styles for navigation links */
+button.btn-custom {
+    background-color: #611232; /* Primary color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    padding: 0.5rem 1rem; /* Padding for better spacing */
+    border-radius: 0.25rem; /* Rounded corners */
+    transition: all 0.3s ease-in-out; /* Smooth hover effect */
+    font-weight: bold; /* Bold text */
+    text-transform: uppercase; /* Uppercase text */
+}
+
+button.btn-custom:hover {
+    background-color: #4a0e27; /* Darker shade for hover */
+    color: white; /* Ensure text remains white */
+}
+
+button.btn-custom-outline {
+    color: #611232; /* Primary color for text */
+    border: 2px solid #611232; /* Border color */
+    background-color: transparent; /* Transparent background */
+    padding: 0.5rem 1rem; /* Padding for better spacing */
+    border-radius: 0.25rem; /* Rounded corners */
+    transition: all 0.3s ease-in-out; /* Smooth hover effect */
+    font-weight: bold; /* Bold text */
+    text-transform: uppercase; /* Uppercase text */
+}
+
+button.btn-custom-outline:hover {
+    background-color: #611232; /* Primary color for hover */
+    color: white; /* White text on hover */
+    border-color: #611232; /* Ensure border matches background */
+}
+
+.nav-item .btn-custom {
+    background-color: #611232 !important; /* Primary color */
+    color: white !important; /* Text color */
+    border: none !important; /* No border */
+    padding: 0.5rem 1rem; /* Padding for better spacing */
+    border-radius: 0.25rem; /* Rounded corners */
+    transition: all 0.3s ease-in-out; /* Smooth hover effect */
+    font-weight: bold; /* Bold text */
+    text-transform: uppercase; /* Uppercase text */
+}
+
+.nav-item .btn-custom:hover {
+    background-color: #4a0e27 !important; /* Darker shade for hover */
+    color: white !important; /* Ensure text remains white */
+}
+
+.nav-item .btn-custom-outline {
+    color: #611232 !important; /* Primary color for text */
+    border: 2px solid #611232 !important; /* Border color */
+    background-color: transparent !important; /* Transparent background */
+    padding: 0.5rem 1rem; /* Padding for better spacing */
+    border-radius: 0.25rem; /* Rounded corners */
+    transition: all 0.3s ease-in-out; /* Smooth hover effect */
+    font-weight: bold; /* Bold text */
+    text-transform: uppercase; /* Uppercase text */
+}
+
+.nav-item .btn-custom-outline:hover {
+    background-color: #611232 !important; /* Primary color for hover */
+    color: white !important; /* White text on hover */
+    border-color: #611232 !important; /* Ensure border matches background */
+}

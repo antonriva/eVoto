@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Table from "../../../../shared/components/table/Table";
 import ExpandableRow from "../../components/procesoExpandableRow/ProcesoExpandableRow";
 import FiltrosProcesos from "../../components/FiltrosInstancia"
+import Breadcrumbs from "../../../../shared/components/breadcrumbs/Breadcrumbs";
+import "../../../../shared/layouts/AppLayout.css"; 
+
 
 const PaginaBuscarInstanciaDeProceso = () => {
   const [instancias, setInstancias] = useState([]);
@@ -219,23 +222,33 @@ const fetchInstancias = async (params = {}) => {
     }
   };
 
+  const breadcrumbItems = [
+    { label: "Inicio", to: "/" },
+    { label: "Colegio electoral", to: "/colegio" },
+    { label: "Procesos electorales", to: "/colegio/proceso" },
+    { label: "Catálogo de procesos" },
+  ];
+
+
   return (
     <div>
-      <h1>Catálogo de Instancias de Proceso</h1>
+      <div className="app-layout-container">
+        <Breadcrumbs items={breadcrumbItems} />
+        <h1 className="display-4 fw-bold text-dark text-center">Catálogo de Instancias de Proceso</h1>
+        <div className="row mb-4 gx-3 align-items-stretch">
+          <div className="col-md-6 d-flex">
+            <div className="card p-3 w-100 h-100">
 
-      {error && <p style={{ color: "red" }}>{error}</p>} {/* Muestra el error al usuario */}
-
-      <button onClick={handleRegresar} style={{ marginBottom: "20px" }}>
-        Regresar
-      </button>
-
-      
-      {/* Formulario de Filtros */}
-      <FiltrosProcesos
+            {error && <p style={{ color: "red" }}>{error}</p>} {/* Muestra el error al usuario */}
+            <FiltrosProcesos
         filtros={filtros}
         setFiltros={setFiltros}
         onBuscar={() => fetchInstancias(filtros)}
       />
+            </div>
+          </div>
+        </div>
+
 
       {/* Tabla de Instancias */}
       <Table
@@ -266,6 +279,7 @@ const fetchInstancias = async (params = {}) => {
           />
         )}
       />
+            </div>
     </div>
   );
 };

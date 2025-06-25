@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import TimerRedirect from "../../../../shared/components/timerRefresher/TimerRefresher";
-
+import Breadcrumbs from "../../../../shared/components/breadcrumbs/Breadcrumbs";
+import "../../../../shared/layouts/AppLayout.css";
+import "../../../../shared/styles/Buttons.css"; // Import global styles for buttons
 
 const RegistroProceso = () => {
   const [formData, setFormData] = useState({
@@ -23,6 +24,13 @@ const RegistroProceso = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const breadcrumbItems = [
+    { label: "Inicio", to: "/" },
+    { label: "Colegio electoral", to: "/colegio" },
+    { label: "Procesos electorales", to: "/colegio/proceso" },
+    { label: "Registrar proceso" },
+  ];
 
   useEffect(() => {
     fetchEntidades();
@@ -132,13 +140,10 @@ const RegistroProceso = () => {
 
   return (
     <div>
-      <h1>Registro de Proceso</h1>
-      <TimerRedirect rutaDestino ="/colegio/proceso"/>
+      <div className="app-layout-container"> 
+      <Breadcrumbs items={breadcrumbItems} />
+      <h1 className="text-center">Registrar proceso</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <button onClick={handleRegresar} style={{ marginBottom: "20px" }}>
-        Regresar
-      </button>
 
       
       <form onSubmit={handleSubmit}>
@@ -252,13 +257,14 @@ const RegistroProceso = () => {
             ))}
           </select>
         </div> */}
-        <button type="submit" disabled={loading}>
+        <button className="btn btn-vino" type="submit" disabled={loading}>
           {loading ? "Registrando..." : "Registrar"}
         </button>
-        <button type="button" onClick={() => navigate("/colegio/proceso")}>
+        <button className="btn btn-vino" type="button" onClick={() => navigate("/colegio/proceso")}>
           Cancelar
         </button>
       </form>
+      </div>
     </div>
   );
 };

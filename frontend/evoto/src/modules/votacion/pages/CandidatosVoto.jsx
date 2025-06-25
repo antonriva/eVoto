@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import "../../../shared/styles/Buttons.css"; 
 
 const MostrarCandidatos = () => {
   const location = useLocation();
@@ -142,7 +143,7 @@ const MostrarCandidatos = () => {
           </table>
 
           {/* Botón para registrar el voto */}
-          <button
+          <button className="btn btn-vino"
             onClick={handleRegistrarVoto}
             style={{ marginTop: "20px", padding: "10px 20px" }}
           >

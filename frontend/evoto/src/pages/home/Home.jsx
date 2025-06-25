@@ -13,6 +13,17 @@ const Home = () => {
         />
       </div>
 
+      {/* Description Section */}
+      <div className="container my-4" style={{ backgroundColor: "#A97E29", color: "white", borderRadius: "8px", padding: "20px" }}>
+        <div className="text-center">
+          <h4 className="alert-heading">Bienvenido</h4>
+          <p>
+            Esta aplicación tiene como objetivo gestionar de forma integral un sistema de registro civil y electoral. Está dirigida a personal administrativo y operadores electorales, y permite realizar operaciones como registro de personas, búsqueda filtrada, gestión de electores, visualización de padrones y control de procesos de votación.
+          </p>
+        </div>
+      </div>
+
+
       {/* Recuadros de Aplicaciones */}
       <div className="container my-4">
         <div className="row">

@@ -1,39 +1,55 @@
 import { Routes, Route, Link } from "react-router-dom";
+import Breadcrumbs from "../../../shared/components/breadcrumbs/Breadcrumbs";
+import "../../../shared/layouts/AppLayout.css";
+import "../../../shared/styles/Buttons.css"; // Import custom button styles
 
-import BuscarVotanteP from "./BuscarVotante"
-import ConsultaPag from "./ProcesosAbiertos"
-import EleccionPag from "./CandidatosVoto"
-
-
+import BuscarVotanteP from "./BuscarVotante";
+import ConsultaPag from "./ProcesosAbiertos";
+import EleccionPag from "./CandidatosVoto";
 
 const VotanteApp = () => {
+  const breadcrumbItems = [
+    { label: "Inicio", to: "/" },
+    { label: "Votante" },
+  ];
+
   return (
     <div>
-      <h1>Sistema para realizar voto electronico a traves de clave de elector</h1>
-      {/* Barra de navegación del votante */}
-      <nav>
-        <ul>
+      <div className="app-layout-container">
+        {/* Breadcrumb */}
+        <Breadcrumbs items={breadcrumbItems} />
 
-          <li>
-            <Link to="/">Regresar al Menú Principal</Link>
-          </li>
-          <li>
-            <Link to="ingreso">Ingreso</Link>
-          </li>
-        </ul>
-      </nav>
+        {/* Header */}
+        <header className="mb-4">
+          <h1 className="display-4 fw-bold text-dark text-center">Sistema de Votación</h1>
+          <p className="lead text-center">
+            Plataforma para realizar voto electrónico.
+          </p>
+        </header>
 
-      {/* Rutas internas del módulo Votante */}
-      <main>
+        {/* Navigation */}
+        <nav className="mb-4">
+          <ul className="nav justify-content-center">
+            <li className="nav-item">
+              <Link className="btn btn-custom-outline" to="ingreso">
+                Ingreso
+              </Link>
+            </li>
+          </ul>
+        </nav>
 
-        <Routes>
-  <Route path="ingreso" element={<BuscarVotanteP />} />
-  <Route path="ingreso/inicioVotante/:idDeElector" element={<ConsultaPag />} />
-  <Route path="ingreso/inicioVotante/:id/detalleProceso/:idDeElector/:idDeInstanciaDeProceso" element={<EleccionPag />} />
-</Routes>
-
-
-      </main>
+        {/* Routes */}
+        <main>
+          <Routes>
+            <Route path="ingreso" element={<BuscarVotanteP />} />
+            <Route path="ingreso/inicioVotante/:idDeElector" element={<ConsultaPag />} />
+            <Route
+              path="ingreso/inicioVotante/:id/detalleProceso/:idDeElector/:idDeInstanciaDeProceso"
+              element={<EleccionPag />}
+            />
+          </Routes>
+        </main>
+      </div>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import "../../../shared/styles/Buttons.css"; 
 
 const InicioVotante = () => {
   const { idDeElector} = useParams(); // Recuperar el ID del elector desde la URL
@@ -113,7 +114,7 @@ const InicioVotante = () => {
           </table>
 
           {/* Botón para continuar a la siguiente página */}
-          <button
+          <button className="btn btn-vino"
             onClick={() => enviarTodo(idDeElector,idDeInstanciaDeProceso)}
             style={{ marginTop: "20px" }}
           >
